@@ -35,6 +35,9 @@ search:
 ### * reference
 
 reference:
+- title: Import data for SDM
+  contents:
+  - import_chelsa_v2
 - title: Create localized risk reports
   desc: Quantify SLF risk to viticultural areas at the state/provincial or country level
   contents:
@@ -58,7 +61,6 @@ reference:
   contents:
   - rescale_cloglog_suitability
   - calculate_risk_quadrant
-
 
 ### * vignette organization
 
