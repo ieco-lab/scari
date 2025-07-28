@@ -25,7 +25,6 @@ Imports:
     ENMTools,
     formattable,
     gginnards,
-    ggnewscale (== 0.4.10),
     gitcreds,
     grid,
     here,
@@ -61,6 +60,7 @@ Imports:
     webshot2
 Remotes:
     densitymodelling/dsmextra,
+    eliocamp/ggnewscale@v0.4.10,
     ieco-lab/lydemapr,
     jmestret/GeoThinneR@v1.1.0,
     ropensci/rnaturalearthdata,
