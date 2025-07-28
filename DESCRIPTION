@@ -22,7 +22,6 @@ Imports:
     CoordinateCleaner,
     devtools,
     dismo,
-    dsmextra,
     ENMTools,
     formattable,
     GeoThinneR (== 1.1.0),
@@ -34,7 +33,6 @@ Imports:
     httr,
     kableExtra,
     kgc,
-    lydemapr,
     patchwork,
     pkgdown,
     plotROC,
@@ -48,8 +46,6 @@ Imports:
     rlang,
     rmarkdown,
     rnaturalearth,
-    rnaturalearthdata,
-    rnaturalearthhires,
     scales,
     SDMtune,
     sf,
@@ -63,6 +59,11 @@ Imports:
     utils,
     viridis,
     webshot,
-    webshot2    
+    webshot2
+Remotes:
+    densitymodelling/dsmextra,
+    ieco-lab/lydemapr,
+    ropensci/rnaturalearthdata,
+    ropensci/rnaturalearthhires
 Suggests:
     blockCV
