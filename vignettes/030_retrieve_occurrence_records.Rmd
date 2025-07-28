@@ -40,6 +40,7 @@ library(CoordinateCleaner) # tidying of points
 
 # shapefile data
 library(rnaturalearth)
+library(rnaturalearthdata)
 library(rnaturalearthhires)
 
 # spatial
@@ -70,7 +71,7 @@ data(df_layers_cultural)
 # I will use states_provinces
 
 # get metadata
-ne_metadata <- ne_find_vector_data(
+ne_metadata <- rnaturalearth::ne_find_vector_data(
   scale = 10,
   category = "cultural",
   getmeta = TRUE

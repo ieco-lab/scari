@@ -22,7 +22,6 @@ library(devtools)
 
 # spatial
 library(terra)
-# devtools::install_github("danlwarren/ENMTools")
 library(ENMTools) # env covariates colinearity
 
 library(patchwork)

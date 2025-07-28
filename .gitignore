@@ -2,6 +2,7 @@
 /*.Rhistory
 .RData
 .Ruserdata
+vignettes/initialize_site_pkgdown.R
 vignette-outputs/data-tables
 vignette-outputs/figures
 vignette-outputs/shapefiles

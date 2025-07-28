@@ -583,7 +583,7 @@ for(a in seq_along(env.files)){
 
 I will start the masking process by importing the bioclim layers and reference layer I need. I will also crop this layer to only N America, so I will need a bounding box for that.
 
-```{r setup for cropping bioclim layers- Ri.NAmerica}
+```{r setup for masking bioclim layers- Ri.NAmerica}
 
 # import layers
 env.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_NAmerica.asc$", full.names = TRUE) 

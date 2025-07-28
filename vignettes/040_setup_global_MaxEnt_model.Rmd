@@ -225,7 +225,7 @@ Now I will create a plot of all SLF presence locations for reference. These poin
 
 global_slf_plot <- ggplot() +
   geom_raster(data = global_bio2_df, aes(x = x, y = y), fill = "azure1") +
-  geom_point(data = slf_points, aes(x = utm_easting, y = utm_northing), color = "darkorange", size = 0.1) +
+  geom_point(data = slf_points, aes(x = x, y = y), color = "darkorange", size = 0.1) +
   map_style +
   theme(legend.position = "none") +
   labs(title = "'global' model SLF presences") 
