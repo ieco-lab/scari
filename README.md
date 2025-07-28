@@ -31,9 +31,6 @@ Here are the main packages that `scari` depends on:
 ```
 install.packages(c('cli', 'common', 'CoordinateCleaner', 'devtools', 'dismo', 'ENMTools', 'formattable', 'gginnards', 'gitcreds', 'grid', 'here', 'httr', 'kableExtra', 'kgc', 'patchwork', 'pkgdown', 'plotROC', 'pROC', 'raster', 'rasterVis', 'remotes', 'renv', 'rgbif', 'rJava', 'rmarkdown', 'rnaturalearth', 'scales', 'SDMtune', 'sf', 'sp', 'stats', 'stringr', 'terra', 'tidygeocoder', 'tidyverse', 'usethis', 'utils', 'viridis', 'webshot', 'webshot2'))
 
-# we also suggest installing the following packages:
-install.packages("blockCV")
-
 # Install package which cannot be obtained from the CRAN
 library(devtools)
 remotes::install_github("ieco-lab/lydemapr", build_vignettes = FALSE)
@@ -44,13 +41,16 @@ remotes::install_github("densitymodelling/dsmextra")
 # install specific versions of packages
 remotes::install_version("ggnewscale", version = "0.4.10") # due to issue with color scales
 remotes::install_version("GeoThinneR", version = "1.1.0") # due to issue with thin_points
+
+# we also suggest installing the following packages if using the appendix in vignette 050:
+install.packages("blockCV")
 ```
 
 ### Sitemap
 
 This project is organized into general sections of our modeling pipeline: Our [vignettes](https://github.com/ieco-lab/scari/tree/master/vignettes) follow this general order: 
 
-* 010: Initialize `scari`: initialization of `renv` package for dependencies
+* 010: Initialize `scari` and usage of `renv` package for dependencies
 * 020-030: Retrieve and tidy input data for MaxEnt
 * 040-090: SDM modeling pipeline: train global and 3 regional-scale models
 * 100-110: Ensemble Regional-scale SDMs
