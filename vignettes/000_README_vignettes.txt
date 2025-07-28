@@ -137,7 +137,7 @@ v3- creates the v3 of the regional_invaded model in maxent/models. In sandbox/vi
 v4- creates the v4 of the regional_invaded model in maxent/models. reverted to regional background method that uses entire eastern USA background area
 v5
 v6- 2024-08-02- rework- updated SLF presence data and inclusion of other SSP scenarios- changed validation (testing) region to Ri.Asia training region (see citation)- creates v7 of the regional_invaded model
-v7- 2025-07-07- v8 of model-transformed final dataset into Behrmann projection
+v7- 2025-07-14- v8 of model-transformed final dataset into Behrmann projection
 
 
 ----------080_run_regional_invaded_asian_MaxEnt_model.Rmd----------
@@ -151,7 +151,7 @@ This vignette creates all data objects needed to run the regional_invaded_asian 
 v0- initial version
 v1-
 v2- 2024-08-08- rework- updated SLF presence data and inclusion of other SSP scenarios, creates v2 of the regional_invaded_asian model
-v3- 2025-07-07- rework- v3 of model-transformed final dataset into Behrmann projection
+v3- 2025-07-14- rework- v3 of model-transformed final dataset into Behrmann projection
 
 
 
@@ -168,7 +168,7 @@ v1- in sandbox/vignettes_old
 v2- creates the v1 of the regional_native_model in maxent/models. Removed gridSearch and used model settings from global instead.
 v3
 v4- 2024-08-08- rework- updated SLF presence data and inclusion of other SSP scenarios, creates v3 of the regional_native model
-v5- 2025-07-07- rework- v4 of model-transformed final dataset into Behrmann projection
+v5- 2025-07-14- rework- v4 of model-transformed final dataset into Behrmann projection
 
 
 
@@ -185,7 +185,7 @@ v1- added ExDet and MIC for global model
 v2- added grey area to each figure to represent bg area
 v3- 2024-08-09- rework- updated SLF presence data and inclusion of other SSP scenarios
 v4- 2024-10-18- changed plotting to re-load rasters so that vignette could be rendered without dsmextra package (will retire because its not available for R 4.4)
-
+v5- 2025-07-28- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 
