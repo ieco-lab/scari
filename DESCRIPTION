@@ -22,19 +22,15 @@ Imports:
     CoordinateCleaner,
     devtools,
     dismo,
-    dsmextra,
     ENMTools,
     formattable,
-    GeoThinneR (== 1.1.0),
     gginnards,
-    ggnewscale (== 0.4.10),
     gitcreds,
     grid,
     here,
     httr,
     kableExtra,
     kgc,
-    lydemapr,
     patchwork,
     pkgdown,
     plotROC,
@@ -48,8 +44,6 @@ Imports:
     rlang,
     rmarkdown,
     rnaturalearth,
-    rnaturalearthdata,
-    rnaturalearthhires,
     scales,
     SDMtune,
     sf,
@@ -63,6 +57,13 @@ Imports:
     utils,
     viridis,
     webshot,
-    webshot2    
+    webshot2
+Remotes:
+    densitymodelling/dsmextra,
+    eliocamp/ggnewscale@v0.4.10,
+    ieco-lab/lydemapr,
+    jmestret/GeoThinneR@v1.1.0,
+    ropensci/rnaturalearthdata,
+    ropensci/rnaturalearthhires
 Suggests:
     blockCV
