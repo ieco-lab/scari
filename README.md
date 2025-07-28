@@ -60,13 +60,21 @@ This project is organized into general sections of our modeling pipeline: Our [v
 ## How to Use this Project
 
 Before diving into this project and our modeling workflow, an end user should:
-1. read the [companion paper](), which outlines the conceptual underpinnings for this project
-2. download, build and install this package locally
-3. install the package `renv`, which ensures that R package versions are consistent for running this package (this creates a project-specific R package library, so it should not affect your main library)
-4. run the first vignette, [010_initialize_renv](https://github.com/ieco-lab/scari/blob/master/vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
+1. Read the [companion paper](), which outlines the conceptual underpinnings for this project
+2. Download, build and install this package locally
+3. Install the package `renv`, and run `renv::restore()` inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).
+4. Run the first vignette, [010_initialize_renv](https://github.com/ieco-lab/scari/blob/master/vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
 5. See "Get Started" for help in using our package to:
   - Produce localized reports on SLF risk to viticulture, and
   - Recreate our analysis for another invasive species of interest
+  
+### Notes about using this package's code
+
+I use some of the followin conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
+
+- I have added a number of `if()` statements throughout my vignettes, usually to prevent data from being downloaded again unnecessarily. Simply change the `FALSE` within the `if()` statement to `TRUE` to run a chunk.
+- I have a chunk near the beginning of every vignette that sets the global chunk options: `knitr::opts_chunk$set(eval = FALSE)`. This prevents the code from running automatically when the vignette is rendered. You can change this to `TRUE` if you want to run the code in that chunk.
+- I have added html comment tags (`<!--` and `-->`) to the code chunks that I do not want to run automatically as the website is rendered. Much of the code that is commented out is redundant, but I have left it in the code for reference so as not to disrupt the true workflow. You can remove these comments if you want to run the code in those chunks.
 
 ### Computing Information
 
@@ -75,6 +83,7 @@ This package was developed and its vignettes were rendered on a Dell Precision d
 * RAM memory: 64 GB
 * Operating System: Windows 11 Enterprise, version 24H2
 * R version: 4.5.1
+* Rstudio version: 2025.05.1+513
 
 ### Other software:
 

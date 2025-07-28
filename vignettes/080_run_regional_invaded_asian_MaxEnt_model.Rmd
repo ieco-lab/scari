@@ -515,7 +515,7 @@ scari::predict_xy_suitability(
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
   predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded)regional_native_model_asian_slf_all_coords_2041-2070_GFDL_ssp370"
+  output.name = "regional_invaded_asian_slf_all_coords_2041-2070_GFDL_ssp370"
 )
 
 ```

@@ -201,6 +201,7 @@ v0- initial version- in sandbox/vignettes_old
 v1-
 v2- added section to ensemble ExDet and MIC rasters, bar chart showing % cont to regional ensemble
 v3- 2024-08-09- rework- updated SLF presence data and inclusion of other SSP scenarios
+v4- 2025-07-28- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 

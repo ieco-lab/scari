@@ -147,7 +147,7 @@
 #')
 #'
 #'@export
-import_chelsa_v2 <- function(var.type = "bio", var.subtype = "bio", var.period, bioclim.type = NA, bioclim.number = NA, bioclim.ssp = NA, bioclim.model = NA, mypath = NA, create.dir = FALSE, save.output = FALSE) {
+import_chelsa_v2 <- function(var.type = "bio", var.subtype = "bio", var.period, bioclim.type = NA, bioclim.number = NA, bioclim.period = NA, bioclim.ssp = NA, bioclim.model = NA, mypath = NA, create.dir = FALSE, save.output = FALSE) {
 
   # Data and argument import, error checks--------------------------------------
 
@@ -429,7 +429,7 @@ import_chelsa_v2 <- function(var.type = "bio", var.subtype = "bio", var.period, 
         if (!is.na(bioclim.ssp)) {
           # format: https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/2041-2070/GFDL-ESM4/ssp126/bio/CHELSA_bio14_2041-2070_gfdl-esm4_ssp126_V.2.1.tif
                   #https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL/climatologies/1981-2010/clt/CHELSA_clt_01_1981-2010_V.2.1.tif
-          url_obj <- file.path("https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL", var.type_internal, a, toupper(bioclim.model), bioclim.ssp, var.type, paste0("CHELSA_", var.type, var.value, "_", a, tolower(bioclim.model), "_V.2.1.tif"))
+          url_obj <- file.path("https://os.zhdk.cloud.switch.ch/chelsav2/GLOBAL", var.type_internal, a, toupper(bioclim.model), bioclim.ssp, var.type, paste0("CHELSA_", var.type, var.value, "_", bioclim.period, tolower(bioclim.model), "_V.2.1.tif"))
 
           # if an ssp scenario isnt provided, go with format of historical data
         } else {

@@ -15,7 +15,7 @@ I will specifically use the background points that were used to train each model
 
 In addition to the ExDet analysis, I will be performing an MIC (Most Influential Covariate) analysis. This analysis reveals which covariate is causing the extrapolation in the ExDet, if present.
 
-Both of these analyses will be performed using `dsmextra::compute_extrapolation()`.
+Both of these analyses will be performed using the `dsmextra` package.
 
 # Setup
 
@@ -29,14 +29,13 @@ library(here)
 # spatial data handling
 library(terra)
 library(raster)
-# remotes::install_github("densitymodelling/dsmextra")
-#library(dsmextra) # ExDet and MIC
-## this package is used but we will be retiring it soon as part of an update, # out for now
+library(dsmextra) # ExDet and MIC
 
 # aes
 library(viridis)
 library(ggnewscale)
 library(patchwork)
+library(scales)
 
 library(scari)
 
@@ -57,16 +56,15 @@ This is a styling object for the exdet plots.
 
 map_style_exdet <- list(
   theme_classic(),
-  theme(legend.position = "bottom",
-        panel.background = element_rect(fill = "azure3",
-                                        colour = "azure3")
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "azure3",colour = "azure3"),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()    
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
-  labs(
-    x = "UTM Easting",
-    y = "UTM Northing"
-  ),
   coord_equal()
 )
 
@@ -91,6 +89,10 @@ This next helper function will make mapping of our exdet results more consistent
 
 map_exdet <- function(raster, raster.df) {
   
+  # rename plot layer (3rd column)
+  raster.df <- dplyr::rename(raster.df, ExDet = 3) 
+  
+  # plot
   ggplot() +
     # default plot style
     map_style_exdet +
@@ -132,16 +134,15 @@ Finally, the style for the MIC maps.
 
 map_style_MIC <- list(
   theme_classic(),
-  theme(legend.position = "bottom",
-        panel.background = element_rect(fill = "azure3",
-                                        colour = "azure3")
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "azure3",colour = "azure3"),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()    
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
-  labs(
-    x = "UTM Easting",
-    y = "UTM Northing"
-  ),
   coord_equal()
 )
 
@@ -452,7 +453,7 @@ global_background_585 <- global_background %>%
 
 ```
 
-The `compute_extrapolation()` function only takes data columns (no descriptors), so I will isolate those from each background point set that was loaded in.
+The `dsmextra::compute_extrapolation()` function only takes data columns (no descriptors), so I will isolate those from each background point set that was loaded in.
 
 ```{r select only data columns}
 
@@ -504,7 +505,7 @@ exdet_MIC_regional_native_hist <- dsmextra::compute_extrapolation(
   samples = regional_native_background, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_hist_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -516,7 +517,7 @@ exdet_MIC_regional_invaded_hist <- dsmextra::compute_extrapolation(
   samples = regional_invaded_background, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_hist_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -528,7 +529,7 @@ exdet_MIC_regional_invaded_asian_hist <- dsmextra::compute_extrapolation(
   samples = regional_invaded_asian_background, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_hist_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -542,13 +543,15 @@ exdet_MIC_global_hist <- dsmextra::compute_extrapolation(
   samples = global_background, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_hist_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
 ```
 
-## 2.2 CMIP6 2041-2070 projected climate scenarios {.hidden}
+<!--
+
+## 2.2 CMIP6 2041-2070 projected climate scenarios
 
 ### SSP126
 
@@ -558,7 +561,7 @@ exdet_MIC_regional_native_126 <- dsmextra::compute_extrapolation(
   samples = regional_native_background_126, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_126_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -570,7 +573,7 @@ exdet_MIC_regional_invaded_126 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_background_126, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_126_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -582,7 +585,7 @@ exdet_MIC_regional_invaded_asian_126 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_asian_background_126, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_126_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -596,7 +599,7 @@ exdet_MIC_global_126 <- dsmextra::compute_extrapolation(
   samples = global_background_126, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_126_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -610,7 +613,7 @@ exdet_MIC_regional_native_370 <- dsmextra::compute_extrapolation(
   samples = regional_native_background_370, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_370_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -622,7 +625,7 @@ exdet_MIC_regional_invaded_370 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_background_370, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_370_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -634,7 +637,7 @@ exdet_MIC_regional_invaded_asian_370 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_asian_background_370, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_370_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -648,7 +651,7 @@ exdet_MIC_global_370 <- dsmextra::compute_extrapolation(
   samples = global_background_370, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_370_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -662,7 +665,7 @@ exdet_MIC_regional_native_585 <- dsmextra::compute_extrapolation(
   samples = regional_native_background_585, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_585_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -674,7 +677,7 @@ exdet_MIC_regional_invaded_585 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_background_585, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_585_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -686,7 +689,7 @@ exdet_MIC_regional_invaded_asian_585 <- dsmextra::compute_extrapolation(
   samples = regional_invaded_asian_background_585, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_585_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
@@ -700,11 +703,13 @@ exdet_MIC_global_585 <- dsmextra::compute_extrapolation(
   samples = global_background_585, # training set of background points
   covariate.names = env_layer_names, # names of covariates
   prediction.grid = global_projection_585_df, # projection area for extrapolation test
-  coordinate.system = "EPSG:4326", # CRS
+  coordinate.system = "ESRI:54017", # CRS
   verbose = TRUE
 )
 
 ```
+
+-->
 
 # 3. regional_native- Save/plot ExDet/MIC rasters
 
@@ -721,25 +726,25 @@ First, I will save the summary files from the analysis to each model folder.
 # summary of data
 write_csv(
   x = exdet_MIC_regional_native_hist[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_mic_analysis_results.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_mic_analysis_results.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_hist[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_analysis_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_analysis_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_hist[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_univariate_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_univariate_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_hist[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_combinatorial_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_combinatorial_summary.csv")
   )
 
 ```
@@ -751,14 +756,14 @@ Next, I will save the output rasters.
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_native_hist[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_native_hist[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "MIC_slf_regional_native_v3_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -772,7 +777,7 @@ Finally, I will create plots of each of the ExDet and MIC analyses.
 ```{r create exdet plot- Rn hist exdet, eval = TRUE}
 
 # re-import raster
-exdet_regional_native_hist <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_1981-2010.tif"))
+exdet_regional_native_hist <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_1981-2010.tif"))
 # convert to df
 exdet_regional_native_hist_df <- terra::as.data.frame(exdet_regional_native_hist, xy = TRUE)
 # mapping helper
@@ -806,7 +811,7 @@ exdet_regional_native_hist_plot <- exdet_regional_native_hist_plot +
 
 ggsave(
   exdet_regional_native_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v3_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v4_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -820,8 +825,9 @@ ggsave(
 ```{r create MIC plot- Rn hist mic, eval = TRUE}
 
 # re-import
-mic_regional_native_hist_df <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v3", "MIC_slf_regional_native_v3_background_projGlobe_1981-2010.tif")) %>%
-  terra::as.data.frame(., xy = TRUE)
+mic_regional_native_hist_df <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_1981-2010.tif")) %>%
+  terra::as.data.frame(., xy = TRUE) %>%
+  dplyr::rename(mic = 3) # rename mic column
 
 # plot mean raster first
 mic_regional_native_hist_plot <- ggplot() +
@@ -851,7 +857,7 @@ mic_regional_native_hist_plot <- ggplot() +
 
 ggsave(
   mic_regional_native_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v3_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v4_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -864,7 +870,9 @@ I will repeat this workflow for each of the models and their CMIP6 version clima
 
 In the next vignette, I will utilize the ExDet analysis in my ensemble techniques for the regional-scale models. This ensembling technique should give me a unified prediction with which to compare the global-scale model and make predictions.
 
-## 3.2 regional_native SSP126 {.hidden}
+<!--
+
+## 3.2 regional_native SSP126 
 
 ### Save outputs
 
@@ -873,25 +881,25 @@ In the next vignette, I will utilize the ExDet analysis in my ensemble technique
 # summary of data
 write_csv(
   x = exdet_MIC_regional_native_126[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_126[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_126[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_126[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 ```
@@ -901,14 +909,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_native_126[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_native_126[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -950,7 +958,7 @@ exdet_regional_native_126_plot <- exdet_regional_native_126_plot +
 
 ggsave(
   exdet_regional_native_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -991,7 +999,7 @@ mic_regional_native_126_plot <- ggplot() +
 
 ggsave(
   mic_regional_native_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1000,7 +1008,7 @@ ggsave(
 
 ```
 
-## 3.3 regional_native SSP370 {.hidden}
+## 3.3 regional_native SSP370
 
 ### Save outputs
 
@@ -1009,25 +1017,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_native_370[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_370[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_370[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_370[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 ```
@@ -1037,14 +1045,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_native_370[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_native_370[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1086,7 +1094,7 @@ exdet_regional_native_370_plot <- exdet_regional_native_370_plot +
 
 ggsave(
   exdet_regional_native_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1127,7 +1135,7 @@ mic_regional_native_370_plot <- ggplot() +
 
 ggsave(
   mic_regional_native_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1136,7 +1144,7 @@ ggsave(
 
 ```
 
-## 3.4 regional_native SSP585 {.hidden}
+## 3.4 regional_native SSP585
 
 ### Save outputs
 
@@ -1145,25 +1153,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_native_585[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_585[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_585[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_native_585[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_native_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_native_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 ```
@@ -1173,14 +1181,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_native_585[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_native_585[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_native_v3", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1222,7 +1230,7 @@ exdet_regional_native_585_plot <- exdet_regional_native_585_plot +
 
 ggsave(
   exdet_regional_native_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1263,7 +1271,7 @@ mic_regional_native_585_plot <- ggplot() +
 
 ggsave(
   mic_regional_native_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1272,7 +1280,7 @@ ggsave(
 
 ```
 
-# 4.regional_invaded- Save/plot ExDet/MIC rasters {.hidden}
+# 4.regional_invaded- Save/plot ExDet/MIC rasters
 
 ## 4.1 regional_invaded hist
 
@@ -1283,25 +1291,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_hist[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_mic_analysis_results.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_mic_analysis_results.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_hist[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_analysis_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_analysis_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_hist[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_univariate_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_univariate_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_hist[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_combinatorial_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_combinatorial_summary.csv")
   )
 
 ```
@@ -1311,14 +1319,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_hist[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_hist[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "MIC_slf_regional_invaded_v7_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1360,7 +1368,7 @@ exdet_regional_invaded_hist_plot <- exdet_regional_invaded_hist_plot +
 
 ggsave(
   exdet_regional_invaded_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v7_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v8_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1400,7 +1408,7 @@ mic_regional_invaded_hist_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v7_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v8_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1418,25 +1426,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_126[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_126[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_126[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_126[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 ```
@@ -1446,14 +1454,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_126[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_126[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1494,7 +1502,7 @@ exdet_MIC_regional_invaded_126_plot <- exdet_MIC_regional_invaded_126_plot +
 
 ggsave(
   exdet_MIC_regional_invaded_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1534,7 +1542,7 @@ mic_regional_invaded_126_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1552,25 +1560,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_370[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_370[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_370[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_370[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 ```
@@ -1580,14 +1588,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_370[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_370[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1629,7 +1637,7 @@ exdet_MIC_regional_invaded_370_plot <- exdet_MIC_regional_invaded_370_plot +
 
 ggsave(
   exdet_MIC_regional_invaded_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1669,7 +1677,7 @@ mic_regional_invaded_370_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1687,25 +1695,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_585[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_585[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_585[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_585[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 ```
@@ -1715,14 +1723,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_585[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_585[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_v7", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1764,7 +1772,7 @@ exdet_MIC_regional_invaded_585_plot <- exdet_MIC_regional_invaded_585_plot +
 
 ggsave(
   exdet_MIC_regional_invaded_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1804,7 +1812,7 @@ mic_regional_invaded_585_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1813,7 +1821,7 @@ ggsave(
 
 ```
 
-# 5. regional_invaded_asian- Save/plot ExDet/MIC rasters {.hidden}
+# 5. regional_invaded_asian- Save/plot ExDet/MIC rasters
 
 ## 5.1 regional_invaded_asian hist
 
@@ -1824,25 +1832,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_asian_hist[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_mic_analysis_results.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_mic_analysis_results.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_hist[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_analysis_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_analysis_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_hist[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_univariate_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_univariate_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_hist[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_combinatorial_summary.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_combinatorial_summary.csv")
   )
 
 ```
@@ -1852,14 +1860,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_hist[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_hist[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -1900,7 +1908,7 @@ exdet_regional_invaded_asian_hist_plot <- exdet_regional_invaded_asian_hist_plot
 
 ggsave(
   exdet_regional_invaded_asian_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1941,7 +1949,7 @@ mic_regional_invaded_asian_hist_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_asian_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1959,25 +1967,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_asian_126[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_126[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_126[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_126[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 ```
@@ -1987,14 +1995,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_126[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_126[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2035,7 +2043,7 @@ exdet_MIC_regional_invaded_asian_126_plot <- exdet_MIC_regional_invaded_asian_12
 
 ggsave(
   exdet_MIC_regional_invaded_asian_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2075,7 +2083,7 @@ mic_regional_invaded_asian_126_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_asian_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2093,25 +2101,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_asian_370[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_370[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_370[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_370[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 ```
@@ -2121,14 +2129,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_370[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_370[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2169,7 +2177,7 @@ exdet_MIC_regional_invaded_asian_370_plot <- exdet_MIC_regional_invaded_asian_37
 
 ggsave(
   exdet_MIC_regional_invaded_asian_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2209,7 +2217,7 @@ mic_regional_invaded_asian_370_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_asian_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2227,25 +2235,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_regional_invaded_asian_585[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_585[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_585[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_regional_invaded_asian_585[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 ```
@@ -2255,14 +2263,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_585[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_regional_invaded_asian_585[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2303,7 +2311,7 @@ exdet_MIC_regional_invaded_asian_585_plot <- exdet_MIC_regional_invaded_asian_58
 
 ggsave(
   exdet_MIC_regional_invaded_asian_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2343,7 +2351,7 @@ mic_regional_invaded_asian_585_plot <- ggplot() +
 
 ggsave(
   mic_regional_invaded_asian_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2352,7 +2360,7 @@ ggsave(
 
 ```
 
-# 6. global- Save/plot ExDet/MIC rasters {.hidden}
+# 6. global- Save/plot ExDet/MIC rasters
 
 ## 6.1. global hist
 
@@ -2365,25 +2373,25 @@ First, I will save the summary files from the analysis to each model folder.
 # summary of data
 write_csv(
   x = exdet_MIC_global_hist[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_mic_analysis_results.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_mic_analysis_results.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_global_hist[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_analysis_summary.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_analysis_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_hist[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_univariate_summary.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_univariate_summary.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_hist[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_combinatorial_summary.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_combinatorial_summary.csv")
   )
 
 ```
@@ -2395,14 +2403,14 @@ Next, I will save the output rasters.
 # exdet
 raster::writeRaster(
   x = exdet_MIC_global_hist[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "ExDet_slf_global_v3_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "ExDet_slf_global_v4_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_global_hist[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "MIC_slf_global_v3_background_projGlobe_1981-2010.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "MIC_slf_global_v4_background_projGlobe_1981-2010.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2437,7 +2445,7 @@ exdet_global_hist_plot <- map_exdet(
 
 ggsave(
   exdet_global_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v3_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v4_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2470,7 +2478,7 @@ mic_global_hist_plot <- ggplot() +
 
 ggsave(
   mic_global_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v3_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v4_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2488,25 +2496,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_global_126[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_mic_analysis_results_2041-2070_ssp126_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_global_126[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_analysis_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_126[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_univariate_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_126[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp126_GFDL.csv")
   )
 
 ```
@@ -2516,14 +2524,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_global_126[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_global_126[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2556,7 +2564,7 @@ exdet_global_126_plot <- map_exdet(
 
 ggsave(
   exdet_global_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2590,7 +2598,7 @@ mic_global_126_plot <- ggplot() +
 
 ggsave(
   mic_global_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2608,25 +2616,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_global_370[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_mic_analysis_results_2041-2070_ssp370_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_global_370[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_analysis_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_370[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_univariate_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_370[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp370_GFDL.csv")
   )
 
 ```
@@ -2636,14 +2644,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_global_370[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_global_370[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2661,7 +2669,7 @@ exdet_global_370 <- exdet_MIC_global_370[["rasters"]][["ExDet"]][["all"]]
 exdet_global_370_plot <- map_exdet(
   raster = exdet_global_370,
   raster.df = exdet_MIC_global_370[["data"]][["all"]]
-)
+) +
   labs(
     title = "ExDet analysis | bio2, bio11, bio12, bio15 | 2041-2070 | ssp370 GFDL-ESM4",
     subtitle = "Global climate divergence from 'global' model training set",
@@ -2675,7 +2683,7 @@ exdet_global_370_plot <- map_exdet(
 
 ggsave(
   exdet_global_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2709,7 +2717,7 @@ mic_global_370_plot <- ggplot() +
 
 ggsave(
   mic_global_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2727,25 +2735,25 @@ ggsave(
 # summary of data
 write_csv(
   x = exdet_MIC_global_585[["data"]][["all"]],
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_mic_analysis_results_2041-2070_ssp585_GFDL.csv")
   )
 
 # exdet
 write_csv(
   x = as.data.frame(exdet_MIC_global_585[["summary"]][["extrapolation"]]),
-  file = file.path(mypath, "models", "slf_global_v3", "exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "exdet_analysis_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_585[["summary"]][["mic"]][[1]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_univariate_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 # mic univariate
 write_csv(
   x = as.data.frame(exdet_MIC_global_585[["summary"]][["mic"]][[2]]),
-  file = file.path(mypath, "models", "slf_global_v3", "mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
+  file = file.path(mypath, "models", "slf_global_v4", "mic_analysis_combinatorial_summary_2041-2070_ssp585_GFDL.csv")
   )
 
 ```
@@ -2755,14 +2763,14 @@ write_csv(
 # exdet
 raster::writeRaster(
   x = exdet_MIC_global_585[["rasters"]][["ExDet"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
 
 raster::writeRaster(
   x = exdet_MIC_global_585[["rasters"]][["mic"]][["all"]], 
-  filename = file.path(mypath, "models", "slf_global_v3", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
+  filename = file.path(mypath, "models", "slf_global_v4", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif"),
   filetype = "GTiff",
   overwrite = FALSE
   )
@@ -2794,7 +2802,7 @@ exdet_global_585_plot <- map_exdet(
 
 ggsave(
   exdet_global_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_global_v4_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2828,7 +2836,7 @@ mic_global_585_plot <- ggplot() +
 
 ggsave(
   mic_global_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v3_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_global_v4_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2836,6 +2844,8 @@ ggsave(
   )
 
 ```
+
+-->
 
 # References
 
@@ -2845,8 +2855,9 @@ ggsave(
 
 3. Mesgaran, M. B., Cousens, R. D., & Webber, B. L. (2014). Here be dragons: A tool for quantifying novelty due to covariate range and correlation change when projecting species distribution models. Diversity and Distributions, 20(10), 1147–1159. https://doi.org/10.1111/ddi.12209
 
+<!--
 
-# Appendix {.hidden}
+# Appendix 
 
 ## Patchwork plots- MIC
 
@@ -2937,7 +2948,7 @@ mic_regional_native_patchwork <- (
 
 ggsave(
   mic_regional_native_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_native_v3_background_projGlobe_patchwork.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_native_v4_background_projGlobe_patchwork.jpg"),
   height = 14, 
   width = 12,
   device = jpeg,
@@ -3033,7 +3044,7 @@ mic_regional_invaded_patchwork <- (
 
 ggsave(
   mic_regional_invaded_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_invaded_v7_background_projGlobe_patchwork.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_v8_background_projGlobe_patchwork.jpg"),
   height = 14, 
   width = 12,
   device = jpeg,
@@ -3076,7 +3087,7 @@ mic_regional_invaded_asian_126_plot <- mic_regional_invaded_asian_126_plot +
     plot.tag.location = "panel",
     plot.tag.position = c(0.05, 0.1),
     plot.tag = element_text(face = "bold", size = 25),
-    legend.position = "bottom"
+    legend.position = "none"
   )
 
 
@@ -3094,7 +3105,7 @@ mic_regional_invaded_asian_370_plot <- mic_regional_invaded_asian_370_plot +
     plot.tag.location = "panel",
     plot.tag.position = c(0.05, 0.1),
     plot.tag = element_text(face = "bold", size = 25),
-    legend.position = "bottom"
+    legend.position = "none"
   )
 
 
@@ -3134,7 +3145,7 @@ mic_regional_invaded_asian_patchwork <- (
 
 ggsave(
   mic_regional_invaded_asian_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_invaded_asian_v2_background_projGlobe_patchwork.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_patchwork.jpg"),
   height = 14, 
   width = 12,
   device = jpeg,
@@ -3142,3 +3153,5 @@ ggsave(
   )
 
 ```
+
+-->

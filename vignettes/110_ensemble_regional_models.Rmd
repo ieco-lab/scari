@@ -3,16 +3,16 @@ title: "Ensemble regional-scale models using a weighted mean"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-09"
+date: "2025-07-28"
 ---
 
 # Overview
 
-In vignettes 060-090, I created three regional-scale MaxEnt models for invasive plant pest *Lycorma delicatula* based on historical and predicted future climate trends under climate change. One of these models was based on the planthopper's native range in east Asia, while the other two models were based on the regions it has so far invaded (the Koreas/Japan and North America). These regional models were created using the same data and settings as the global-scale version (vignette 050), which considers all regions together.
+In vignettes 060-090, I created three regional-scale MaxEnt models for invasive plant pest *Lycorma delicatula* based on historical and predicted future climate trends under climate change. One of these models was based on the planthopper's native range in east Asia, while the other two models were based on the regions it has invaded so far (the Koreas/Japan and North America). These regional models were created using the same data and settings as the global-scale version (vignette 050), which considers all regions together.
 
 Our goal is to compare the global-scale output with that from the three regional-scale models. A global-scale model is the traditional approach to modeling species distributions and represents an important generalization made using all data, but it may not consider localized climate conditions that differ between regions (Gallien et al, 2012). I hypothesized that by creating models at multiple spatial scales, I can have more confidence in suitability predictions made for specific SLF populations and important viticultural regions, and can predict the risk of specific populations spreading now and under climate change (Araújo and New, 2007). I also hypothesize that the regional-scale models, once ensembled into a single prediction, will make more refined predictions than a global-scale model could. 
 
-We will ensemble the three regional-scale models into a single prediction using a weighted mean approach. This will involve weighting each model's predictions by the ExDet metric (Which we measured in the last vignette, 100) and its test AUC value. The ExDet metric measures the level of extrapolation in the model's predictions when projecting models. Measuring the level of extrapolation is very important when making predictions across different climate zones, time periods, or for range shifting species (we check all of those boxes) (Elith et al, 2010; Mesgaran et al, 2014). We will directly use the Exdet metric from each model to measure our confidence in its predictions for a particular grid cell. We will also use the test AUC from each model in the weighting so that we also consider goodness of fit. 
+We will ensemble the three regional-scale models into a single prediction using a weighted mean approach. This will involve weighting each model's predictions by the ExDet metric (Which we measured in the last vignette, 100) and its test AUC value. The ExDet metric measures the level of extrapolation in the model's predictions when projecting models. Measuring the level of extrapolation is very important when making predictions across different climate zones, time periods, or for range shifting species (we can check all of those boxes) (Elith et al, 2010; Mesgaran et al, 2014). We will directly use the Exdet metric from each model to measure our confidence in its predictions for a particular grid cell. We will also use the test AUC from each model in the weighting so that we also consider goodness of fit. 
 
 # Setup
 
@@ -42,8 +42,13 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ```{r create directory for ensemble product}
 
-dir.create(path = file.path(mypath, "models", "slf_regional_ensemble_v1"))
-dir.create(path = file.path(mypath, "models", "slf_regional_ensemble_v1", "plots"))
+# set mypath
+mypath <- file.path(here::here() %>% 
+                       dirname(),
+                     "maxent")
+
+dir.create(path = file.path(mypath, "models", "slf_regional_ensemble_v2"))
+dir.create(path = file.path(mypath, "models", "slf_regional_ensemble_v2", "plots"))
 
 ```
 
@@ -99,23 +104,23 @@ mypath <- file.path(here::here() %>%
 ```{r Rn regional_native model predictions historical}
 
 pred_regional_native <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_pred_suit_clamped_cloglog_globe_1981-2010.asc")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_pred_suit_clamped_cloglog_globe_1981-2010.asc")
 )
 
 # CMIP6
 # SSP126
 pred_regional_native_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
 )
 
 # SSP370
 pred_regional_native_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
 )
 
 # SSP585
 pred_regional_native_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
 )
 
 ```
@@ -123,23 +128,23 @@ pred_regional_native_585 <- terra::rast(
 ```{r Ri.NAmerica regional_invaded model pred suit}
 
 pred_regional_invaded <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_pred_suit_clamped_cloglog_globe_1981-2010.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_pred_suit_clamped_cloglog_globe_1981-2010.asc")
 )
 
 # CMIP6
 # SSP126
 pred_regional_invaded_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
 )
 
 # SSP370
 pred_regional_invaded_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
 )
 
 # SSP585
 pred_regional_invaded_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
 )
 
 ```
@@ -148,24 +153,24 @@ pred_regional_invaded_585 <- terra::rast(
 
 
 pred_regional_invaded_asian <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_1981-2010.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_1981-2010.asc")
 )
 
 # CMIP6
 # SSP126
 pred_regional_invaded_asian_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126.asc")
 )
 
 # SSP370
 pred_regional_invaded_asian_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370.asc")
 )
 
 
 # SSP585
 pred_regional_invaded_asian_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585.asc")
 )
 
 
@@ -177,17 +182,17 @@ Next, I will load in the AUC value from each model, which will be used to weight
 
 ```{r test AUC values}
 
-AUC_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_AUC_TSS.csv")) %>%
+AUC_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_AUC_TSS.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()
 
-AUC_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_AUC_TSS.csv")) %>%
+AUC_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_AUC_TSS.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()
 
-AUC_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_AUC_TSS.csv")) %>%
+AUC_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_AUC_TSS.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()
@@ -210,23 +215,23 @@ Finally, I will load in the results from the ExDet analysis to weight the ensemb
 ```{r Rn regional_native model}
 
 exdet_regional_native <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_1981-2010.tif")
 )
 
 # CMIP6
 # SSP126
 exdet_regional_native_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 
 # SSP370
 exdet_regional_native_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 
 # SSP585
 exdet_regional_native_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "ExDet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 
 ```
@@ -234,23 +239,23 @@ exdet_regional_native_585 <- terra::rast(
 ```{r Ri.NAmerica regional_invaded model- exdets}
 
 exdet_regional_invaded <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_1981-2010.tif")
 )
 
 # CMIP6
 # SSP126
 exdet_regional_invaded_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 
 # SSP370
 exdet_regional_invaded_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 
 # SSP585
 exdet_regional_invaded_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "ExDet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 
 ```
@@ -258,24 +263,24 @@ exdet_regional_invaded_585 <- terra::rast(
 ```{r regional model predictions 2041-2070}
 
 exdet_regional_invaded_asian <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.tif")
 )
 
 
 # CMIP6
 # SSP126
 exdet_regional_invaded_asian_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 
 # SSP370
 exdet_regional_invaded_asian_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 
 # SSP585
 exdet_regional_invaded_asian_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "ExDet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 
 
@@ -320,7 +325,10 @@ terra::ext(exdet_hist_stack)
 
 
 # I will trim the rasters to the extent of the exdet rasters
-ext.obj <- terra::ext(-180.00013888885, 178.999859675084, -58.5001390148238, 82.99986041915)
+## OLD crs EPSG:4326
+## ext.obj <- terra::ext(-180.00013888885, 178.999859675084, -58.5001390148238, 82.99986041915) 
+
+ext.obj <- terra::ext(-17271057.5661649, 17267206.6212859, -7345448.48997269, 7300285.39497912) # format is (xmin, xmax, ymin, ymax)
 
 # crop rasters
 pred_hist_stack <- terra::crop(pred_hist_stack, ext.obj)
@@ -410,9 +418,9 @@ minmax(exdet_hist_stack)
 terra::writeRaster(
   x = exdet_hist_stack, 
   filename = c(
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2.tif")
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -476,9 +484,9 @@ minmax(exdet_126_stack)
 terra::writeRaster(
   x = exdet_126_stack, 
   filename = c(
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp126_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp126_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp126_GFDL.tif")
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp126_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp126_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp126_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -538,9 +546,9 @@ minmax(exdet_370_stack)
 terra::writeRaster(
   x = exdet_370_stack, 
   filename = c(
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp370_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp370_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp370_GFDL.tif")
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp370_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp370_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp370_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -600,9 +608,9 @@ minmax(exdet_585_stack)
 terra::writeRaster(
   x = exdet_585_stack, 
   filename = c(
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp585_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp585_GFDL.tif"),
-    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp585_GFDL.tif")
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp585_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp585_GFDL.tif"),
+    file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp585_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -654,9 +662,9 @@ names(exdet_hist_stack) <- c("regional_native", "regional_invaded", "regional_in
 terra::writeRaster(
   x = exdet_hist_stack, 
   filename = c(
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_native_v3.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_v7.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_asian_v2.tif")
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_native_v4.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_v8.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_asian_v3.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -706,9 +714,9 @@ names(exdet_126_stack) <- c("regional_native_126_2041-2070", "regional_invaded_1
 terra::writeRaster(
   x = exdet_126_stack, 
   filename = c(
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_native_v3_2041-2070_ssp126_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_v7_2041-2070_ssp126_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_asian_v2_2041-2070_ssp126_GFDL.tif")
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_native_v4_2041-2070_ssp126_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_v8_2041-2070_ssp126_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_asian_v3_2041-2070_ssp126_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -754,9 +762,9 @@ names(exdet_370_stack) <- c("regional_native_370_2041-2070", "regional_invaded_3
 terra::writeRaster(
   x = exdet_370_stack, 
   filename = c(
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_native_v3_2041-2070_ssp370_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_v7_2041-2070_ssp370_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_asian_v2_2041-2070_ssp370_GFDL.tif")
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_native_v4_2041-2070_ssp370_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_v8_2041-2070_ssp370_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_asian_v3_2041-2070_ssp370_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -802,9 +810,9 @@ names(exdet_585_stack) <- c("regional_native_585_2041-2070", "regional_invaded_5
 terra::writeRaster(
   x = exdet_585_stack, 
   filename = c(
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_native_v3_2041-2070_ssp585_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_v7_2041-2070_ssp585_GFDL.tif"),
-    file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_asian_v2_2041-2070_ssp585_GFDL.tif")
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_native_v4_2041-2070_ssp585_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_v8_2041-2070_ssp585_GFDL.tif"),
+    file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_asian_v3_2041-2070_ssp585_GFDL.tif")
   ),
   filetype = "GTiff",
   overwrite = FALSE
@@ -826,7 +834,7 @@ The historical predictions are final, once this weighted mean is taken, so I wil
 pred_hist_mean <- terra::weighted.mean(
   x = pred_hist_stack,
   w = exdet_hist_stack,
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_1981-2010.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_1981-2010.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -842,7 +850,7 @@ I will take the weighted mean of the CMIP6 rasters as well, but will additionall
 pred_126_mean <- terra::weighted.mean(
   x = pred_126_stack,
   w = exdet_126_stack,
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -851,7 +859,7 @@ pred_126_mean <- terra::weighted.mean(
 pred_370_mean <- terra::weighted.mean(
   x = pred_370_stack,
   w = exdet_370_stack,
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -860,7 +868,7 @@ pred_370_mean <- terra::weighted.mean(
 pred_585_mean <- terra::weighted.mean(
   x = pred_585_stack,
   w = exdet_585_stack,
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -878,7 +886,7 @@ pred_CMIP6_mean_stack <- c(pred_126_mean, pred_370_mean, pred_585_mean)
 pred_CMIP6_mean_final <- terra::app(
   x = pred_CMIP6_mean_stack,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -907,15 +915,15 @@ I will load in the results from the ExDet analysis to weight the ensemble.
 ```{r converted exdet values historical}
 
 exdet_weight_regional_native <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4.tif")
 )
 
 exdet_weight_regional_invaded <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8.tif")
 )
 
 exdet_weight_regional_invaded_asian <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3.tif")
 )
 
 ```
@@ -930,35 +938,35 @@ exdet_weight_hist_stack <- c(exdet_weight_regional_native, exdet_weight_regional
 
 # ssp126
 exdet_weight_regional_native_126 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp126_GFDL.tif")
 )
 exdet_weight_regional_invaded_126 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp126_GFDL.tif")
 )
 exdet_weight_regional_invaded_asian_126 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp126_GFDL.tif")
 )
 
 # ssp370
 exdet_weight_regional_native_370 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp370_GFDL.tif")
 )
 exdet_weight_regional_invaded_370 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp370_GFDL.tif")
 )
 exdet_weight_regional_invaded_asian_370 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp370_GFDL.tif")
 )
 
 # ssp585
 exdet_weight_regional_native_585 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v3_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_native_v4_2041-2070_ssp585_GFDL.tif")
 )
 exdet_weight_regional_invaded_585 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v7_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_v8_2041-2070_ssp585_GFDL.tif")
 )
 exdet_weight_regional_invaded_asian_585 <- terra::rast(
-  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v2_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "working_dir", "exdet_weights_slf_regional_invaded_asian_v3_2041-2070_ssp585_GFDL.tif")
 )
 ```
 
@@ -994,17 +1002,17 @@ The summary files contain the actual threshold values, so I will load each one i
 ```{r load in thresh values from summary files}
 
 # MTSS
-MTSS_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_summary.csv")) %>%
+MTSS_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(42) %>%
   as.numeric()
   
-MTSS_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_summary.csv")) %>%
+MTSS_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(42) %>%
   as.numeric()
 
-MTSS_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_summary.csv")) %>%
+MTSS_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(42) %>%
   as.numeric()
@@ -1015,17 +1023,17 @@ MTSS_all <- c(MTSS_regional_native, MTSS_regional_invaded, MTSS_regional_invaded
 
 
 # MTP
-MTP_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v3", "regional_native_summary.csv")) %>%
+MTP_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(30) %>%
   as.numeric()
 
-MTP_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v7", "regional_invaded_summary.csv")) %>%
+MTP_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(30) %>%
   as.numeric()
 
-MTP_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "regional_invaded_asian_summary.csv")) %>%
+MTP_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_summary.csv")) %>%
   dplyr::select(statistic_value) %>%
   slice(30) %>%
   as.numeric()
@@ -1715,7 +1723,7 @@ ensemble_thresh_values <- tibble(
 
 ```{r export table}
 
-write_csv(ensemble_thresh_values, file = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_threshold_values.csv"))
+write_csv(ensemble_thresh_values, file = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_threshold_values.csv"))
 
 # also write to .rds
 readr::write_rds(ensemble_thresh_values, file = file.path(here::here(), "data", "ensemble_threshold_values.rds"))
@@ -1726,7 +1734,7 @@ readr::write_rds(ensemble_thresh_values, file = file.path(here::here(), "data", 
 
 ensemble_thresh_values <- read_rds(file = file.path(here::here(), "data", "ensemble_threshold_values.rds"))
 
-print(ensemble_thresh_values)
+ensemble_thresh_values
 
 ```
 
@@ -1743,16 +1751,15 @@ As a final step, I will ensemble the ExDet and MIC rasters themselves for visual
 
 map_style_exdet <- list(
   theme_classic(),
-  theme(legend.position = "bottom",
-        panel.background = element_rect(fill = "azure3",
-                                        colour = "azure3")
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "azure3",colour = "azure3"),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()    
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
-  labs(
-    x = "longitude",
-    y = "latitude"
-  ),
   coord_equal()
 )
 
@@ -1762,8 +1769,15 @@ map_style_exdet <- list(
 
 ```{r exdet map function, eval = TRUE}
 
+# raster should be the raster resulting from the exdet analysis
+# raster.df should be the dataframe version of this raster.
+
 map_exdet <- function(raster, raster.df) {
   
+  # rename plot layer (3rd column)
+  raster.df <- dplyr::rename(raster.df, mean = 3) 
+  
+  # plot
   ggplot() +
     # default plot style
     map_style_exdet +
@@ -1800,15 +1814,15 @@ map_exdet <- function(raster, raster.df) {
 ```{r regional models exdet historical}
 
 exdet_regional_native <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "exdet_slf_regional_native_v3_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_1981-2010.tif")
 )
 
 exdet_regional_invaded <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "exdet_slf_regional_invaded_v7_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_1981-2010.tif")
 )
 
 exdet_regional_invaded_asian <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "exdet_slf_regional_invaded_asian_v2_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.tif")
 )
 
 ```
@@ -1817,35 +1831,35 @@ exdet_regional_invaded_asian <- terra::rast(
 
 # ssp 126
 exdet_regional_native_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "exdet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 exdet_regional_invaded_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "exdet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 exdet_regional_invaded_asian_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "exdet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 
 # ssp 370 
 exdet_regional_native_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "exdet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 exdet_regional_invaded_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "exdet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 exdet_regional_invaded_asian_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "exdet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 
 # ssp 585
 exdet_regional_native_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "exdet_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "ExDet_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 exdet_regional_invaded_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "exdet_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "ExDet_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 exdet_regional_invaded_asian_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "exdet_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "ExDet_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 
 ```
@@ -1869,7 +1883,7 @@ exdet_585_stack2 <- c(exdet_regional_native_585, exdet_regional_invaded_585, exd
 exdet_hist_mean <- terra::app(
   x = exdet_hist_stack2,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_1981-2010.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_1981-2010.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -1880,7 +1894,7 @@ exdet_hist_mean <- terra::app(
 
 # re-load
 exdet_hist_mean <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_1981-2010.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_1981-2010.asc"
     )) 
 # convert to df
 exdet_hist_mean_df <- terra::as.data.frame(exdet_hist_mean, xy = TRUE)
@@ -1915,7 +1929,7 @@ exdet_regional_ensemble_hist_plot
 # save plot
 ggsave(
   exdet_regional_ensemble_hist_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v1_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v2_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1933,7 +1947,7 @@ exdet_126_mean <- terra::app(
   x = exdet_126_stack2,
   fun = "mean",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp126.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp126.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -1945,7 +1959,7 @@ exdet_126_mean <- terra::app(
 
 # re-load object as df
 exdet_126_mean <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp126.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp126.asc"
     )) 
 
 exdet_126_mean_df <- terra::as.data.frame(exdet_126_mean, xy = TRUE)
@@ -1978,7 +1992,7 @@ exdet_regional_ensemble_126_plot
 # save plot
 ggsave(
   exdet_regional_ensemble_126_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -1996,7 +2010,7 @@ exdet_370_mean <- terra::app(
   x = exdet_370_stack2,
   fun = "mean",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp370.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp370.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2008,7 +2022,7 @@ exdet_370_mean <- terra::app(
 
 # re-load object as df
 exdet_370_mean <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp370.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp370.asc"
     )) 
 
 exdet_370_mean_df <- terra::as.data.frame(exdet_370_mean, xy = TRUE)
@@ -2041,7 +2055,7 @@ exdet_regional_ensemble_370_plot
 # save plot
 ggsave(
   exdet_regional_ensemble_370_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2059,7 +2073,7 @@ exdet_585_mean <- terra::app(
   x = exdet_585_stack2,
   fun = "mean",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp585.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp585.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2071,7 +2085,7 @@ exdet_585_mean <- terra::app(
 
 # re-load object as df
 exdet_585_mean <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp585.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp585.asc"
     )) 
 
 exdet_585_mean_df <- terra::as.data.frame(exdet_585_mean, xy = TRUE)
@@ -2105,7 +2119,7 @@ exdet_regional_ensemble_585_plot
 # save plot
 ggsave(
   exdet_regional_ensemble_585_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2129,7 +2143,7 @@ exdet_ssp_mean <- terra::app(
   x = exdet_ssp_mean_stack,
   fun = "mean",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp_mean.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp_mean.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2141,7 +2155,7 @@ exdet_ssp_mean <- terra::app(
 
 # re-load object as df
 exdet_ssp_mean <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp_mean.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp_mean.asc"
     )) 
 
 exdet_ssp_mean_df <- terra::as.data.frame(exdet_ssp_mean, xy = TRUE)
@@ -2174,7 +2188,7 @@ exdet_regional_ensemble_mean_plot
 # save plot
 ggsave(
   exdet_regional_ensemble_mean_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp_mean_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp_mean_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2191,16 +2205,15 @@ I will also ensemble the MIC maps. These will be combined according to the mode 
 
 map_style_MIC <- list(
   theme_classic(),
-  theme(legend.position = "bottom",
-        panel.background = element_rect(fill = "azure3",
-                                        colour = "azure3")
+  theme(
+    legend.position = "bottom",
+    panel.background = element_rect(fill = "azure3",colour = "azure3"),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()    
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
-  labs(
-    x = "longitude",
-    y = "latitude"
-  ),
   coord_equal()
 )
 
@@ -2213,15 +2226,15 @@ map_style_MIC <- list(
 ```{r regional models mics historical}
 
 mic_regional_native <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "mic_slf_regional_native_v3_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_1981-2010.tif")
 )
 
 mic_regional_invaded <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "mic_slf_regional_invaded_v7_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_1981-2010.tif")
 )
 
 mic_regional_invaded_asian <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "mic_slf_regional_invaded_asian_v2_background_projGlobe.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_1981-2010.tif")
 )
 
 ```
@@ -2230,35 +2243,35 @@ mic_regional_invaded_asian <- terra::rast(
 
 # ssp 126
 mic_regional_native_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "mic_slf_regional_native_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 mic_regional_invaded_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "mic_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 mic_regional_invaded_asian_126 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "mic_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp126_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp126_GFDL.tif")
 )
 
 # ssp 370
 mic_regional_native_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "mic_slf_regional_native_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 mic_regional_invaded_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "mic_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 mic_regional_invaded_asian_370 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "mic_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp370_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp370_GFDL.tif")
 )
 
 # ssp 585
 mic_regional_native_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_native_v3", "mic_slf_regional_native_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_native_v4", "MIC_slf_regional_native_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 mic_regional_invaded_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_v7", "mic_slf_regional_invaded_v7_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_v8", "MIC_slf_regional_invaded_v8_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 mic_regional_invaded_asian_585 <- terra::rast(
-  x = file.path(mypath, "models", "slf_regional_invaded_asian_v2", "mic_slf_regional_invaded_asian_v2_background_projGlobe_2041-2070_ssp585_GFDL.tif")
+  x = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "MIC_slf_regional_invaded_asian_v3_background_projGlobe_2041-2070_ssp585_GFDL.tif")
 )
 
 ```
@@ -2282,7 +2295,7 @@ mic_585_stack2 <- c(mic_regional_native_585, mic_regional_invaded_585, mic_regio
 mic_hist_mean <- terra::app(
   x = mic_hist_stack2,
   fun = "modal",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_1981-2010.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_1981-2010.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -2293,7 +2306,7 @@ mic_hist_mean <- terra::app(
 
 # make df
 mic_hist_mean_df <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_1981-2010.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_1981-2010.asc"
     )) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -2328,7 +2341,7 @@ mic_hist_mean_plot
 # save plot
 ggsave(
   mic_hist_mean_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v1_background_projGlobe_1981-2010.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v2_background_projGlobe_1981-2010.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2347,7 +2360,7 @@ mic_126_mean <- terra::app(
   x = mic_126_stack2,
   fun = "modal",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp126.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp126.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2355,7 +2368,7 @@ mic_126_mean <- terra::app(
 
 # make df
 mic_126_mean_df <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp126.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp126.asc"
     )) %>%
   terra::as.data.frame(xy = TRUE)
 
@@ -2392,7 +2405,7 @@ mic_126_mean_plot <- ggplot() +
 # save plot
 ggsave(
   mic_126_mean_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2409,7 +2422,7 @@ mic_370_mean <- terra::app(
   x = mic_370_stack2,
   fun = "modal",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp370.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp370.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2417,7 +2430,7 @@ mic_370_mean <- terra::app(
 
 # make df
 mic_370_mean_df <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp370.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp370.asc"
     )) %>%
   terra::as.data.frame(xy = TRUE)
 
@@ -2454,7 +2467,7 @@ mic_370_mean_plot <- ggplot() +
 # save plot
 ggsave(
   mic_370_mean_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2471,7 +2484,7 @@ mic_585_mean <- terra::app(
   x = mic_585_stack2,
   fun = "modal",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp585.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp585.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2479,7 +2492,7 @@ mic_585_mean <- terra::app(
 
 # make df
 mic_585_mean_df <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp585.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp585.asc"
     )) %>%
   terra::as.data.frame(xy = TRUE)
 
@@ -2516,7 +2529,7 @@ mic_585_mean_plot <- ggplot() +
 # save plot
 ggsave(
   mic_585_mean_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "MIC_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2542,7 +2555,7 @@ mic_ssp_mode <- terra::app(
   x = mic_ssp_mode_stack,
   fun = "modal",
   filename = file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp_mode.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp_mode.asc"
     ),
   filetype = "AAIGrid",
   overwrite = FALSE
@@ -2554,7 +2567,7 @@ mic_ssp_mode <- terra::app(
 
 # re-load object as df
 mic_ssp_mode_df <- terra::rast(x =  file.path(
-    mypath, "models", "slf_regional_ensemble_v1", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_GFDL_ssp_mode.asc"
+    mypath, "models", "slf_regional_ensemble_v2", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_GFDL_ssp_mode.asc"
     )) %>%
   terra::as.data.frame(xy = TRUE)
 
@@ -2588,7 +2601,7 @@ mic_ssp_mode_plot
 # save plot
 ggsave(
   mic_ssp_mode_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "mic_slf_regional_ensemble_v1_background_projGlobe_2041-2070_ssp_mode_GFDL.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "mic_slf_regional_ensemble_v2_background_projGlobe_2041-2070_ssp_mode_GFDL.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -2604,11 +2617,11 @@ This bar chart will show the relative weights of each of the three regional mode
 ```{r load in data, eval = TRUE}
 
 # native
-ensemble_weight_regional_native_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_native_v3.tif"))
+ensemble_weight_regional_native_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_native_v4.tif"))
 # invaded
-ensemble_weight_regional_invaded_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_v7.tif"))
+ensemble_weight_regional_invaded_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_v8.tif"))
 # invaded_asian
-ensemble_weight_regional_invaded_asian_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_weights_slf_regional_invaded_asian_v2.tif"))
+ensemble_weight_regional_invaded_asian_hist <- terra::rast(file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_weights_slf_regional_invaded_asian_v3.tif"))
 
 # stack
 ensemble_weights_stack <- c(ensemble_weight_regional_native_hist, ensemble_weight_regional_invaded_hist, ensemble_weight_regional_invaded_asian_hist)
@@ -2670,7 +2683,7 @@ ensemble_relative_cont_plot
 ggsave(
   ensemble_relative_cont_plot, 
   filename = file.path(
-    here::here(), "vignette-outputs", "figures", "regional_ensemble_model_relative_contributions.jpg"
+    here::here(), "vignette-outputs", "figures", "regional_ensemble_model_v2_relative_contributions.jpg"
     ),
   device = jpeg,
   dpi = "retina"
@@ -2702,7 +2715,7 @@ The weighted mean ensemble is more rigorous because it considers climatic extrap
 pred_hist_mean <- terra::app(
   x = pred_hist_stack,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_unweighted_mean_globe_1981-2010.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_1981-2010.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -2712,7 +2725,7 @@ pred_hist_mean <- terra::app(
 pred_126_mean <- terra::app(
   x = pred_126_stack,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp126.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp126.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -2720,7 +2733,7 @@ pred_126_mean <- terra::app(
 pred_370_mean <- terra::app(
   x = pred_370_stack,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp370.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp370.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -2729,7 +2742,7 @@ pred_370_mean <- terra::app(
 pred_585_mean <- terra::app(
   x = pred_585_stack,
   fun = "mean",
-  filename = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp585.asc"),
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp585.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )
@@ -2755,7 +2768,7 @@ ensemble_thresh_values_unweighted <- tibble(
 
 ```{r export table- unweighted}
 
-write_csv(ensemble_thresh_values_unweighted, file = file.path(mypath, "models", "slf_regional_ensemble_v1", "ensemble_threshold_values_unweighted.csv"))
+write_csv(ensemble_thresh_values_unweighted, file = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_threshold_values_unweighted.csv"))
 
 ```
 
