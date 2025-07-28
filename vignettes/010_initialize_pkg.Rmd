@@ -16,16 +16,7 @@ I use some of the followin conventions to ensure that the package's .html files 
 - I have a chunk near the beginning of every vignette that sets the global chunk options: `knitr::opts_chunk$set(eval = FALSE)`. This prevents the code from running automatically when the vignette is rendered. You can change this to `TRUE` if you want to run the code in that chunk.
 - I have added html comment tags (`<!--` and `-->`) to the code chunks that I do not want to run automatically as the website is rendered. Much of the code that is commented out is redundant, but I have left it in the code for reference so as not to disrupt the true workflow. You can remove these comments if you want to run the code in those chunks.
 
-# Get package dependencies
-
-```{r set global chunk opts, include = FALSE}
-
-library(knitr)
-
-# eval = FALSE so that outputs not overwritten
-knitr::opts_chunk$set(eval = FALSE)
-
-```
+# Setup
 
 ```{r library packages}
 
@@ -36,6 +27,15 @@ library(devtools)
 library(gitcreds)
 
 ```
+
+```{r set global chunk opts, include = FALSE}
+
+# eval = FALSE so that outputs not overwritten
+knitr::opts_chunk$set(eval = FALSE)
+
+```
+
+# Get package dependencies
 
 Run this chunk to see the dependencies for the scari package.
 
