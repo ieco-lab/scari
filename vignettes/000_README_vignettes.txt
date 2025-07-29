@@ -45,7 +45,6 @@ v4- 2024-10-01- cleaned and simplified workflow. Switched order in workflow to 0
 v5- 2025-07-01- shifted workflow to utilize equal area projection EPSG:54017 (Behrmann), retired usage of access to cities variable for masking
 
 
-
 ----------030_retrieve_occurrence_records.Rmd----------
 
 ## About

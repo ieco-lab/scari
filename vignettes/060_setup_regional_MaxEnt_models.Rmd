@@ -86,6 +86,7 @@ library(sf)
 
 # spatial data sources
 library(rnaturalearth)
+library(rnaturalearthdata)
 library(rnaturalearthhires)
 library(kgc) # koppen climate rasters
 
@@ -443,16 +444,14 @@ KG_zones_invaded_poly <- sf::read_sf(dsn = file.path(mypath, "models", "working_
 
 # bounding box for cropping
 ext.obj.vect <- c(xmin = -13602304.166426167, ymin = 1914870.4341456166, xmax = -4927019.123016734, ymax = 6388905.495064239)
+ext.obj.vect <- sf::st_bbox(ext.obj.vect, crs = "ESRI:54017")
 # first, crop K-G raster to N America
 KG_zones_invaded_poly <- sf::st_crop(KG_zones_invaded_poly, y = ext.obj.vect) %>%
   # also get rid of ocean
   dplyr::filter(koeppen_climate_zones != 32)
 
-
-
-
 # intersect
-regional_invaded_withSLF <- sf::st_filter(x = KG_zones_invaded_poly, y = slf_points_invaded)
+regional_invaded_withSLF <- sf::st_filter(x = KG_zones_invaded_poly, y = slf_points_invaded, join = sf::st_contains)
 
 # write to file
 sf::st_write(
@@ -474,7 +473,7 @@ st_bbox(regional_invaded_withSLF)
 
 # add zone nums to shapefile
 regional_invaded_withSLF <- regional_invaded_withSLF %>%
-  dplyr::left_join(kmz_names_labels, join_by(koeppen_climate_zones == zone_number))
+  dplyr::left_join(kmz_names_labels, join_by(koeppen_climate_zones == zone_number)) 
 
 ```
 
@@ -731,16 +730,14 @@ KG_zones_invaded_asian_poly <- sf::read_sf(dsn = file.path(mypath, "models", "wo
 
 # bounding box for cropping
 ext.obj.vect <- c(xmin = 11861845.759289555, ymin = 2999956.334646307, xmax = 14857498.721065253, ymax = 5227150.879943501)
+ext.obj.vect <- sf::st_bbox(ext.obj.vect, crs = "ESRI:54017")
 # first, crop K-G raster to SK and Japan
 KG_zones_invaded_asian_poly <- sf::st_crop(KG_zones_invaded_asian_poly, y = ext.obj.vect) %>%
   # also get rid of ocean
   dplyr::filter(koeppen_climate_zones != 32)
 
-
-
-
 # intersect
-regional_invaded_asian_withSLF <- sf::st_filter(x = KG_zones_invaded_asian_poly, y = slf_points_invaded_asian)
+regional_invaded_asian_withSLF <- sf::st_filter(x = KG_zones_invaded_asian_poly, y = slf_points_invaded_asian, join = sf::st_contains)
 
 # write to file
 sf::st_write(
@@ -1024,7 +1021,7 @@ KG_zones_native_poly <- sf::read_sf(dsn = file.path(mypath, "models", "working_d
   dplyr::filter(koeppen_climate_zones != 32) 
   
 # intersect
-regional_native_withSLF <- sf::st_filter(x = KG_zones_native_poly, y = slf_points_native)
+regional_native_withSLF <- sf::st_filter(x = KG_zones_native_poly, y = slf_points_native, join = sf::st_contains)
 
 
 # write to file
