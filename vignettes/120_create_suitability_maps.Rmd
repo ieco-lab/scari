@@ -3,7 +3,7 @@ title: "Create risk maps of each model scale and intersect predictions"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-14"
+date: "2025-07-31"
 
 ---
 # Overview
@@ -43,12 +43,14 @@ library(common)
 
 # spatial data handling
 library(terra) 
+library(sf)
 
 # aesthetics
 library(viridis)
 library(webshot)
 library(webshot2)
 library(kableExtra)
+library(patchwork)
 
 ```
 
@@ -66,8 +68,8 @@ I will load in preset styles for the maps. The regular map_style will be for the
 ```{r map style, eval = TRUE}
 
 map_style <- list(
-  xlab("longitude"),
-  ylab("latitude"),
+  xlab("UTM Easting"),
+  ylab("UTM Northing"),
   theme_classic(),
   theme(
     # legend
@@ -75,8 +77,11 @@ map_style <- list(
     legend.title = element_text(margin = margin(r = 15, b = 45), hjust = 1),
     legend.text = element_text(margin = margin(t = 10), angle = 35),
     # background
-    panel.background = element_rect(fill = "lightblue2",
-                                        colour = "lightblue2")
+    panel.background = element_rect(fill = "lightblue2", colour = "lightblue2"),
+    # no axis titles
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()    
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
@@ -89,15 +94,18 @@ map_style <- list(
 ```{r map style binarized, eval = TRUE}
 
 map_style_binarized <- list(
-  xlab("longitude"),
-  ylab("latitude"),
+  xlab("UTM Easting"),
+  ylab("UTM Northing"),
   theme_classic(),
   theme(
     # legend
     legend.position = "bottom",
     # background
-    panel.background = element_rect(fill = "lightblue2",
-                                        colour = "lightblue2")
+    panel.background = element_rect(fill = "lightblue2", colour = "lightblue2"),
+    # no axis titles
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()  
   ),
   scale_x_continuous(expand = c(0, 0)),
   scale_y_continuous(expand = c(0, 0)),
@@ -124,34 +132,34 @@ I will import the predicted suitability rasters and MTSS thresholds from each of
 
 # historical 
 regional_ensemble_1995 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
   )
 
 
 # CMIP6
 # ssp126
 regional_ensemble_2055_126 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
   )
 # ssp370
 regional_ensemble_2055_370 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
   )
 # ssp585
 regional_ensemble_2055_585 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
   )
 
 # the mean of the ssp scenarios
 regional_ensemble_2055_ssp_mean <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
   )
 
 ```
 
 ```{r ensemble thresholds, eval = TRUE, message = FALSE}
 
-regional_ensemble_thresholds <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v1", "ensemble_threshold_values.csv"))
+regional_ensemble_thresholds <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values.csv"))
 
 ```
 
@@ -181,33 +189,33 @@ regional_ensemble_2055_ssp_mean_df <- terra::as.data.frame(regional_ensemble_205
 
 # historical 
 global_1995 <- terra::rast(
-  x = file.path(mypath, "slf_global_v3", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc")
+  x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc")
   )
 
 # CMIP6
 # ssp126
 global_2055_126 <- terra::rast(
-  x = file.path(mypath, "slf_global_v3", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126_mean.asc")
+  x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126_mean.asc")
   )
 # ssp370
 global_2055_370 <- terra::rast(
-  x = file.path(mypath, "slf_global_v3", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370_mean.asc")
+  x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp370_mean.asc")
   )
 # ssp126
 global_2055_585 <- terra::rast(
-  x = file.path(mypath, "slf_global_v3", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585_mean.asc")
+  x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585_mean.asc")
   )
 
 # also import mean raster
 global_2055_ssp_mean <- terra::rast(
-  x = file.path(mypath, "slf_global_v3", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc")
+  x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc")
   )
 
 ```
 
 ```{r summary file, eval = TRUE, message = FALSE}
 
-summary_global <- read_csv(file.path(mypath, "slf_global_v3", "global_summary_all_iterations.csv")) %>%
+summary_global <- read_csv(file.path(mypath, "slf_global_v4", "global_summary_all_iterations.csv")) %>%
   dplyr::select(., statistic, mean)
 
 ```
@@ -312,7 +320,7 @@ regional_ensemble_1995_plot
 
 ggsave(
   regional_ensemble_1995_plot,
-  filename = file.path(mypath, "slf_regional_ensemble_v1", "plots", "regional_ensemble_pred_suit_globe_1981-2010.jpg"),
+  filename = file.path(mypath, "slf_regional_ensemble_v2", "plots", "regional_ensemble_pred_suit_globe_1981-2010.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -344,7 +352,7 @@ global_1995_plot
 
 ggsave(
   global_1995_plot,
-  filename = file.path(mypath, "slf_global_v3", "plots", "global_pred_suit_globe_1981-2010.jpg"),
+  filename = file.path(mypath, "slf_global_v4", "plots", "global_pred_suit_globe_1981-2010.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -382,7 +390,7 @@ regional_ensemble_2055_126_plot <- map_cloglog_output(
 
 ggsave(
   regional_ensemble_2055_126_plot,
-  filename = file.path(mypath, "slf_regional_ensemble_v1", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp126.jpg"),
+  filename = file.path(mypath, "slf_regional_ensemble_v2", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp126.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -414,7 +422,7 @@ global_2055_126_plot <- map_cloglog_output(
 
 ggsave(
   global_2055_126_plot,
-  filename = file.path(mypath, "slf_global_v3", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp126.jpg"),
+  filename = file.path(mypath, "slf_global_v4", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp126.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -448,7 +456,7 @@ regional_ensemble_2055_370_plot <- map_cloglog_output(
 
 ggsave(
   regional_ensemble_2055_370_plot,
-  filename = file.path(mypath, "slf_regional_ensemble_v1", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp370.jpg"),
+  filename = file.path(mypath, "slf_regional_ensemble_v2", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp370.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -480,7 +488,7 @@ global_2055_370_plot <- map_cloglog_output(
 
 ggsave(
   global_2055_370_plot,
-  filename = file.path(mypath, "slf_global_v3", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp370.jpg"),
+  filename = file.path(mypath, "slf_global_v4", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp370.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -514,7 +522,7 @@ regional_ensemble_2055_585_plot <- map_cloglog_output(
 
 ggsave(
   regional_ensemble_2055_585_plot,
-  filename = file.path(mypath, "slf_regional_ensemble_v1", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp585.jpg"),
+  filename = file.path(mypath, "slf_regional_ensemble_v2", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp585.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -544,7 +552,7 @@ global_2055_585_plot <- map_cloglog_output(
 
 ggsave(
   global_2055_585_plot,
-  filename = file.path(mypath, "slf_global_v3", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp585.jpg"),
+  filename = file.path(mypath, "slf_global_v4", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp585.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -584,7 +592,7 @@ regional_ensemble_2055_ssp_mean_plot
 
 ggsave(
   regional_ensemble_2055_ssp_mean_plot,
-  filename = file.path(mypath, "slf_regional_ensemble_v1", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp_mean.jpg"),
+  filename = file.path(mypath, "slf_regional_ensemble_v2", "plots", "regional_ensemble_pred_suit_globe_2041-2070_GFDL_ssp_mean.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -618,7 +626,7 @@ global_2055_ssp_mean_plot
 
 ggsave(
   global_2055_ssp_mean_plot,
-  filename = file.path(mypath, "slf_global_v3", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp_mean.jpg"),
+  filename = file.path(mypath, "slf_global_v4", "plots", "global_pred_suit_globe_2041-2070_GFDL_ssp_mean.jpg"),
   height = 8,
   width = 12,
   device = jpeg,
@@ -629,7 +637,7 @@ ggsave(
 
 # 2. Create binary threshold maps to infer range filling
 
-Now that I have an idea of what the suitability maps look like before conversion, I will reclassify and combine these maps. I will create matrix objects that will be used to reclassify the output rasters to a binary predictor of suitability. I will use the MTSS (""Maximum Test Sensitivity Plus Specificity") threshold for each model as the threshold for suitability, with anything below this threshold being considered unsuitable for SLF establishment.
+Now that I have an idea of what the suitability maps look like before conversion, I will reclassify and combine these maps. I will create matrix objects that will be used to reclassify the output rasters to a binary predictor of suitability. I will use the MTSS ("Maximum Test Sensitivity Plus Specificity") threshold for each model as the threshold for suitability, with anything below this threshold being considered unsuitable for SLF establishment.
 
 To reclassify, package terra takes a 3-column matrix for its `classify()` function, which re-classifies groups of values to a single value. I will reclassify anything below the MTSS threshold as one value, and anything above as another. 
 
@@ -639,7 +647,7 @@ summary_global
 # MTSS value is 0.041
 
 regional_ensemble_thresholds
-# MTSS value is ~0.241
+# MTSS value is ~0.179
 
 ```
 
@@ -663,10 +671,10 @@ By encoding the rasters into base-2, I have created only 4 possible values of th
 
 I will also interpret these categories in terms of risk of SLF suitability. These categories can be thought of as:
 
-*Unsuitable Agreement                 = low risk
-*Suitable Agreement                   = high risk
-*Suitable regional/unsuitable global  = adaptive risk
-*unsuitable regional/suitable global  = imminent risk
+* Unsuitable Agreement                = low risk
+* Suitable Agreement                  = high risk
+* Suitable regional/unsuitable global = adaptive risk
+* unsuitable regional/suitable global = imminent risk
 
 Gallien et al, 2012 interprets these categories in terms of specific ecological mechanisms, but we prefer to interpret them in terms of the risk for SLF.
 
@@ -711,6 +719,9 @@ global_classes <- data.frame(
   becomes = c(strtoi(00000100, base = 2), strtoi(00001000, base = 2)) # becomes 4 and 8
 )
 
+regional_ensemble_classes
+global_classes
+
 ```
 
 Now I can reclassify the MaxEnt outputs. I will load in the averaged predictions for the global and regional models for the time period 1981-2010. I will reclassify their values based on the two matrices above. This chunk might take some time to run.
@@ -724,7 +735,7 @@ regional_ensemble_1995_classified <- terra::classify(
   rcl = regional_ensemble_classes,
   right = NA, # close both ends of the range of classification values
   others = strtoi(00000001, base = 2), # make it the unsuitable value if not in this range
-  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_1981-2010.asc"), # also write to file
+  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_1981-2010.asc"), # also write to file
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -736,7 +747,7 @@ global_1995_classified <- terra::classify(
   rcl = global_classes, 
   right = NA, 
   others = strtoi(00000100, base = 2), 
-  filename = file.path(mypath, "working_dir", "slf_global_v3_binarized_1981-2010.asc"), 
+  filename = file.path(mypath, "working_dir", "slf_global_v4_binarized_1981-2010.asc"), 
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -763,14 +774,13 @@ unique(values(regional_ensemble_1995_classified))
 
 ```
 
-
 Now that the rasters have been converted to binary, we will visualize them to ensure that the process worked. Since the same process was done to both the regional and global models, I will only plot the regional model.
 
 ```{r prepare for plotting- hist, eval = TRUE}
 
 # load in binary raster just created and convert to df
 regional_ensemble_1995_classified_df <- terra::rast(
-  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_1981-2010.asc")
+  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_1981-2010.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE) #%>%
   #na.omit()
@@ -844,7 +854,9 @@ classify_matrix <- function(thresh, model.scale) {
 
 ```
 
-### ssp 126 {.hidden}
+<!--
+
+### ssp 126 
 
 ```{r minmax of rasters- ssp126}
 
@@ -884,7 +896,7 @@ regional_ensemble_2055_126_classified <- terra::classify(
   rcl = regional_ensemble_classes,
   right = NA, # close both ends of the range of classification values
   others = strtoi(00000001, base = 2), # make it the unsuitable value if not in this range
-  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp126_GFDL.asc"), # also write to file
+  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp126_GFDL.asc"), # also write to file
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -896,7 +908,7 @@ global_2055_126_classified <- terra::classify(
   rcl = global_classes, 
   right = NA, 
   others = strtoi(00000100, base = 2), 
-  filename = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp126_GFDL.asc"), 
+  filename = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp126_GFDL.asc"), 
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -925,7 +937,7 @@ unique(values(regional_ensemble_2055_126_classified))
 
 # load in binary raster just created and convert to df
 regional_ensemble_2055_126_classified_df <- terra::rast(
-  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp126_GFDL.asc")
+  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp126_GFDL.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -949,7 +961,7 @@ ggplot() +
   geom_raster(data = regional_ensemble_2055_126_classified_df, aes(x = x, y = y, fill = as.factor(ensemble_suitability))) +
   labs(
     title = "Binarized suitability for 'regional_ensemble' model",
-    subtitle = "projected to 2041-2070 | ssp126 | GFDL"
+    subtitle = "projected to 2041-2070 | ssp126 | GFDL-ESM4"
     ) +
   scale_discrete_manual(
     name = "suitability for SLF",
@@ -962,7 +974,7 @@ ggplot() +
 
 ```
 
-### ssp 370 {.hidden}
+### ssp 370
 
 ```{r minmax of rasters- ssp370}
 
@@ -1002,7 +1014,7 @@ regional_ensemble_2055_370_classified <- terra::classify(
   rcl = regional_ensemble_classes,
   right = NA, # close both ends of the range of classification values
   others = strtoi(00000001, base = 2), # make it the unsuitable value if not in this range
-  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp370_GFDL.asc"), # also write to file
+  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp370_GFDL.asc"), # also write to file
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1014,7 +1026,7 @@ global_2055_370_classified <- terra::classify(
   rcl = global_classes, 
   right = NA, 
   others = strtoi(00000100, base = 2), 
-  filename = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp370_GFDL.asc"), 
+  filename = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp370_GFDL.asc"), 
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1043,7 +1055,7 @@ unique(values(regional_ensemble_2055_370_classified))
 
 # load in binary raster just created and convert to df
 regional_ensemble_2055_370_classified_df <- terra::rast(
-  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp370_GFDL.asc")
+  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp370_GFDL.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -1067,7 +1079,7 @@ ggplot() +
   geom_raster(data = regional_ensemble_2055_370_classified_df, aes(x = x, y = y, fill = as.factor(ensemble_suitability))) +
   labs(
     title = "Binarized suitability for 'regional_ensemble' model",
-    subtitle = "projected to 2041-2070 | ssp370 | GFDL"
+    subtitle = "projected to 2041-2070 | ssp370 | GFDL-ESM4"
     ) +
   scale_discrete_manual(
     name = "suitability for SLF",
@@ -1080,7 +1092,7 @@ ggplot() +
 
 ```
 
-### ssp 585 {.hidden}
+### ssp 585 
 
 ```{r minmax of rasters- ssp585}
 
@@ -1120,7 +1132,7 @@ regional_ensemble_2055_585_classified <- terra::classify(
   rcl = regional_ensemble_classes,
   right = NA, # close both ends of the range of classification values
   others = strtoi(00000001, base = 2), # make it the unsuitable value if not in this range
-  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp585_GFDL.asc"), # also write to file
+  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp585_GFDL.asc"), # also write to file
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1132,7 +1144,7 @@ global_2055_585_classified <- terra::classify(
   rcl = global_classes, 
   right = NA, 
   others = strtoi(00000100, base = 2), 
-  filename = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp585_GFDL.asc"), 
+  filename = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp585_GFDL.asc"), 
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1161,7 +1173,7 @@ unique(values(regional_ensemble_2055_585_classified))
 
 # load in binary raster just created and convert to df
 regional_ensemble_2055_585_classified_df <- terra::rast(
-  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp585_GFDL.asc")
+  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp585_GFDL.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -1185,7 +1197,7 @@ ggplot() +
   geom_raster(data = regional_ensemble_2055_585_classified_df, aes(x = x, y = y, fill = as.factor(ensemble_suitability))) +
   labs(
     title = "Binarized suitability for 'regional_ensemble' model",
-    subtitle = "projected to 2041-2070 | ssp585 | GFDL"
+    subtitle = "projected to 2041-2070 | ssp585 | GFDL-ESM4"
     ) +
   scale_discrete_manual(
     name = "suitability for SLF",
@@ -1197,6 +1209,8 @@ ggplot() +
   map_style_binarized
 
 ```
+
+-->
 
 ### ssp mean
 
@@ -1238,7 +1252,7 @@ regional_ensemble_2055_ssp_mean_classified <- terra::classify(
   rcl = regional_ensemble_classes,
   right = NA, # close both ends of the range of classification values
   others = strtoi(00000001, base = 2), # make it the unsuitable value if not in this range
-  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp_mean_GFDL.asc"), # also write to file
+  filename = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp_mean_GFDL.asc"), # also write to file
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1250,7 +1264,7 @@ global_2055_ssp_mean_classified <- terra::classify(
   rcl = global_classes, 
   right = NA, 
   others = strtoi(00000100, base = 2), 
-  filename = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp_mean_GFDL.asc"), 
+  filename = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp_mean_GFDL.asc"), 
   filetype = "AAIGrid",
   overwrite = FALSE
   ) 
@@ -1282,7 +1296,7 @@ Now lets plot the binarized mean of the ssp scenarios.
 
 # load in binary raster just created and convert to df
 regional_ensemble_2055_ssp_mean_classified_df <- terra::rast(
-  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp_mean_GFDL.asc")
+  x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp_mean_GFDL.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -1306,7 +1320,7 @@ ggplot() +
   geom_raster(data = regional_ensemble_2055_ssp_mean_classified_df, aes(x = x, y = y, fill = as.factor(ensemble_suitability))) +
   labs(
     title = "Binarized suitability for 'regional_ensemble' model",
-    subtitle = "projected to 2041-2070 | mean of ssp126, 370, 585 | GFDL"
+    subtitle = "projected to 2041-2070 | mean of ssp126, 370, 585 | GFDL-ESM4"
     ) +
   scale_discrete_manual(
     name = "suitability for SLF",
@@ -1337,9 +1351,9 @@ The mosaic function combines spatRasters that overlap in extent into a new raste
 
 ```{r import binarized rasters- hist}
 
-global_1995_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v3_binarized_1981-2010.asc"))
+global_1995_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v4_binarized_1981-2010.asc"))
 
-regional_ensemble_1995_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_1981-2010.asc"))
+regional_ensemble_1995_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_1981-2010.asc"))
 
 ```
 
@@ -1399,6 +1413,8 @@ slf_binarized_1995_plot <- ggplot() +
   map_style_binarized +
   guides(fill = guide_legend(nrow = 1, byrow = TRUE)) +
   theme(legend.key = element_rect(color = "black"))
+
+slf_binarized_1995_plot
 
 ```
 
@@ -1460,13 +1476,15 @@ plot_binary <- function(raster.df) {
 
 ```
  
-### ssp126 {.hidden}
+<!--
+ 
+### ssp126
 
 ```{r import binarized rasters- ssp126}
 
-global_2055_126_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp126_GFDL.asc"))
+global_2055_126_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp126_GFDL.asc"))
 
-regional_ensemble_2055_126_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp126_GFDL.asc"))
+regional_ensemble_2055_126_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp126_GFDL.asc"))
 
 ```
 
@@ -1510,7 +1528,7 @@ slf_binarized_2055_126_plot <- plot_binary(
   # labels
   labs(
     title = "Projected risk of Lycorma delicatula invasion globally under climate change",
-    subtitle = "2041-2070 | ssp126 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp126 | GFDL-ESM4"
     ) 
 
 ```
@@ -1528,13 +1546,13 @@ ggsave(
 
 ```
 
-### ssp370 {.hidden}
+### ssp370 
 
 ```{r import binarized rasters- ssp370}
 
-global_2055_370_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp370_GFDL.asc"))
+global_2055_370_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp370_GFDL.asc"))
 
-regional_ensemble_2055_370_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp370_GFDL.asc"))
+regional_ensemble_2055_370_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp370_GFDL.asc"))
 
 ```
 
@@ -1577,7 +1595,7 @@ slf_binarized_2055_370_plot <- plot_binary(
   # labels
   labs(
     title = "Projected risk of Lycorma delicatula invasion globally under climate change",
-    subtitle = "2041-2070 | ssp370 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp370 | GFDL-ESM4"
     ) 
 
 ```
@@ -1595,13 +1613,13 @@ ggsave(
 
 ```
 
-### ssp585 {.hidden}
+### ssp585
 
 ```{r import binarized rasters- ssp585}
 
-global_2055_585_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp585_GFDL.asc"))
+global_2055_585_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp585_GFDL.asc"))
 
-regional_ensemble_2055_585_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp585_GFDL.asc"))
+regional_ensemble_2055_585_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp585_GFDL.asc"))
 
 ```
 
@@ -1644,7 +1662,7 @@ slf_binarized_2055_585_plot <- plot_binary(
   # labels
   labs(
     title = "Projected risk of Lycorma delicatula invasion globally under climate change",
-    subtitle = "2041-2070 | ssp585 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp585 | GFDL-ESM4"
     ) 
 
 ```
@@ -1662,13 +1680,15 @@ ggsave(
 
 ```
 
+-->
+
 ### ssp mean
 
 ```{r import binarized rasters- ssp mean}
 
-global_2055_ssp_mean_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v3_binarized_2041-2070_ssp_mean_GFDL.asc"))
+global_2055_ssp_mean_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_global_v4_binarized_2041-2070_ssp_mean_GFDL.asc"))
 
-regional_ensemble_2055_ssp_mean_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v1_binarized_2041-2070_ssp_mean_GFDL.asc"))
+regional_ensemble_2055_ssp_mean_classified <- terra::rast(x = file.path(mypath, "working_dir", "slf_regional_ensemble_v2_binarized_2041-2070_ssp_mean_GFDL.asc"))
 
 ```
 
@@ -1711,8 +1731,10 @@ slf_binarized_2055_ssp_mean_plot <- plot_binary(
   # labels
   labs(
     title = "Projected risk of Lycorma delicatula invasion globally under climate change",
-    subtitle = "2041-2070 | mean of ssp126, ssp370 and ssp585, GFDL-ESM4"
+    subtitle = "2041-2070 | mean of ssp126, ssp370 and ssp585 | GFDL-ESM4"
     ) 
+
+slf_binarized_2055_ssp_mean_plot
 
 ```
 
@@ -1744,7 +1766,7 @@ As a reminder, the categories in these rasters are:
 | unsuitable regional/suitable global |        9     |
 | Suitable regional/unsuitable global |        6     |
 
-```{r retrieve summary table- area sums, eval = TRUE}
+```{r retrieve summary table- area sums, eval = TRUE, warning = FALSE}
 
 # load rasters
 slf_binarized_1995 <- terra::rast(x = file.path(mypath, "working_dir", "slf_binarized_summed_1981-2010.asc")) 
@@ -1754,7 +1776,7 @@ slf_binarized_2055_ssp_mean <- terra::rast(x = file.path(mypath, "working_dir", 
 slf_model_prop_table_1995 <- terra::expanse(
   x = slf_binarized_1995,
   unit = "km",
-  byValue = TRUE
+  byValue = TRUE # group by cell value, which is the risk level
 ) 
 
 # 2055
@@ -1763,6 +1785,8 @@ slf_model_prop_table_2055_ssp_mean <- terra::expanse(
   unit = "km",
   byValue = TRUE
 ) 
+
+# NOTE this throws GDAL error 2050 "reprojection failed"- I read this means that some points are outside of projection domain- this happened initially when I projected the original rasters to ESRI:54017, so I am guessing this is related to that issue
 
 ```
 
@@ -1859,10 +1883,10 @@ I will classify the cells as the following:
 
 | Raster and suitability | cloglog range | binary value | output value |
 | ---------------------- | ------------- | ------------ | ------------ |
-| Historical unsuitable  |        5      | 00000001     |        1     |
-| Historical suitable    |  6, 9 or 10   | 00000010     |        2     |
-| 2041-2070 unsuitable   |        5      | 00000100     |        4     |
-| 2041-2070 suitable     |  6, 9 or 10   | 00001000     |        8     |
+| Historical unsuitable  |        5      |   00000001   |        1     |
+| Historical suitable    |  6, 9 or 10   |   00000010   |        2     |
+| 2041-2070 unsuitable   |        5      |   00000100   |        4     |
+| 2041-2070 suitable     |  6, 9 or 10   |   00001000   |        8     |
 
 By encoding the rasters into base-2, I have created only 4 possible values of the raster layers, which can be translated into 4 categories. I will also interpret these categories in terms of risk of SLF range expansion::
 
@@ -1872,7 +1896,6 @@ By encoding the rasters into base-2, I have created only 4 possible values of th
 | Suitable Agreement                 |        10    |   00001010   |  will stay suitable (no range shift)                      |
 | unsuitable hist/suitable 2041-2070 |        9     |   00001001   |  will become SUITABLE in the future (range expansion)     |
 | Suitable hist/unsuitable 2041-2070 |        6     |   00000110   |  will become UNSUITABLE in the future (range contraction) | 
-
 
 I will classify areas of unsuitability as gray, per usual. Areas where SLF remains the same will be white, areas where SLF is expanding will be green, and areas where SLF is contracting will be red.
 
@@ -1894,7 +1917,7 @@ slf_binarized_1995_df <- terra::as.data.frame(slf_binarized_1995, xy = TRUE)
 
 I will also load some classification matrices for `terra::classify()`. These should not change between maps because we are classifying based on the time period, which does not change.
 
-```{r terra required classification matrices- range shift}
+```{r terra required classification matrices- range shift, eval = TRUE}
 
 # create historical suitability value matrix for terra
 classes_1995 <- data.frame(
@@ -1909,6 +1932,9 @@ classes_2055 <- data.frame(
   becomes = c(strtoi(00000100, base = 2), strtoi(00001000, base = 2), strtoi(00001000, base = 2), strtoi(00001000, base = 2)) 
   # becomes 4 and 8
 )
+
+classes_1995
+classes_2055
 
 ```
 
@@ -2176,7 +2202,7 @@ slf_range_shift_126_plot <- plot_range_shift(
   # labels
   labs(
     title = "Projected areas suitable for Lycorma delicatula range expansion",
-    subtitle = "2041-2070 | ssp126 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp126 | GFDL-ESM4"
     ) 
 
 ```
@@ -2196,7 +2222,7 @@ ggsave(
 
 ### sum areas gained and lost
 
-```{r retrieve summary table- ssp126 range shift, eval = TRUE}
+```{r retrieve summary table- ssp126 range shift, eval = TRUE, warning = FALSE}
 
 slf_range_shift_126_table <- terra::expanse(
   x = slf_range_shift_126,
@@ -2216,6 +2242,8 @@ write_csv(slf_range_shift_126_table, file.path(here::here(), "vignette-outputs",
 # convert to kable
 slf_range_shift_126_kable <- knitr::kable(x = slf_range_shift_126_table, format = "html", escape = FALSE) %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+slf_range_shift_126_kable
 
 ```
 
@@ -2246,7 +2274,9 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_range_sh
 
 Now, I will repeat this process for the other SSP scenarios and the mean of those scenarios (code not shown).
 
-## 4.3 ssp 370 {.hidden}
+<!--
+
+## 4.3 ssp 370 
 
 classify
 
@@ -2359,7 +2389,7 @@ slf_range_shift_370_plot <- plot_range_shift(
   # labels
   labs(
     title = "Projected areas suitable for Lycorma delicatula range expansion",
-    subtitle = "2041-2070 | ssp370 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp370 | GFDL-ESM4"
     ) 
 
 ```
@@ -2427,7 +2457,7 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_range_sh
 
 ```
 
-## 4.4 ssp 585 {.hidden}
+## 4.4 ssp 585
 
 classify
 
@@ -2540,7 +2570,7 @@ slf_range_shift_585_plot <- plot_range_shift(
   # labels
   labs(
     title = "Projected areas suitable for Lycorma delicatula range expansion",
-    subtitle = "2041-2070 | ssp585 GFDL-ESM4"
+    subtitle = "2041-2070 | ssp585 | GFDL-ESM4"
     ) 
 
 ```
@@ -2607,6 +2637,8 @@ webshot::webshot(
 file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_range_shift_summed_area_table_ssp585_GFDL.html"))
 
 ```
+
+-->
 
 ## 4.5 ssp ssp_mean
 
@@ -2709,8 +2741,6 @@ slf_range_shift_ssp_mean_df <- terra::as.data.frame(slf_range_shift_ssp_mean, xy
 unique(slf_range_shift_ssp_mean_df$range_shift_summed)
 # it seems that the reclassification worked! Lets map it to be sure.
 
-
-
 ```
 
 ```{r plot summed raster- range shift ssp mean, eval = TRUE}
@@ -2721,8 +2751,10 @@ slf_range_shift_ssp_mean_plot <- plot_range_shift(
   # labels
   labs(
     title = "Projected areas suitable for Lycorma delicatula range expansion",
-    subtitle = "2041-2070 | mean of ssp126, ssp370 and ssp585, GFDL-ESM4"
+    subtitle = "2041-2070 | mean of ssp126, ssp370 and ssp585 | GFDL-ESM4"
     ) 
+
+slf_range_shift_ssp_mean_plot
 
 ```
 
@@ -2741,7 +2773,7 @@ ggsave(
 
 sum areas gained and lost
 
-```{r retrieve summary table- ssp mean range shift, eval = TRUE}
+```{r retrieve summary table- ssp mean range shift, eval = TRUE, warning = FALSE}
 
 slf_range_shift_ssp_mean_table <- terra::expanse(
   x = slf_range_shift_ssp_mean,
@@ -2751,9 +2783,9 @@ slf_range_shift_ssp_mean_table <- terra::expanse(
 
 ```
 
-```{r format range shift table and kable- range shift ssp mean}
+```{r format range shift table and kable- range shift ssp mean, eval = TRUE}
 
-slf_range_shift_ssp_mean_table <- table_range_shift(table.df = slf_range_shift_ssp_mean_table, eval = TRUE)
+slf_range_shift_ssp_mean_table <- table_range_shift(table.df = slf_range_shift_ssp_mean_table)
 
 # save as .csv
 write_csv(slf_range_shift_ssp_mean_table, file.path(here::here(), "vignette-outputs", "data-tables", "slf_range_shift_summed_area_table_ssp_mean_GFDL.csv"))
@@ -2761,6 +2793,8 @@ write_csv(slf_range_shift_ssp_mean_table, file.path(here::here(), "vignette-outp
 # convert to kable
 slf_range_shift_ssp_mean_kable <- knitr::kable(x = slf_range_shift_ssp_mean_table, format = "html", escape = FALSE) %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+slf_range_shift_ssp_mean_kable
 
 ```
 
@@ -2797,8 +2831,11 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_range_sh
 
 3. Liu, C., Newell, G., & White, M. (2016). On the selection of thresholds for predicting species occurrence with presence-only data. Ecology and Evolution, 6(1), 337–348. https://doi.org/10.1002/ece3.1878
 
+<!--
 
-# Appendix {.hidden}
+# Appendix 
+
+Here are some plots I created specifically for the publication.
 
 ## Add country admin boundaries to risk plots
 
@@ -2806,6 +2843,9 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_range_sh
 
 # load data
 global_countries <- sf::st_read(dsn = file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.shp"))
+
+# project to new CRS
+global_countries <- sf::st_transform(global_countries, crs = "ESRI:54017")
 
 ```
 
@@ -2815,9 +2855,9 @@ global_countries <- sf::st_read(dsn = file.path(here::here(), "data-raw", "ne_co
 
 # plot
 slf_binarized_1995_plot_withCountries <- slf_binarized_1995_plot +
-  geom_sf(data = global_countries, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.15) + 
+  geom_sf(data = global_countries, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.15) #+ 
   # re-crop to usual boundaries
-  coord_sf(xlim = c(-180.00013888885, 178.999859675084), ylim = c(-58.5001390148238, 82.99986041915))
+  #coord_sf(xlim = c(-180.00013888885, 178.999859675084), ylim = c(-58.5001390148238, 82.99986041915))
 
 # save
 ggsave(
@@ -2839,9 +2879,9 @@ For this analysis, I will only plot the raster of the mean of the 3 ssp scenario
 
 # plot
 slf_binarized_2055_plot_withCountries <- slf_binarized_2055_ssp_mean_plot +
-  geom_sf(data = global_countries, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.15) + 
+  geom_sf(data = global_countries, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.15) #+ 
   # re-crop to usual boundaries
-  coord_sf(xlim = c(-180.00013888885, 178.999859675084), ylim = c(-58.5001390148238, 82.99986041915))
+  #coord_sf(xlim = c(-180.00013888885, 178.999859675084), ylim = c(-58.5001390148238, 82.99986041915))
 
 
 # save
@@ -2897,7 +2937,7 @@ slf_binarized_2055_plot_withCountries <- slf_binarized_2055_plot_withCountries +
 slf_binarized_patchwork <- (slf_binarized_1995_plot_withCountries / slf_binarized_2055_plot_withCountries) +
   plot_annotation(
     title = "Projected risk of Lycorma delicatula invasion globally under climate change",
-    subtitle = "(A) 1981-2010 (B) 2041-2070 | mean of ssp126, ssp370 and ssp85, GFDL-ESM4"
+    subtitle = "(A) 1981-2010 (B) 2041-2070 | mean of ssp126, ssp370 and ssp85 | GFDL-ESM4"
     ) +
   plot_layout(axes = "collect", guides = "collect") & 
   theme(legend.position = "bottom") 
@@ -2918,3 +2958,5 @@ ggsave(
   )
 
 ```
+
+-->

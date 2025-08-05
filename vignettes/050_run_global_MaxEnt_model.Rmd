@@ -637,7 +637,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_global_v4")
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_tidied_esri54017.rds"))
+IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
 IVR_regions <- IVR_regions %>%
   dplyr::select(x, y)

@@ -3,7 +3,7 @@ title: "Check model goodness of fit via AUC, TSS and confusion matrices"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-16"
+date: "2025-08-05"
 ---
 
 I will plot the AUC curves and variable contribution graphs by combining all 4 models into one plot. This will allow for a direct comparison of the AUC (goodness of fit) and var contribution between models.
@@ -17,6 +17,9 @@ library(tidyverse)  #data manipulation
 library(here) #making directory pathways easier on different instances
 # here::here() starts at the root folder of this package.
 library(devtools)
+
+# spatial data
+library(terra)
 
 # SDMtune and dependencies
 library(SDMtune) # main package used to run SDMs
@@ -53,48 +56,205 @@ ensemble_colors <- c(
 
 ```{r load model objects}
 
-regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v3", "regional_native_model.rds"))
+regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model.rds"))
 
-regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_model.rds"))
+regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model.rds"))
 
-regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v2", "regional_invaded_asian_model.rds"))
-
-```
-
-```{r load testing objects}
-
-regional_native_test <- read_rds(file = file.path(mypath, "slf_regional_native_v3", "regional_native_test.rds"))
-
-regional_invaded_test <- read_rds(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_test.rds"))
-
-regional_invaded_asian_test <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v2", "regional_invaded_asian_test.rds"))
+regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model.rds"))
 
 ```
 
 # ROC regional ensemble
 
+## Prepare data
+
+First, I will build the SWD objects required by `SDMtune::plotROC`
+
+```{r load testing points datasets}
+
+regional_native_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv"))
+
+regional_invaded_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v8.csv"))
+
+regional_invaded_asian_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv"))
+
+```
+
+```{r load in bg points datasets}
+
+# background points
+a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv"))
+
+a_regional_native_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv"))
+
+a_regional_invaded_asian_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv"))
+
+```
+
+
+```{r load in historical covariates}
+
+# path to directory
+mypath <- file.path(here::here() %>% 
+                       dirname(),
+                     "maxent/historical_climate_rasters/chelsa2.1_30arcsec")
+
+
+# the env covariate scale used to train the model
+x_invaded_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_KG.asc$", full.names = TRUE)  %>%
+  # dont include Access to cities
+  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
+# the env covariate scale used to train the model
+x_native_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_native_KG.asc$", full.names = TRUE) %>%
+  # dont include Access to cities
+  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
+# the env covariate scale used to train the model
+x_invaded_asian_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_asian_KG.asc$", full.names = TRUE)  %>%
+  # dont include Access to cities
+  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
+
+
+# the scale used to make xy predictions
+x_global_hist_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\.asc$", full.names = TRUE) %>%
+    grep("bio2_1981-2010_global.asc|bio11_1981-2010_global.asc|bio12_1981-2010_global.asc|bio15_1981-2010_global.asc", ., value = TRUE)
+
+```
+
+I will create rasters of the environmental covariates, stack and gather summary statistics. I will also shorten their names and exclude possible operators from layer names (for example, using the dash symbol was found to interfere with SDMtune making predictions for tables downstream).
+
+```{r naming object}
+
+# layer name object. Check order of layers first
+env_layer_names <- c("bio11", "bio12", "bio15", "bio2")
+
+```
+
+```{r stack historical covariates and make naming consistent, message = FALSE}
+
+# stack env covariates
+x_invaded_env_covariates <- terra::rast(x = x_invaded_env_covariates_list)
+
+# attributes
+nlyr(x_invaded_env_covariates)
+names(x_invaded_env_covariates)
+minmax(x_invaded_env_covariates)
+# ext(x_invaded_env_covariates)
+# crs(x_invaded_env_covariates)
+
+# I will change the name of the variables because they are throwing errors in SDMtune
+names(x_invaded_env_covariates) <- env_layer_names
+# stack env covariates
+x_invaded_asian_env_covariates <- terra::rast(x = x_invaded_asian_env_covariates_list)
+
+# attributes
+nlyr(x_invaded_asian_env_covariates)
+names(x_invaded_asian_env_covariates)
+minmax(x_invaded_asian_env_covariates)
+# ext(x_invaded_asian_env_covariates)
+# crs(x_invaded_asian_env_covariates)
+
+# I will change the name of the variables because they are throwing errors in SDMtune
+names(x_invaded_asian_env_covariates) <- env_layer_names
+# stack env covariates
+x_native_env_covariates <- terra::rast(x = x_native_env_covariates_list)
+
+# attributes
+nlyr(x_native_env_covariates)
+names(x_native_env_covariates)
+minmax(x_native_env_covariates)
+# ext(x_native_env_covariates)
+# crs(x_native_env_covariates)
+
+# I will change the name of the variables because they are throwing errors in SDMtune
+names(x_native_env_covariates) <- env_layer_names
+
+
+
+
+# global rasters
+# stack env covariates
+x_global_hist_env_covariates <- terra::rast(x = x_global_hist_env_covariates_list)
+
+# attributes
+nlyr(x_global_hist_env_covariates)
+names(x_global_hist_env_covariates)
+minmax(x_global_hist_env_covariates)
+# ext(x_global_hist_env_covariates)
+# crs(x_global_hist_env_covariates)
+
+# I will change the name of the variables because they are throwing errors in SDMtune
+names(x_global_hist_env_covariates) <- env_layer_names
+# confirmed- SDMtune doesnt like dashes in column names (it is read as a mathematical operation)
+
+
+```
+
+```{r remove lists}
+
+rm(x_invaded_env_covariates_list)
+rm(x_invaded_asian_env_covariates_list)
+rm(x_native_env_covariates_list)
+rm(x_global_hist_env_covariates_list)
+
+```
+
+```{r prepare SWD test objects}
+
+# invaded asian
+regional_invaded_asian_test_SWD <- SDMtune::prepareSWD(
+  species = "Lycorma delicatula",
+  env = x_global_hist_env_covariates, 
+  p = regional_invaded_asian_test, 
+  a = a_regional_invaded_asian_background_points,
+  verbose = TRUE # print helpful messages
+  )
+
+# regional native
+regional_native_test_SWD <- SDMtune::prepareSWD(
+  species = "Lycorma delicatula",
+  env = x_native_env_covariates,
+  p = regional_native_test, 
+  a = a_regional_native_background_points,
+  verbose = TRUE # print helpful messages
+  )
+
+# regional invaded
+regional_invaded_test_SWD <- SDMtune::prepareSWD(
+  species = "Lycorma delicatula",
+  env = x_global_hist_env_covariates, 
+  p = regional_invaded_test, 
+  a = a_regional_invaded_background_points,
+  verbose = TRUE # print helpful messages
+  )
+
+```
+
+
+## Plot
+
+Next, I will use `SDMtune` to build the ROC plots.
+
 ```{r plot ROC per model}
 
 regional_native_ROC <- SDMtune::plotROC(
   model = regional_native_model,
-  test = regional_native_test
+  test = regional_native_test_SWD
 ) %>%
   ggplot_build()
 
 
 regional_invaded_ROC <- SDMtune::plotROC(
   model = regional_invaded_model,
-  test = regional_invaded_test
+  test = regional_invaded_test_SWD
 ) %>%
   ggplot_build()
 
 regional_invaded_asian_ROC <- SDMtune::plotROC(
   model = regional_invaded_asian_model,
-  test = regional_invaded_asian_test
+  test = regional_invaded_asian_test_SWD
 ) %>%
   ggplot_build()
            
-
 ```
 
 ```{r ROC plot- regional ensemble}
@@ -130,9 +290,11 @@ ROC_ensemble <- ggplot() +
   theme(legend.position = "bottom") +
   coord_fixed(ratio = 1)
 
+ROC_ensemble
+
 ```
 
-```{r save plot- AUC, eval = FALSE}
+```{r save plot- AUC, include = FALSE}
 
 ggsave(
   ROC_ensemble, 
@@ -151,10 +313,20 @@ ggsave(
 
 ## ROC
 
+```{r set wd 1.5}
+
+mypath <- file.path(here::here() %>% 
+                       dirname(),
+                     "maxent/models")
+
+```
+
 ```{r load plotting objects}
 
-global_model <- read_rds(file = file.path(mypath, "slf_global_v3", "global_model.rds"))
-global_test <- read_rds(file = file.path(mypath, "slf_global_v3", "global_test.rds"))
+# STOPPED HERE
+
+global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
+global_test <- read_csv(file = file.path(mypath, "slf_global_v4", "global_test.csv"))
 
 ensemble_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -162,7 +334,6 @@ ensemble_colors <- c(
   "Ri.Asia" = "#377eb8",
   "global" = "black"
 )
-
 
 ```
 
@@ -215,7 +386,7 @@ ROC_ensemble_global
 
 ```
 
-```{r save plot- AUC combined, eval = FALSE}
+```{r save plot- AUC combined, include = FALSE}
 
 ggsave(
   ROC_ensemble_global, 
@@ -263,6 +434,8 @@ regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regio
 regional_invaded_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_thresh_confusion_matrix.csv")) %>%
   slice(7)
 
+global_conf_matr
+
 ```
 
 Be sure to change the number of test positives and background negatives for each model if this changes.
@@ -309,7 +482,7 @@ model_sens_spec <- tibble(
 
 ```
 
-```{r save as .csv, eval = FALSE}
+```{r save as .csv, include = FALSE}
 
 write_csv(model_sens_spec, file.path(here::here(), "vignette-outputs", "data-tables", "model_sensitivity_specificity.csv"))
 
@@ -317,7 +490,7 @@ write_csv(model_sens_spec, file.path(here::here(), "vignette-outputs", "data-tab
 
 I will also write it to a kable so it can be printed
 
-```{r save tables from above, if desired, eval = FALSE}
+```{r save tables from above, if desired}
 
 # add column formatting
 model_sens_spec <- mutate(model_sens_spec, bg_neg = scales::label_comma() (bg_neg))

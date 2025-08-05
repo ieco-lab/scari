@@ -3,18 +3,20 @@ title: "Analyze biological realism of model response curves"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-23"
+date: "2025-08-05"
 ---
 
 # Overview
 
 In this vignette, I will plot the marginal and univariate response curves for the global and each of the regional-scale models. These plots will help me to explore the biological realism of our modeled scales. 
 
-I hypothesized that the regional models would have more nuanced responses to the environmental variables than the global model, so these plots will allow me to explore the differences in response curves between these models. These regional models should more closely  is because the regional models are trained on a smaller subset of the global data, and thus may be more sensitive to the range of our covariates present in each region.
+I hypothesized that the regional models would have more nuanced responses to the environmental variables than the global model, so these plots will allow me to explore the differences in response curves between these models. These regional models should more closely evaluated because the regional models are trained on a smaller subset of the global data, and thus may be more sensitive to the range of our covariates present in each region.
 
 **Note** for unsmoothed versions of the same curves, simply change the `geom_smooth` functions to `geom_line` and remove the `se` and `method` arguments.
 
 # Setup
+
+I will start by loading the necessary packages, setting the working directory, and defining some style objects for the plots.
 
 ```{r load necesssary packages, message = FALSE}
 
@@ -59,7 +61,33 @@ mypath <- file.path(here::here() %>%
 
 ```
 
-```{r scatter style object- marginal, eval = TRUE}
+Lastly, load in the model objects for plotting the curves.
+
+```{r load model objects- regional ensemble, eval = TRUE}
+
+regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model.rds"))
+
+regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model.rds"))
+
+regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model.rds"))
+
+```
+
+This vignette contains 3 main types of code chunks, which can be discerned by the title: 
+
+1. **Extract ___ plots per model**: This type of chunk extracts different types of response curves per model and environmental variable.
+2. **Maximum Activity**: This type of chunk extracts the value of the maximum activity of the model along the curve for plotting
+3. **Combine Plots**: This type of chunk combines the plots of the models response curves, per environmental variable and separately for the regional-scale and global-scale models.
+
+The first section of the code performs these operations for the regional-scale models (both univariate and marginal) and the second part creates plots of the same curves but for the global-scale model. 
+
+We will focus on the univariate curves, so you will not see the code for the marginal response plots in the rendered version.
+
+<!--
+
+# create marginal response plots 
+
+```{r scatter style object- marginal}
 
 ensemble_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -89,21 +117,9 @@ marginal_plots_style <- list(
 
 ```
 
-```{r load model objects- regional ensemble, eval = TRUE}
-
-regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v3", "regional_native_model.rds"))
-
-regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_model.rds"))
-
-regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v2", "regional_invaded_asian_model.rds"))
-
-```
-
-# create marginal response plots {.hidden}
-
 ## Bio 11
 
-```{r extract marginal plots per model- bio 11, eval = TRUE}
+```{r extract marginal plots per model- bio 11}
 
 regional_native_marginal_bio11 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -142,7 +158,7 @@ regional_invaded_asian_marginal_bio11 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 11 marginal, eval = TRUE}
+```{r maximum activity- bio 11 marginal}
 
 # peak y trendline object 
 bio11_max_activity_values <- c(
@@ -153,7 +169,7 @@ bio11_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 11 marginal, eval = TRUE}
+```{r combine plots- bio 11 marginal}
 
 bio11_marginal_combined <- ggplot() +
   # native model data
@@ -189,7 +205,7 @@ bio11_marginal_combined <- ggplot() +
 
 ```
 
-```{r save plot- bio 11 marginal}
+```{r save plot- bio 11 marginal, include = FALSE}
 
 ggsave(
   bio11_marginal_combined, 
@@ -206,7 +222,7 @@ ggsave(
 
 ## Bio 12
 
-```{r extract marginal plots per model- bio 12, eval = TRUE}
+```{r extract marginal plots per model- bio 12}
 
 regional_native_marginal_bio12 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -245,7 +261,7 @@ regional_invaded_asian_marginal_bio12 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 12 marginal, eval = TRUE}
+```{r maximum activity- bio 12 marginal}
 
 # peak y trendline object 
 bio12_max_activity_values <- c(
@@ -256,7 +272,7 @@ bio12_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 12 marginal, eval = TRUE}
+```{r combine plots- bio 12 marginal}
 
 bio12_marginal_combined <- ggplot() +
   # native model data
@@ -292,7 +308,7 @@ bio12_marginal_combined <- ggplot() +
 
 ```
 
-```{r save plot- bio 12 marginal}
+```{r save plot- bio 12 marginal, include = FALSE}
 
 ggsave(
   bio12_marginal_combined, 
@@ -309,7 +325,7 @@ ggsave(
 
 ## Bio 15
 
-```{r extract marginal plots per model- bio 15, eval = TRUE}
+```{r extract marginal plots per model- bio 15}
 
 regional_native_marginal_bio15 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -348,7 +364,7 @@ regional_invaded_asian_marginal_bio15 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 15 marginal, eval = TRUE}
+```{r maximum activity- bio 15 marginal}
 
 # peak y trendline object 
 bio15_max_activity_values <- c(
@@ -359,7 +375,7 @@ bio15_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 15 marginal, eval = TRUE}
+```{r combine plots- bio 15 marginal}
 
 bio15_marginal_combined <- ggplot() +
   # native model data
@@ -395,7 +411,7 @@ bio15_marginal_combined <- ggplot() +
 
 ```
 
-```{r save plot- bio 15 marginal}
+```{r save plot- bio 15 marginal, include = FALSE}
 
 ggsave(
   bio15_marginal_combined, 
@@ -412,7 +428,7 @@ ggsave(
 
 ## Bio 2
 
-```{r extract marginal plots per model- bio 2, eval = TRUE}
+```{r extract marginal plots per model- bio 2}
 
 regional_native_marginal_bio2 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -451,7 +467,7 @@ regional_invaded_asian_marginal_bio2 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 2 marginal, eval = TRUE}
+```{r maximum activity- bio 2 marginal}
 
 # peak y trendline object 
 bio2_max_activity_values <- c(
@@ -462,7 +478,7 @@ bio2_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 2 marginal, eval = TRUE}
+```{r combine plots- bio 2 marginal}
 
 bio2_marginal_combined <- ggplot() +
   # native model data
@@ -498,7 +514,7 @@ bio2_marginal_combined <- ggplot() +
 
 ```
 
-```{r save plot- bio 2 marginal}
+```{r save plot- bio 2 marginal, include = FALSE}
 
 ggsave(
   bio2_marginal_combined, 
@@ -513,11 +529,13 @@ ggsave(
 
 ```
 
-# create univariate response curves
+-->
 
-I will smooth these plots using a GAM formula, after the methods of Elith et al, 2011.
+# 1. create univariate response curves- regional_ensemble models
 
-A note that these curves were created using a Beta multiplier of 1.5.
+I will smooth these plots using a GAM formula, after the methods of Elith et al, 2011. Note that these curves were created using a Beta multiplier of 1.5.
+
+First, I will create the plotting objects I need.
 
 ```{r scatter style object- univar, eval = TRUE}
 
@@ -549,7 +567,7 @@ univar_plots_style <- list(
 
 ```
 
-## Bio 11
+## Bio 11- Mean temperature of the coldest Quarter
 
 ```{r extract univar plots per model- bio 11 univar, eval = TRUE}
 
@@ -634,10 +652,11 @@ bio11_univar_combined <- ggplot() +
   # aesthetics
   xlim(-20, 20) 
   
+bio11_univar_combined
 
 ```
 
-```{r save plot- bio 11 univar, eval = TRUE}
+```{r save plot- bio 11 univar, include = FALSE}
 
 ggsave(
   bio11_univar_combined, 
@@ -652,7 +671,7 @@ ggsave(
 
 ```
 
-## Bio 12
+## Bio 12- Annual Precipitation
 
 ```{r extract univar plots per model- bio 12, eval = TRUE}
 
@@ -737,10 +756,11 @@ bio12_univar_combined <- ggplot() +
   # aesthetics
   xlim(0, 4250) 
   
+bio12_univar_combined
 
 ```
 
-```{r save plot- bio 12 univar}
+```{r save plot- bio 12 univar, include = FALSE}
 
 ggsave(
   bio12_univar_combined, 
@@ -755,7 +775,7 @@ ggsave(
 
 ```
 
-## Bio 15
+## Bio 15- Precipitation Seasonality
 
 ```{r extract univar plots per model- bio 15, eval = TRUE}
 
@@ -840,10 +860,11 @@ bio15_univar_combined <- ggplot() +
   # aesthetics
   xlim(0, 120) 
   
+bio15_univar_combined
 
 ```
 
-```{r save plot- bio 15 univar}
+```{r save plot- bio 15 univar, include = FALSE}
 
 ggsave(
   bio15_univar_combined, 
@@ -858,7 +879,7 @@ ggsave(
 
 ```
 
-## Bio 2
+## Bio 2- Mean Daily Diurnal Temperature Range
 
 ```{r extract univar plots per model- bio 2, eval = TRUE}
 
@@ -937,16 +958,17 @@ bio2_univar_combined <- ggplot() +
   univar_plots_style +
   # labels
   labs(
-    subtitle = "Bio 2 (Mean Diurnal Range)",
+    subtitle = "Bio 2 (Mean Daily Diurnal Temperature Range)",
     x = "mean diurnal range (C)"
     ) +
   # aesthetics
   xlim(0, 15) 
   
+bio2_univar_combined
 
 ```
 
-```{r save plot- bio 2 univar}
+```{r save plot- bio 2 univar, include = FALSE}
 
 ggsave(
   bio2_univar_combined, 
@@ -984,13 +1006,15 @@ univar_plots_style_global <- list(
 
 ```{r load model objects- global, eval = TRUE}
 
-global_model <- read_rds(file = file.path(mypath, "slf_global_v3", "global_model.rds"))
+global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
 
 ```
 
-## Create marginal plots {.hidden}
+<!--
 
-```{r marginal plot style object, eval = TRUE}
+## Create marginal plots 
+
+```{r marginal plot style object}
 
 marginal_plots_style_global <- list(
   theme_bw(),
@@ -1007,7 +1031,7 @@ marginal_plots_style_global <- list(
 
 ```
 
-```{r extract marginal plots for global model, eval = TRUE}
+```{r extract marginal plots for global model}
 
 global_marginal_bio11 <- SDMtune::plotResponse(
   model = global_model,
@@ -1057,7 +1081,7 @@ global_marginal_bio2 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- global marginal, eval = TRUE}
+```{r maximum activity- global marginal}
 
 # peak y trendline object 
 bio11_marginal_max_activity_global <- global_marginal_bio11$data[[1]][which.max(global_marginal_bio11$data[[1]]$y), ]$x
@@ -1072,7 +1096,7 @@ bio2_marginal_max_activity_global <- global_marginal_bio2$data[[1]][which.max(gl
 
 ### plots
 
-```{r bio11 plot- global marginal, eval = TRUE}
+```{r bio11 plot- global marginal}
 
 bio11_marginal_global <- ggplot() +
   geom_smooth(data = global_marginal_bio11$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1093,7 +1117,7 @@ bio11_marginal_global <- ggplot() +
 
 ```
 
-```{r save plot- global bio11 marginal}
+```{r save plot- global bio11 marginal, include = FALSE}
 
 ggsave(
   bio11_marginal_global, 
@@ -1108,7 +1132,7 @@ ggsave(
 
 ```
 
-```{r bio12 plot- global marginal, eval = TRUE}
+```{r bio12 plot- global marginal}
 
 bio12_marginal_global <- ggplot() +
   geom_smooth(data = global_marginal_bio12$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1144,7 +1168,7 @@ ggsave(
 
 ```
 
-```{r bio15 plot- global marginal, eval = TRUE}
+```{r bio15 plot- global marginal}
 
 bio15_marginal_global <- ggplot() +
   geom_smooth(data = global_marginal_bio15$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1179,7 +1203,7 @@ ggsave(
 
 ```
 
-```{r bio2 plot- global marginal, eval = TRUE}
+```{r bio2 plot- global marginal}
 
 bio2_marginal_global <- ggplot() +
   geom_smooth(data = global_marginal_bio2$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1213,6 +1237,8 @@ ggsave(
   )
 
 ```
+
+-->
 
 ## Create univariate plots
 
@@ -1300,9 +1326,11 @@ bio11_univar_global <- ggplot() +
   # aesthetics
   xlim(-20, 20)
 
+bio11_univar_global
+
 ```
 
-```{r save plot- global bio 11 univar}
+```{r save plot- global bio 11 univar, include = FALSE}
 
 ggsave(
   bio11_univar_global, 
@@ -1336,9 +1364,11 @@ bio12_univar_global <- ggplot() +
   # aesthetics
   xlim(0, 4250)
 
+bio12_univar_global
+
 ```
 
-```{r save plot- global bio 12 univar}
+```{r save plot- global bio 12 univar, include = FALSE}
 
 ggsave(
   bio12_univar_global, 
@@ -1371,9 +1401,11 @@ bio15_univar_global <- ggplot() +
   # aesthetics
   xlim(0, 120) 
 
+bio15_univar_global
+
 ```
 
-```{r save plot- global bio 15 univar}
+```{r save plot- global bio 15 univar, include = FALSE}
 
 ggsave(
   bio15_univar_global, 
@@ -1406,9 +1438,11 @@ bio2_univar_global <- ggplot() +
   # aesthetics
   xlim(0, 15) 
 
+bio2_univar_global
+
 ```
 
-```{r save plot- global bio 2 univar}
+```{r save plot- global bio 2 univar, include = FALSE}
 
 ggsave(
   bio2_univar_global, 
@@ -1423,11 +1457,13 @@ ggsave(
 
 ```
 
+<!--
+
 # Combine ensemble and global models
 
-## marginal response {.hidden}
+## marginal response 
 
-```{r scatter style object- marginal combined, eval = TRUE}
+```{r scatter style object- marginal combined}
 
 ensemble_global_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -1460,7 +1496,7 @@ marginal_plots_style <- list(
 
 ## Bio 11
 
-```{r combine plots- bio11, eval = TRUE}
+```{r combine plots- bio11}
 
 bio11_marginal_combined <- ggplot() +
   # global model
@@ -1498,7 +1534,6 @@ bio11_marginal_combined <- ggplot() +
   # aesthetics
   xlim(-20, 20) 
   
-
 ```
 
 ```{r save plot- bio11 combined}
@@ -1518,7 +1553,7 @@ ggsave(
 
 ## Bio 12
 
-```{r combine plots- bio12, eval = TRUE}
+```{r combine plots- bio12}
 
 bio12_marginal_combined <- ggplot() +
   # global model
@@ -1554,7 +1589,6 @@ bio12_marginal_combined <- ggplot() +
     ) +
   # aesthetics
   xlim(0, 4250) 
-  
 
 ```
 
@@ -1575,7 +1609,7 @@ ggsave(
 
 ## Bio 15
 
-```{r combine plots- bio15 combined, eval = TRUE}
+```{r combine plots- bio15 combined}
 
 bio15_marginal_combined <- ggplot() +
   # global model
@@ -1612,7 +1646,6 @@ bio15_marginal_combined <- ggplot() +
   # aesthetics
   xlim(0, 120) 
   
-
 ```
 
 ```{r save plot- bio15 combined}
@@ -1632,7 +1665,7 @@ ggsave(
 
 ## Bio 2
 
-```{r combine plots- bio2, eval = TRUE}
+```{r combine plots- bio2}
 
 bio2_marginal_combined <- ggplot() +
   # global model
@@ -1668,7 +1701,6 @@ bio2_marginal_combined <- ggplot() +
     ) +
   # aesthetics
   xlim(0, 15) 
-  
 
 ```
 
@@ -1713,7 +1745,7 @@ write_rds(
 
 # create univariate response curves
 
-```{r scatter style object- univar combined, eval = TRUE}
+```{r scatter style object- univar combined}
 
 ensemble_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -1746,7 +1778,7 @@ univar_plots_style <- list(
 
 ## Bio 11
 
-```{r combine plots- bio 11 univar combined, eval = TRUE}
+```{r combine plots- bio 11 univar combined}
 
 bio11_univar_combined <- ggplot() +
   # global
@@ -1782,7 +1814,6 @@ bio11_univar_combined <- ggplot() +
     ) +
   # aesthetics
   xlim(-20, 20) 
-  
 
 ```
 
@@ -1803,7 +1834,7 @@ ggsave(
 
 ## Bio 12
 
-```{r combine plots- bio 12 univar combined, eval = TRUE}
+```{r combine plots- bio 12 univar combined}
 
 bio12_univar_combined <- ggplot() +
   # global
@@ -1839,7 +1870,6 @@ bio12_univar_combined <- ggplot() +
     ) +
   # aesthetics
   xlim(0, 4250) 
-  
 
 ```
 
@@ -1860,7 +1890,7 @@ ggsave(
 
 ## Bio 15
 
-```{r combine plots- bio 15 univar combined, eval = TRUE}
+```{r combine plots- bio 15 univar combined}
 
 bio15_univar_combined <- ggplot() +
   # global
@@ -1897,7 +1927,6 @@ bio15_univar_combined <- ggplot() +
   # aesthetics
   xlim(0, 120) 
   
-
 ```
 
 ```{r save plot- bio 15 univar combined}
@@ -1917,7 +1946,7 @@ ggsave(
 
 ## Bio 2
 
-```{r combine plots- bio 2 univar combined, eval = TRUE}
+```{r combine plots- bio 2 univar combined}
 
 bio2_univar_combined <- ggplot() +
   # global
@@ -1954,7 +1983,6 @@ bio2_univar_combined <- ggplot() +
   # aesthetics
   xlim(0, 15) 
   
-
 ```
 
 ```{r save plot- bio 2 univar combined}
@@ -1996,7 +2024,7 @@ write_rds(
 
 ```
 
-# Patchwork together plots {.hidden}
+# Patchwork together plots
 
 ## univariate response curves
 
@@ -2017,7 +2045,6 @@ bio2_univar_combined <- read_rds(file = file.path(here::here(), "vignette-output
 ```
 
 ```{r univariate}
-
 
 bio2_univar_combined  <- bio2_univar_combined +
   theme(
@@ -2321,6 +2348,8 @@ ggsave(
   )
 
 ```
+
+-->
 
 # References
 

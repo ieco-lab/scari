@@ -230,7 +230,7 @@ I need to also load in the SLF presence and background points datasets created i
 p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
   dplyr::select(-species)
 
-# entire eastern USA background point set
+# background points
 a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv"))
 
 ```
@@ -556,7 +556,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_regional_invaded_v8")
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_tidied_esri54017.rds"))
+IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
 IVR_regions <- IVR_regions %>%
   dplyr::select(x, y)

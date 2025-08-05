@@ -138,7 +138,9 @@ global_bio2_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_global.asc")
 
 
 # load wineries
-IVR_locations <- readr::read_rds(file.path(here::here(), "data", "wineries_tidied.rds"))
+load(file.path(here::here(), "data-raw", "wineries.rda"))
+
+IVR_locations <- wineries
 # I need to transform this dataset to the correct crs
 IVR_locations_sv <- terra::vect(IVR_locations, geom = c("x", "y"), crs = "EPSG:4326") %>%
     terra::project(y = "ESRI:54017") %>% # convert to UTM 33N
@@ -152,11 +154,10 @@ IVR_locations_UTM <- terra::as.data.frame(IVR_locations_sv) %>%
 # bind OG data
 IVR_locations_UTM <- cbind(IVR_locations_UTM, IVR_locations) %>% 
   dplyr::select(-c(x, y)) %>% 
-  dplyr::rename("x" = "x_utm", "y" = "y_utm") %>%
-  dplyr::relocate(ID)
+  dplyr::rename("x" = "x_utm", "y" = "y_utm") 
 
 # save transformation for future use
-readr::write_rds(x = IVR_locations_UTM, file = file.path(here::here(), "data", "wineries_tidied_esri54017.rds"))
+readr::write_rds(x = IVR_locations_UTM, file = file.path(here::here(), "data", "wineries_esri54017.rds"))
 
 ```
 

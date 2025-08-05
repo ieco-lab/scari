@@ -215,6 +215,8 @@ This vignette intersects the global and regional_ensemble model predictions into
 v0-
 v1-
 v2- 2024-08-09- rework- updated SLF presence data and inclusion of other SSP scenarios
+v3-
+v4- 2025-07-31- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 
@@ -232,6 +234,7 @@ v0- initial version- in sandbox/vignettes_old
 v1- using function to transform scatter plot axes
 v2-
 v3- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
+v4- 2025-08-04- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 
@@ -249,6 +252,7 @@ v1- using function to transform scatter plot axes
 v2
 v3- re-created workflow according to vig 130_v2
 v4- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
+v5- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 
@@ -262,6 +266,20 @@ This vignette plots the response curve outputs from SDMtune as ggplots and adds 
 
 v0- initial version
 v1- 2024-08-16- rework- updated SLF presence data and inclusion of other SSP scenarios
+v2- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+
+
+----------141_plot_AUC_var_cont.Rmd----------
+
+## About
+
+This vignette plots the response curve outputs from SDMtune as ggplots and adds all ensemble curves to the same plot.
+
+## changelog
+
+v0- initial version
+v1- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+
 
 
 ----------150_generate_risk_report.Rmd----------
@@ -274,6 +292,7 @@ This vignette contains example usage for the function "generate_risk_report.R", 
 
 v0- initial version
 v1- 2024-08-16- rework- updated SLF presence data and inclusion of other SSP scenarios
+v2- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 

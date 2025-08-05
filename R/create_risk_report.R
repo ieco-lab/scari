@@ -70,7 +70,7 @@
 #'* global_model_summary.rds                                            | created in vignette 050
 #'* ensemble_thresh_values.rds                                          | created in vignette 110
 #'
-#'* wineries_tidied.rds                                                 | created in vignette 130
+#'* wineries_esri54017_tidied.rds                                       | created in vignette 130
 #'* regional_ensemble_wineries_1981-2010_xy_pred_suit.rds               | created in vignette 130
 #'* regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.rds | created in vignette 130
 #'* global_wineries_1981-2010_xy_pred_suit.rds                          | created in vignette 130

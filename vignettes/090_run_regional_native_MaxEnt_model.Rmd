@@ -131,7 +131,6 @@ env_layer_names <- c("bio11", "bio12", "bio15", "bio2")
 
 ```{r stack historical covariates and make naming consistent, message = FALSE}
 
-# native range rasters
 # stack env covariates
 x_native_env_covariates <- terra::rast(x = x_native_env_covariates_list)
 
@@ -236,7 +235,7 @@ p_slf_points_native_test <- read.csv(
   file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv")
   )
 
-# entire eastern USA background point set
+# background points
 a_regional_native_background_points <- read.csv(
   file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv")
   )
@@ -544,7 +543,7 @@ mypath <- file.path(here::here() %>%
 ```{r data import- wineries}
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_tidied_esri54017.rds"))
+IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
 IVR_regions <- IVR_regions %>%
   dplyr::select(x, y)

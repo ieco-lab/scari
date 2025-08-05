@@ -35,6 +35,23 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ```
 
+# create necessary folders
+
+I will create the folders where the outputs of this package will be saved
+
+```{r necessary folders}
+
+# data folder
+dir.create(file.path(here::here(), "data"))
+# output folders
+dir.create(file.path(here::here(), "vignette-outputs", "data-tables"))
+dir.create(file.path(here::here(), "vignette-outputs", "figures"))
+dir.create(file.path(here::here(), "vignette-outputs", "figures", "figures-rds"))
+dir.create(file.path(here::here(), "vignette-outputs", "shapefiles"))
+dir.create(file.path(here::here(), "vignette-outputs", "reports"))
+
+```
+
 # Get package dependencies
 
 Run this chunk to see the dependencies for the scari package.

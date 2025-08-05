@@ -131,7 +131,6 @@ env_layer_names <- c("bio11", "bio12", "bio15", "bio2")
 
 ```{r stack historical covariates and make naming consistent, message = FALSE}
 
-# easternUSA rasters
 # stack env covariates
 x_invaded_asian_env_covariates <- terra::rast(x = x_invaded_asian_env_covariates_list)
 
@@ -235,7 +234,7 @@ p_slf_points_invaded_asian_test <- read.csv(
   file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv")
   )
 
-# entire eastern USA background point set
+# background points
 a_regional_invaded_asian_background_points <- read.csv(
   file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv")
   )
@@ -547,7 +546,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_regional_invaded_asian_v3")
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_tidied_esri54017.rds"))
+IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
 IVR_regions <- IVR_regions %>%
   dplyr::select(x, y)

@@ -65,7 +65,7 @@ I will start by creating an internal dataset to be used by the function. These d
 # .csv files
 threshold_exponential_values <- read.csv(file = file.path(here::here(), "data-raw", "threshold_exponential_values.csv"))
 # .rds files
-IVR_locations <- readr::read_rds(file = file.path(here::here(), "data", "wineries_tidied.rds"))
+IVR_locations <- readr::read_rds(file = file.path(here::here(), "data", "wineries_esri54017_tidied.rds"))
 summary_global <- readr::read_rds(file = file.path(here::here(), "data", "global_threshold_values.rds"))
 summary_regional_ensemble <- readr::read_rds(file = file.path(here::here(), "data", "ensemble_threshold_values.rds"))
 # predicted xy suitability
