@@ -1,20 +1,14 @@
 ---
-title: "Generate and format figures for publication"
+title: "Generate IVR/SLF risk tables and other figures"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-16"
+date: "2025-08-08"
 ---
 
 # Overview
 
-In this vignette, I will format an assortment of tables and figures for publication:
 
-1. IVR risk tables
-2. SLF risk tables
-3. SLF risk plots- faceted by country
-4. Map of globally important viticultural regions
-5. bioclim variables
 
 # Setup
 
@@ -28,7 +22,7 @@ library(devtools)
 
 # spatial data handling
 library(terra)
-library(tidygeocoder) # analysis 7
+library(tidygeocoder)
 
 # table aesthetics
 library(scales)
@@ -56,14 +50,14 @@ knitr::opts_chunk$set(eval = FALSE)
 
 IVR_risk_table <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "IVR_risk_table.csv"), row.names = 1) %>%
   dplyr::rename(
-    "extreme_2055" = "extreme",
-    "high_2055" = "high",
-    "moderate_2055" = "moderate",
-    "low_2055" = "low"
+    "extreme_future" = "extreme",
+    "high_future" = "high",
+    "moderate_future" = "moderate",
+    "low_future" = "low"
   )
 
 # change rownames
-rownames(IVR_risk_table) <- c("extreme_present", "high_present", "moderate_present", "low_present", "total_2055")
+rownames(IVR_risk_table) <- c("extreme_present", "high_present", "moderate_present", "low_present", "total_future")
 
 
 ```
@@ -166,7 +160,7 @@ IVR_risk_table <- kable(IVR_risk_table, format = "html", escape = FALSE) %>%
   
 ```
 
-```{r save table from above, if desired- IVR risk table}
+```{r save table from above if desired- IVR risk table, include = FALSE}
   
 # save as .html
 kableExtra::save_kable(
@@ -197,14 +191,14 @@ I will do the same for the SLF populations.
 
 slf_risk_table <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_risk_table.csv"), row.names = 1) %>%
   dplyr::rename(
-    "extreme_2055" = "extreme",
-    "high_2055" = "high",
-    "moderate_2055" = "moderate",
-    "low_2055" = "low"
+    "extreme_future" = "extreme",
+    "high_future" = "high",
+    "moderate_future" = "moderate",
+    "low_future" = "low"
   )
 
 # change rownames
-rownames(slf_risk_table) <- c("extreme_present", "high_present", "moderate_present", "low_present", "total_2055")
+rownames(slf_risk_table) <- c("extreme_present", "high_present", "moderate_present", "low_present", "total_future")
 
 ```
 
@@ -301,8 +295,7 @@ slf_risk_table <- kable(slf_risk_table, "html", escape = FALSE) %>%
   
 ```
 
-
-```{r save table from above, if desired- SLF risk table}
+```{r save table from above if desired- SLF risk table, include = FALSE}
   
 # save as .html
 kableExtra::save_kable(
@@ -325,13 +318,33 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_tab
 
 ```
 
+# <!--
+
+For the remainder of this vignette, I will format an assortment of tables and figures for publication:
+
+1. IVR risk tables
+2. SLF risk tables
+3. SLF risk plots- faceted by country
+4. Map of globally important viticultural regions
+5. bioclim variables
+
 # SLF quadrant plots- facet by country
 
 I want to segment the SLF presences by country and create risk plots similar to what I have for IVR regions.
 
-```{r load in SLF dataset}
+```{r load in SLF dataset and transform}
 
-slf_populations <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2024-08-05.rds"))
+slf_populations <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds"))
+
+# transform to lat lon
+slf_populations_latlon <- slf_populations %>%
+  sf::st_as_sf(coords = c("x", "y"), crs = "ESRI:54017") %>%
+  sf::st_transform(crs = "EPSG:4326") %>%
+  dplyr::mutate(
+    x = sf::st_coordinates(.)[, 1],
+    y = sf::st_coordinates(.)[, 2]
+    ) %>%
+  sf::st_drop_geometry()
 
 ```
 
@@ -341,7 +354,7 @@ slf_populations <- read_rds(file = file.path(here::here(), "data", "slf_all_coor
 
 # geocode
 slf_populations_geocoded <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations, 
+  .tbl = slf_populations_latlon, 
   lat = y, 
   long = x, 
   full_results = TRUE, # give each element of the address in a column
@@ -365,20 +378,20 @@ nrow(slf_populations_geocoded_tidy)
 # save
 write_csv(
   x = slf_populations_geocoded_tidy, 
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2024-08-05_withCountries.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07_withCountries.csv")
   )
 
 # also write to rds
 readr::write_rds(
   x = slf_populations_geocoded_tidy, 
-  file = file.path(here::here(), "data", "slf_all_coords_final_2024-08-05_withCountries.rds")
+  file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_withCountries.rds")
 )
 
 ```
 
 ```{r re-import geocoded data, eval = TRUE}
 
-slf_populations_geocoded_tidy <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2024-08-05_withCountries.rds"))
+slf_populations_geocoded_tidy <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_withCountries.rds"))
 
 ```
 
@@ -805,4 +818,5 @@ bio11_hist_plot <- ggplot() +
 
 ```
 
+# -->
 
