@@ -37,7 +37,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # create necessary folders
 
-I will create the folders where the outputs of this package will be saved
+I will create the folders where the outputs of this package will be saved. Note that a set of these folders will be 1 level above the root folder for the package (so it will go on your file system in the same folder as this package).
 
 ```{r necessary folders}
 
@@ -49,6 +49,20 @@ dir.create(file.path(here::here(), "vignette-outputs", "figures"))
 dir.create(file.path(here::here(), "vignette-outputs", "figures", "figures-rds"))
 dir.create(file.path(here::here(), "vignette-outputs", "shapefiles"))
 dir.create(file.path(here::here(), "vignette-outputs", "reports"))
+# folder 1 level above the package for maxent outputs and subfolders
+dir.create(file.path(here::here() %>% dirname(), "maxent"))
+# model storage
+dir.create(file.path(here::here() %>% dirname(), "maxent", "models"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "models", "working_dir"))
+# historical rasters
+dir.create(file.path(here::here() %>% dirname(), "maxent", "historical_climate_rasters"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "historical_climate_rasters", "chelsa2.1_30arcsec"))
+# future rasters
+dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_rasters"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_rasters", "chelsa2.1_30arcsec"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_rasters", "chelsa2.1_30arcsec", "2041-2070_ssp126_GFDL"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_rasters", "chelsa2.1_30arcsec", "2041-2070_ssp370_GFDL"))
+dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_rasters", "chelsa2.1_30arcsec", "2041-2070_ssp585_GFDL"))
 
 ```
 

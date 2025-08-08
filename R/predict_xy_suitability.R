@@ -48,8 +48,10 @@
 #'@param buffer.dist Numeric. The distance from each xy coordinate at which to
 #'calculate the suitability value.
 #'
-#'@param crs Character. The crs of the projection used in building the input species data.
-#'Default is "ESRI:54017", the Behrmann Equal Area projection.
+#'@param crs Character. The crs (coordinate reference system) of the projection
+#'used in building the input species data. Should be in the format of an EPSG or
+#'ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
+#'NOTE: If changing, ensure that other input data share the same crs.
 #'
 #'@param output.name The name of the file output. Separate words with _. Relevant
 #'information might include the name of the model used to predict, the spatial

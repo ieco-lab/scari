@@ -2,7 +2,7 @@
 #'
 #'@description This function creates a report at the country or state/province level
 #'for the risk of establishment of Lycorma delicatula. The report covers the major
-#'data outputs from this R package analysis, including current and future risk maps,
+#'data outputs from this R package analysis, including present and future risk maps,
 #'range shift maps, risk plots and risk tables.
 #'
 #'@param locality.iso The [alpha-3 ISO code](https://www.iso.org/obp/ui/#search)
@@ -20,6 +20,24 @@
 #'at the country level and then look at the return for the name of the state/province
 #'included.
 #'
+#'@param crs Character. The crs (coordinate reference system) of the projection
+#'used in building the input species data. Should be in the format of an EPSG or
+#'ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
+#'NOTE: If changing, ensure that other input data share the same crs.
+#'
+#'@param period.present Character. The time period included by the historical climate data.
+#'This is used to name the output files. Default is period of 1981-2010.
+#'
+#'@param period.projected Character. The time period included by climate data projected
+#'under climate change. This is used to name the output files. Default is period of 2041-2070.
+#'
+#'@param model.projected Character. The CMIP6 model used for projections of future
+#'climate conditions. This is used to name the output files. Default is "GFDL-ESM4".
+#'
+#'@param ssp.projected Character string. The ssp scenarios used for projections of future
+#'climate conditions. This is used to name the output files. Separate names with underscores.
+#'Default is "ssp_126_370_585".
+#'
 #'@param save.report Logical. Should the report be saved to file? File location
 #'specified by `mypath`. Note, this requires the use of Google Chrome.
 #'
@@ -31,8 +49,9 @@
 #'part of the filepath in `mypath`.
 #'
 #'@param raster.path Character. A file path to the directory containing the rasters
-#'necessary to build this function. See details for the rasters that should be
-#'included with this data input and for the default path.
+#'necessary to build this function. This folder should contain ONLY the three rasters
+#'used for this function. See details for the rasters that should be included
+#'with this data input and for the default path.
 #'
 #'@param create.dir Logical. Should the last element of `mypath` create a sub
 #'directory for the report? If TRUE, the main folder will be created for
@@ -48,11 +67,11 @@
 #'at which to draw buffers zones on risk maps. Should be the same distance that
 #'was used to calculate the predicted suitability for each IVR region.
 #'See `predict.xy.suitability.R` for details. If not specified, buffers are not
-#'drawn and suitabiltiy prediction method is assumed to be simple (point-wise).
+#'drawn and suitability prediction method is assumed to be simple (point-wise).
 #'
 #'@details
 #'
-#'Requires the following packages: 'tidyverse', 'terra', 'here', 'cli', 'rnaturalearth', 'rnaturalearthhires', 'kableExtra', 'formattable', 'webshot', 'webshot2', 'ggnewscale', 'common'.
+#'Requires the following packages: 'cli', 'common', 'formattable', 'ggnewscale', 'ggspatial', 'here', 'kableExtra','rnaturalearth', 'rnaturalearthdata', 'rnaturalearthhires', 'scari', 'sf', 'tidyverse', 'terra', 'webshot', and 'webshot2'.
 #'**NOTE** This function requires the use of Google Chrome if save.report = TRUE
 #'
 #'Note that this function performs downloads from
@@ -92,7 +111,7 @@
 #'the global env in a list object include:
 #'
 #'* viticultural_regions_list - a list of known important wine regions within the locality with predicted suitability values and levels.
-#'* risk_maps - a current and future map of risk for L delicatula establishment. The CMIP6 predictions are based on the mean of the three ssp scenarios
+#'* risk_maps - a present and future map of risk for L delicatula establishment. The CMIP6 predictions are based on the mean of the three ssp scenarios
 #'* viticultural_risk_plot = a quantified assessment of the risk for L delicatula establishment for known wine regions within the locality. This plot depicts the intersection of our two modeled scales.
 #'* viticultural_risk_table = a risk table quantifying the level of risk to vineyards according to the quadrant plot
 #'* range_shift_map = a map of potential range expansion for L delicatula under climate change
@@ -140,12 +159,12 @@
 #'viticultural_regions <- slf_risk_report[[2]]
 #'
 #'# alternatively, call elements by name:
-#'risk_map_2055 <- slf_risk_report[["risk_maps"]][["2055_risk_map"]]
+#'risk_map_future <- slf_risk_report[["risk_maps"]][["future_risk_map"]]
 #'
 #'# sometimes a plot is off-center because the shapefile includes an outlying territory
 #'# you can edit this directly in the ggplot object and save over the report output
 #'
-#'map_current <- slf_risk_report[["risk_maps"]][["current_risk_map"]] +
+#'map_present <- slf_risk_report[["risk_maps"]][["present_risk_map"]] +
 #'xlim(-10, 5) +
 #'ylim(35, 44)
 #'
@@ -156,7 +175,7 @@
 #'```
 #'
 #'@export
-create_risk_report <- function(locality.iso, locality.name = locality.iso, locality.type, save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
+create_risk_report <- function(locality.iso, locality.name = locality.iso, locality.type, crs = "ESRI:54017", period.present = "1981-2010", period.projected = "2041-2070", model.projected = "GFDL-ESM4", ssp.projected = "ssp_126_370_585", save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
 
   # Error checks----------------------------------------------------------------
 
@@ -174,6 +193,31 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   if (is.character(locality.type) == FALSE) {
     cli::cli_abort("Parameter 'locality.type' must be of type character")
+    stop()
+  }
+
+  if (is.character(crs) == FALSE) {
+    cli::cli_abort("Parameter 'crs' must be of type character")
+    stop()
+  }
+
+  if (is.character(period.present) == FALSE) {
+    cli::cli_abort("Parameter 'period.present' must be of type character")
+    stop()
+  }
+
+  if (is.character(period.projected) == FALSE) {
+    cli::cli_abort("Parameter 'period.projected' must be of type character")
+    stop()
+  }
+
+  if (is.character(model.projected) == FALSE) {
+    cli::cli_abort("Parameter 'model.projected' must be of type character")
+    stop()
+  }
+
+  if (is.character(ssp.projected) == FALSE) {
+    cli::cli_abort("Parameter 'ssp.projected' must be of type character")
     stop()
   }
 
@@ -235,8 +279,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   load(file.path(here::here(), "R", "sysdata.rda"))
 
   # import rasters
-  slf_binarized_1995 <- terra::rast(file.path(raster.path, "slf_binarized_summed_1981-2010.asc"))
-  slf_binarized_2055 <- terra::rast(file.path(raster.path, "slf_binarized_summed_2041-2070_ssp_mean_GFDL.asc"))
+  slf_binarized_hist <- terra::rast(file.path(raster.path, "slf_binarized_summed_1981-2010.asc"))
+  slf_binarized_future <- terra::rast(file.path(raster.path, "slf_binarized_summed_2041-2070_ssp_mean_GFDL.asc"))
   slf_range_shift <- terra::rast(file.path(raster.path, "slf_range_shift_summed_ssp_mean_GFDL.asc"))
 
   # map.style
@@ -244,8 +288,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   if (is.na(map.style)) {
 
     map_style <- list(
-      xlab("longitude"),
-      ylab("latitude"),
+      xlab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "longitude", "UTM_eastings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
+      ylab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "latitude", "UTM_northings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
       # aesthetics
       theme_classic(),
       theme(
@@ -332,7 +376,6 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   }
 
 
-
   # import states and provinces
   if(file.exists(file.path(here::here(), "data-raw", "ne_states_provinces", "ne_10m_admin_1_states_provinces.shp")) == TRUE) {
 
@@ -363,6 +406,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   }
 
   # tidy shapefiles-------------------------------------------------------------
+
+  # convert to proper crs
+  countries_sf <- sf::st_transform(countries_sf, crs = crs)
+  states_provinces_sf <- sf::st_transform(states_provinces_sf, crs = crs)
 
   # harmonize naming
   countries_sf <- countries_sf %>%
@@ -415,10 +462,12 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       Region = gsub(Region, pattern = "–", replacement = "", fixed = TRUE)
     )
 
-  # convert to df
-  # DEPRECATED
-  #IVR_locations <- as.data.frame(IVR_locations)
-
+  # add join cols
+  IVR_locations <- IVR_locations %>%
+    dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    )
 
   # check for existence of locality name in shapefiles--------------------------
 
@@ -485,22 +534,31 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   # begin function--------------------------------------------------------------
 
-  ## isolate IVRs for locality
+  ## isolate IVRs for locality--------------------------------------------------
 
   # create spatvector of locality_sf (this will be used to mask the maps as well)
   locality_sv <- terra::vect(locality_sf)
 
   # convert to vector
-  IVR_locations_masked <- terra::vect(x = IVR_locations, geom = c("x", "y"), crs = "EPSG:4326") %>%
+  IVR_locations_masked <- terra::vect(x = IVR_locations, geom = c("x", "y"), crs = crs) %>%
     # crop by extent area of interest
-    terra::mask(., mask = locality_sv) %>%
-    # convert to geom, which gets coordinates of a spatVector
+    terra::mask(., mask = locality_sv)
+
+  # separate a copy of this for joining later
+  IVR_locations_join_cols <- terra::as.data.frame(IVR_locations_masked)
+
+  # convert to geom, which gets coordinates of a spatVector
+  IVR_locations_masked <- IVR_locations_masked %>%
     terra::geom()
 
   # convert back to data frame
   IVR_locations_plot_layer <- terra::as.data.frame(IVR_locations_masked) %>%
     dplyr::select(-c(geom, part, hole))
 
+
+  # add join cols for later
+  IVR_locations_plot_layer <- cbind(IVR_locations_plot_layer, IVR_locations_join_cols) %>%
+    dplyr::select(x, y, join_col_x, join_col_y)
 
   # will not need this object again
   rm(IVR_locations_masked)
@@ -523,7 +581,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # convert IVR points to spatvector
     IVR_buffers_sv <- terra::vect(
       x = IVR_locations_plot_layer,
-      crs = "EPSG:4326",
+      crs = crs,
       geom = c("x", "y")
     )
     # use sv to create buffers
@@ -538,7 +596,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     )
 
     # convert to sf object for plotting
-    IVR_buffers_plot_layer <- sf::st_as_sf(IVR_buffers_sv)
+    IVR_buffers_plot_layer <- sf::st_as_sf(IVR_buffers_sv, remove = FALSE)
 
     # otherwise, stop
   } else {
@@ -554,25 +612,25 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # first, I will mask these rasters using the locality_sf
   # use the version locality_sv instead for masking
 
-  slf_binarized_1995 <- terra::mask(
-    x = slf_binarized_1995,
+  slf_binarized_hist <- terra::mask(
+    x = slf_binarized_hist,
     mask = locality_sv
   )
 
-  slf_binarized_2055 <- terra::mask(
-    x = slf_binarized_2055,
+  slf_binarized_future <- terra::mask(
+    x = slf_binarized_future,
     mask = locality_sv
   )
 
 
 
   # rename values
-  names(slf_binarized_1995) <- "global_regional_binarized"
-  names(slf_binarized_2055) <- "global_regional_binarized"
+  names(slf_binarized_hist) <- "global_regional_binarized"
+  names(slf_binarized_future) <- "global_regional_binarized"
 
   # convert to df for plotting
-  slf_binarized_1995_df <- terra::as.data.frame(slf_binarized_1995, xy = TRUE)
-  slf_binarized_2055_df <- terra::as.data.frame(slf_binarized_2055, xy = TRUE)
+  slf_binarized_hist_df <- terra::as.data.frame(slf_binarized_hist, xy = TRUE)
+  slf_binarized_future_df <- terra::as.data.frame(slf_binarized_future, xy = TRUE)
 
 
   # binarized maps
@@ -584,15 +642,15 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   values.obj <- c("azure4", "gold", "darkorange", "darkred")
 
 
-  ### current plot
+  ### present plot
 
   # plot with state_province layer if plotting at country level
   if(locality.type == "country") {
 
-  slf_binarized_1995_plot <- ggplot() +
+  slf_binarized_hist_plot <- ggplot() +
     map_style +
     # data layer
-    geom_raster(data = slf_binarized_1995_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+    geom_raster(data = slf_binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
     # add province layer
     geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
     # fill scale 1
@@ -610,19 +668,30 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # whether or not to plot buffer layer
   if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-    slf_binarized_1995_plot <- slf_binarized_1995_plot +
+    slf_binarized_hist_plot <- slf_binarized_hist_plot +
       # underlying buffer layer
       geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     # otherwise, plot without buffers
   } else if (is.na(buffer.dist)) {
-    slf_binarized_1995_plot <- slf_binarized_1995_plot
+    slf_binarized_hist_plot <- slf_binarized_hist_plot
 
   }
 
-  slf_binarized_1995_plot <- slf_binarized_1995_plot +
+  slf_binarized_hist_plot <- slf_binarized_hist_plot +
     # points
     geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+    # scale bar
+    ggspatial::annotation_scale(
+      plot_unit = "m", # the unit of the map
+      location = "bl",
+      width_hint = 0.2,
+      text_cex = 0.6,
+      pad_x = unit(0.3, "in"),
+      pad_y = unit(0.2, "in"),
+      style = "bar",                        # classic black-and-white bar
+      bar_cols = c("black", "white")        # alternating colors
+    ) +
     # fill scale for points
     scale_fill_manual(name = "", values = c("viticultural\narea" = "orchid1")) +
     # aesthetics
@@ -630,10 +699,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # other stuff
     labs(
       title = "Present projected risk of Lycorma delicatula establishment",
-      subtitle = stringr::str_to_title(locality_name_internal),
+      subtitle = paste0(stringr::str_to_title(locality_name_internal), " | ", period.present),
       caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
     ) +
-    coord_sf()
+    coord_sf(
+      datum = crs,
+      crs = crs
+    )
 
 
 
@@ -641,10 +713,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # otherwise, plot without a state_province layer
   } else if(locality.type == "state_province") {
 
-    slf_binarized_1995_plot <- ggplot() +
+    slf_binarized_hist_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_1995_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = slf_binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -662,19 +734,30 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_1995_plot <- slf_binarized_1995_plot +
+      slf_binarized_hist_plot <- slf_binarized_hist_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
       # dont plot
     } else if (is.na(buffer.dist)) {
-      slf_binarized_1995_plot <- slf_binarized_1995_plot
+      slf_binarized_hist_plot <- slf_binarized_hist_plot
 
     }
 
-    slf_binarized_1995_plot <- slf_binarized_1995_plot +
+    slf_binarized_hist_plot <- slf_binarized_hist_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+      # scale bar
+      ggspatial::annotation_scale(
+        plot_unit = "m", # the unit of the map
+        location = "bl",
+        width_hint = 0.2,
+        text_cex = 0.6,
+        pad_x = unit(0.3, "in"),
+        pad_y = unit(0.2, "in"),
+        style = "bar",                        # classic black-and-white bar
+        bar_cols = c("black", "white")        # alternating colors
+      ) +
       # fill scale for points
       scale_fill_manual(name = "", values = c("viticultural\narea" = "orchid1")) +
       # aesthetics
@@ -682,10 +765,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # other stuff
       labs(
         title = "Present projected risk of Lycorma delicatula establishment",
-        subtitle = stringr::str_to_title(locality_name_internal),
+        subtitle = paste0(stringr::str_to_title(locality_name_internal), " | ", period.present),
         caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
       ) +
-      coord_sf()
+      coord_sf(
+        datum = crs,
+        crs = crs
+      )
 
   }
 
@@ -697,10 +783,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # plot with state_province layer if plotting at country level
   if(locality.type == "country") {
 
-    slf_binarized_2055_plot <- ggplot() +
+    slf_binarized_future_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_2055_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = slf_binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -718,18 +804,29 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_2055_plot <- slf_binarized_2055_plot +
+      slf_binarized_future_plot <- slf_binarized_future_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
-      slf_binarized_2055_plot <- slf_binarized_2055_plot
+      slf_binarized_future_plot <- slf_binarized_future_plot
 
     }
 
-    slf_binarized_2055_plot <- slf_binarized_2055_plot +
+    slf_binarized_future_plot <- slf_binarized_future_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+      # scale bar
+      ggspatial::annotation_scale(
+        plot_unit = "m", # the unit of the map
+        location = "bl",
+        width_hint = 0.2,
+        text_cex = 0.6,
+        pad_x = unit(0.3, "in"),
+        pad_y = unit(0.2, "in"),
+        style = "bar",                        # classic black-and-white bar
+        bar_cols = c("black", "white")        # alternating colors
+      ) +
       # fill scale for points
       scale_fill_manual(name = "", values = c("viticultural\narea" = "purple3")) +
       # aesthetics
@@ -737,10 +834,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # other stuff
       labs(
         title = "Projected risk of Lycorma delicatula establishment under climate change",
-        subtitle = paste(stringr::str_to_title(locality_name_internal), "| 2041-2070 | mean of ssp126/370/585 | GFDL-ESM4"),
+        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected, "|", model.projected),
         caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
       ) +
-      coord_sf()
+      coord_sf(
+        datum = crs,
+        crs = crs
+      )
 
 
 
@@ -748,10 +848,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # otherwise, plot without a state_province layer
   } else if(locality.type == "state_province") {
 
-    slf_binarized_2055_plot <- ggplot() +
+    slf_binarized_future_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_2055_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = slf_binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -770,19 +870,30 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_2055_plot <- slf_binarized_2055_plot +
+      slf_binarized_future_plot <- slf_binarized_future_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
-      slf_binarized_2055_plot <- slf_binarized_2055_plot
+      slf_binarized_future_plot <- slf_binarized_future_plot
 
     }
 
 
-    slf_binarized_2055_plot <- slf_binarized_2055_plot +
+    slf_binarized_future_plot <- slf_binarized_future_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+      # scale bar
+      ggspatial::annotation_scale(
+        plot_unit = "m", # the unit of the map
+        location = "bl",
+        width_hint = 0.2,
+        text_cex = 0.6,
+        pad_x = unit(0.3, "in"),
+        pad_y = unit(0.2, "in"),
+        style = "bar",                        # classic black-and-white bar
+        bar_cols = c("black", "white")        # alternating colors
+      ) +
       # fill scale for points
       scale_fill_manual(name = "", values = c("viticultural\narea" = "purple3")) +
       # aesthetics
@@ -790,10 +901,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # other stuff
       labs(
         title = "Projected risk of Lycorma delicatula establishment under climate change",
-        subtitle = paste(stringr::str_to_title(locality_name_internal), "| 2041-2070 | mean of ssp126/370/585 | GFDL-ESM4"),
+        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected, "|", model.projected),
         caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
       ) +
-      coord_sf()
+      coord_sf(
+        datum = crs,
+        crs = crs
+      )
 
   }
 
@@ -824,7 +938,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # labels for the values
   labels.obj2 <- c("unsuitable area\nretained", "suitabile area\nretained", "contraction\nof suitable area", "expansion\nof suitable area")
   # vector of colors to classify scale
-  values.obj2 <- c("azure4", "azure", "darkred", "darkgreen")
+  values.obj2 <- c("azure4", "azure", "darkblue", "darkgreen")
 
 
 
@@ -850,6 +964,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     ggnewscale::new_scale_fill() +
     # IVR regions
     geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+    # scale bar
+    ggspatial::annotation_scale(
+      plot_unit = "m", # the unit of the map
+      location = "bl",
+      width_hint = 0.2,
+      text_cex = 0.6,
+      pad_x = unit(0.3, "in"),
+      pad_y = unit(0.2, "in"),
+      style = "bar",                        # classic black-and-white bar
+      bar_cols = c("black", "white")        # alternating colors
+    ) +
     # fill scale for points
     scale_fill_manual(name = "", values = c("viticultural\narea" = "purple3")) +
     # aesthetics
@@ -857,10 +982,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # other stuff
     labs(
       title = "Projected areas suitable for Lycorma delicatula range expansion",
-      subtitle = paste0(stringr::str_to_title(locality_name_internal), " | 2041-2070")
+      subtitle = paste0(stringr::str_to_title(locality_name_internal), " | ", period.present, " and ", period.projected)
     ) +
     theme(legend.title = element_text(hjust = 1)) +
-    coord_sf()
+    coord_sf(
+      datum = crs,
+      crs = crs
+    )
 
 
   # otherwise, plot without a state_province layer
@@ -885,6 +1013,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       ggnewscale::new_scale_fill() +
       # IVR regions
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
+      # scale bar
+      ggspatial::annotation_scale(
+        plot_unit = "m", # the unit of the map
+        location = "bl",
+        width_hint = 0.2,
+        text_cex = 0.6,
+        pad_x = unit(0.3, "in"),
+        pad_y = unit(0.2, "in"),
+        style = "bar",                        # classic black-and-white bar
+        bar_cols = c("black", "white")        # alternating colors
+      ) +
       # fill scale for points
       scale_fill_manual(name = "", values = c("viticultural\narea" = "purple3")) +
       # aesthetics
@@ -892,10 +1031,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # other stuff
       labs(
         title = "Projected areas suitable for Lycorma delicatula range expansion",
-        subtitle = paste0(stringr::str_to_title(locality_name_internal), " | 2041-2070")
+        subtitle = paste0(stringr::str_to_title(locality_name_internal), " | ", period.present, " and ", period.projected)
       ) +
       theme(legend.title = element_text(hjust = 1)) +
-      coord_sf()
+      coord_sf(
+        datum = crs,
+        crs = crs
+      )
 
   }
 
@@ -908,7 +1050,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## return IVR_locations selected for locality---------------------------------
 
   # filter out locations that match plot layer
-  IVR_locations_locality <-  dplyr::semi_join(IVR_locations, IVR_locations_plot_layer, by = c("x", "y"))
+  IVR_locations_locality <-  dplyr::semi_join(IVR_locations, IVR_locations_plot_layer, by = c("join_col_x", "join_col_y"))
 
 
 
@@ -916,75 +1058,116 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   ### tidy data-----------------------------------------------------------------
 
+  # add join cols
+  xy_global_hist <- xy_global_hist %>%
+    dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+    dplyr::select(-c(x, y)) %>%
+    dplyr::relocate(join_col_x, join_col_y, .after = ID)
+
+
+  xy_global_future <- xy_global_future %>%
+    dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+    dplyr::select(-c(x, y)) %>%
+    dplyr::relocate(join_col_x, join_col_y, .after = ID)
+
+
+  xy_regional_ensemble_hist <- xy_regional_ensemble_hist %>%
+    dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+    dplyr::select(-c(x, y)) %>%
+    dplyr::relocate(join_col_x, join_col_y, .after = ID)
+
+
+  xy_regional_ensemble_future <- xy_regional_ensemble_future %>%
+    dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+    dplyr::select(-c(x, y)) %>%
+    dplyr::relocate(join_col_x, join_col_y, .after = ID)
+
+
+  ### rescale data--------------------------------------------------------------
+
   # apply internal function rescale_cloglog_suitability
-  xy_global_1995_rescaled <- scari::rescale_cloglog_suitability(
-    xy.predicted = xy_global_1995,
+  xy_global_hist_rescaled <- scari::rescale_cloglog_suitability(
+    xy.predicted = xy_global_hist,
     thresh = "MTSS",
     exponential.file = threshold_exponential_values,
     summary.file = summary_global,
-    rescale.name = "xy_global_1995",
+    rescale.name = "xy_global_hist",
     rescale.thresholds = TRUE
   )
   # separate data from thresholds
-  xy_global_1995_rescaled_thresholds <- xy_global_1995_rescaled[[2]]
-  xy_global_1995_rescaled <- xy_global_1995_rescaled[[1]]
+  xy_global_hist_rescaled_thresholds <- xy_global_hist_rescaled[[2]]
+  xy_global_hist_rescaled <- xy_global_hist_rescaled[[1]]
 
 
-  xy_global_2055_rescaled <- scari::rescale_cloglog_suitability(
-    xy.predicted = xy_global_2055,
+  xy_global_future_rescaled <- scari::rescale_cloglog_suitability(
+    xy.predicted = xy_global_future,
     thresh = "MTSS",  # the global model only has 1 MTSS thresh
     exponential.file = threshold_exponential_values,
     summary.file = summary_global,
-    rescale.name = "xy_global_2055",
+    rescale.name = "xy_global_future",
     rescale.thresholds = TRUE
   )
 
-  xy_global_2055_rescaled_thresholds <- xy_global_2055_rescaled[[2]]
-  xy_global_2055_rescaled <- xy_global_2055_rescaled[[1]]
+  xy_global_future_rescaled_thresholds <- xy_global_future_rescaled[[2]]
+  xy_global_future_rescaled <- xy_global_future_rescaled[[1]]
 
 
 
-  xy_regional_ensemble_1995_rescaled <- scari::rescale_cloglog_suitability(
-    xy.predicted = xy_regional_ensemble_1995,
+  xy_regional_ensemble_hist_rescaled <- scari::rescale_cloglog_suitability(
+    xy.predicted = xy_regional_ensemble_hist,
     thresh = "MTSS",
     exponential.file = threshold_exponential_values,
     summary.file = summary_regional_ensemble,
-    rescale.name = "xy_regional_ensemble_1995",
+    rescale.name = "xy_regional_ensemble_hist",
     rescale.thresholds = TRUE
   )
 
-  xy_regional_ensemble_1995_rescaled_thresholds <- xy_regional_ensemble_1995_rescaled[[2]]
-  xy_regional_ensemble_1995_rescaled <- xy_regional_ensemble_1995_rescaled[[1]]
+  xy_regional_ensemble_hist_rescaled_thresholds <- xy_regional_ensemble_hist_rescaled[[2]]
+  xy_regional_ensemble_hist_rescaled <- xy_regional_ensemble_hist_rescaled[[1]]
 
 
 
-  xy_regional_ensemble_2055_rescaled <- scari::rescale_cloglog_suitability(
-    xy.predicted = xy_regional_ensemble_2055,
-    thresh = "MTSS.CC", # the way the thresholds are calculated for the regional_ensemble model means that the threshold will be slightly different for climate change
-    exponential.file = threshold_exponential_values,
-    summary.file = summary_regional_ensemble,
-    rescale.name = "xy_regional_ensemble_2055",
-    rescale.thresholds = TRUE
+  xy_regional_ensemble_future_rescaled <- suppressWarnings(
+    scari::rescale_cloglog_suitability(
+      xy.predicted = xy_regional_ensemble_future,
+      thresh = "MTSS.CC", # the way the thresholds are calculated for the regional_ensemble model means that the threshold will be slightly different for climate change
+      exponential.file = threshold_exponential_values,
+      summary.file = summary_regional_ensemble,
+      rescale.name = "xy_regional_ensemble_future",
+      rescale.thresholds = TRUE
+    )
   )
 
-  xy_regional_ensemble_2055_rescaled_thresholds <- xy_regional_ensemble_2055_rescaled[[2]]
-  xy_regional_ensemble_2055_rescaled <- xy_regional_ensemble_2055_rescaled[[1]]
+  xy_regional_ensemble_future_rescaled_thresholds <- xy_regional_ensemble_future_rescaled[[2]]
+  xy_regional_ensemble_future_rescaled <- xy_regional_ensemble_future_rescaled[[1]]
 
 
   ### join datasets--------------------------------------------------------------
 
   # join datasets for plotting
-  xy_joined_rescaled <-  dplyr::full_join(xy_global_1995_rescaled, xy_regional_ensemble_1995_rescaled, by = c("ID", "x", "y")) %>%
+  xy_joined_rescaled <-  dplyr::full_join(xy_global_hist_rescaled, xy_regional_ensemble_hist_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
     # join CC datasets
-    dplyr::full_join(., xy_global_2055_rescaled, by = c("ID", "x", "y")) %>%
-    dplyr::full_join(., xy_regional_ensemble_2055_rescaled, by = c("ID", "x", "y")) %>%
+    dplyr::full_join(., xy_global_future_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
+    dplyr::full_join(., xy_regional_ensemble_future_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
     # order
-    dplyr::relocate(ID, x, y, xy_global_1995_rescaled, xy_global_2055_rescaled) %>%
-    dplyr::select(-c(xy_global_1995, xy_global_2055, xy_regional_ensemble_1995, xy_regional_ensemble_2055))
+    dplyr::relocate(ID, join_col_x, join_col_y, xy_global_hist_rescaled, xy_global_future_rescaled) %>%
+    dplyr::select(-c(xy_global_hist, xy_global_future, xy_regional_ensemble_hist, xy_regional_ensemble_future))
 
 
   # filter out only records from locality
-  xy_joined_rescaled <-  dplyr::semi_join(xy_joined_rescaled, IVR_locations_locality, by = c("ID", "x", "y"))
+  xy_joined_rescaled <- dplyr::semi_join(xy_joined_rescaled, IVR_locations_locality, by = c("ID", "join_col_x", "join_col_y"))
 
 
 
@@ -993,10 +1176,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ### isolate thresholds---------------------------------------------------------
 
   # global
-  global_MTSS <- as.numeric(xy_global_1995_rescaled_thresholds[2, 2])
+  global_MTSS <- as.numeric(xy_global_hist_rescaled_thresholds[2, 2])
   # regional ensemble
-  regional_ensemble_MTSS_1995 <- as.numeric(xy_regional_ensemble_1995_rescaled_thresholds[2, 2])
-  regional_ensemble_MTSS_2055 <- as.numeric(xy_regional_ensemble_2055_rescaled_thresholds[4, 2])
+  regional_ensemble_MTSS_hist <- as.numeric(xy_regional_ensemble_hist_rescaled_thresholds[2, 2])
+  regional_ensemble_MTSS_future <- as.numeric(xy_regional_ensemble_future_rescaled_thresholds[4, 2])
 
 
 
@@ -1010,11 +1193,11 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       crosses_threshold =  dplyr::case_when(
         # conditional for starting and ending points that overlap a the threshold
         # x-axis
-        xy_global_1995_rescaled > global_MTSS & xy_global_2055_rescaled < global_MTSS ~ "crosses",
-        xy_global_1995_rescaled < global_MTSS & xy_global_2055_rescaled > global_MTSS ~ "crosses",
+        xy_global_hist_rescaled > global_MTSS & xy_global_future_rescaled < global_MTSS ~ "crosses",
+        xy_global_hist_rescaled < global_MTSS & xy_global_future_rescaled > global_MTSS ~ "crosses",
         # y-axis
-        xy_regional_ensemble_1995_rescaled > regional_ensemble_MTSS_2055 & xy_regional_ensemble_2055_rescaled < regional_ensemble_MTSS_2055 ~ "crosses",
-        xy_regional_ensemble_1995_rescaled < regional_ensemble_MTSS_2055 & xy_regional_ensemble_2055_rescaled > regional_ensemble_MTSS_2055 ~ "crosses",
+        xy_regional_ensemble_hist_rescaled > regional_ensemble_MTSS_future & xy_regional_ensemble_future_rescaled < regional_ensemble_MTSS_future ~ "crosses",
+        xy_regional_ensemble_hist_rescaled < regional_ensemble_MTSS_future & xy_regional_ensemble_future_rescaled > regional_ensemble_MTSS_future ~ "crosses",
         # else
         .default = "does not cross"
       )
@@ -1040,26 +1223,26 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # threshold lines
      # MTSS thresholds
      geom_vline(xintercept = global_MTSS, linetype = "dashed", linewidth = 0.7) + # global
-     geom_hline(yintercept = regional_ensemble_MTSS_1995, linetype = "dashed", linewidth = 0.7) + # regional_ensemble- there are two MTSS thresholds for this model, but the difference is so small that you will never see it on the plot
+     geom_hline(yintercept = regional_ensemble_MTSS_hist, linetype = "dashed", linewidth = 0.7) + # regional_ensemble- there are two MTSS thresholds for this model, but the difference is so small that you will never see it on the plot
      # arrows indicating change
      geom_segment(
        data = xy_joined_rescaled_intersects,
        aes(
-         x = xy_global_1995_rescaled,
-         xend = xy_global_2055_rescaled,
-         y = xy_regional_ensemble_1995_rescaled,
-         yend = xy_regional_ensemble_2055_rescaled
+         x = xy_global_hist_rescaled,
+         xend = xy_global_future_rescaled,
+         y = xy_regional_ensemble_hist_rescaled,
+         yend = xy_regional_ensemble_future_rescaled
        ),
        arrow = grid::arrow(angle = 5.5, type = "closed"), alpha = 0.3, linewidth = 0.25, color = "black"
      ) +
      # historical data
      geom_point(
-       aes(x = xy_global_1995_rescaled, y = xy_regional_ensemble_1995_rescaled, shape = "Present"),
+       aes(x = xy_global_hist_rescaled, y = xy_regional_ensemble_hist_rescaled, shape = "Present"),
        size = 2, stroke = 0.7, color = "black", fill = "orchid1"
      ) +
-     # GFDL ssp370 data
+     # future data
      geom_point(
-       aes(x = xy_global_2055_rescaled, y = xy_regional_ensemble_2055_rescaled, shape = "2041-2070\nGFDL-ESM4\nmean ssp126/370/585"),
+       aes(x = xy_global_future_rescaled, y = xy_regional_ensemble_future_rescaled, shape = paste0("Future | ", model.projected, "\nmean of", ssp.projected)),
        size = 2, stroke = 0.7, color = "black", fill = "purple3"
      ) +
      # axes scaling
@@ -1067,13 +1250,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
      scale_y_continuous(name = "'regional_ensemble' model risk projection", limits = c(0, 1), breaks = breaks, labels = labels) +
      # quadrant labels
      # extreme risk, top right, quad4
-     geom_label(aes(x = 0.75, y = 0.9, label = "extreme risk"), fill = "darkred", color = "azure", size = 5) +
+     annotate("label", x = 0.75, y = 0.9, label = "extreme risk", fill = "darkred", color = "azure", size = 5) +
      # high risk, top left, quad3
-     geom_label(aes(x = 0.25, y = 0.9, label = "high risk"), fill = "darkorange", color = "azure", size = 5) +
+     annotate("label", x = 0.25, y = 0.9, label = "high risk", fill = "darkorange", color = "azure", size = 5) +
      # moderate risk, bottom right, quad2
-     geom_label(aes(x = 0.75, y = 0.1, label = "moderate risk"), fill = "gold", color = "azure", size = 5) +
+     annotate("label", x = 0.75, y = 0.1, label = "moderate risk", fill = "gold", color = "azure", size = 5) +
      # low risk, bottom left, quad1
-     geom_label(aes(x = 0.25, y = 0.1, label = "low risk"), fill = "azure4", color = "azure", size = 5) +
+     annotate("label", x = 0.25, y = 0.1, label = "low risk", fill = "azure4", color = "azure", size = 5) +
      # aesthetics
      scale_shape_manual(name = "Time period", values = c(21, 21)) +
      guides(shape = guide_legend(nrow = 1, override.aes = list(size = 2.5), reverse = TRUE)) +
@@ -1093,35 +1276,35 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create IVR summary table---------------------------------------------------
 
   # join rescaled suitability values with IVR locations
-  IVR_locations_joined <- dplyr::left_join(IVR_locations_locality, xy_joined_rescaled, by = c("ID", "x", "y")) %>%
+  IVR_locations_joined <- dplyr::left_join(IVR_locations_locality, xy_joined_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
     dplyr::relocate(ID, x, y)
 
 
   # calculate risk quadrants
   IVR_locations_risk <- IVR_locations_joined %>%
     dplyr::mutate(
-      risk_1995 = scari::calculate_risk_quadrant(
-        suit.x = IVR_locations_joined$xy_global_1995_rescaled,
-        suit.y = IVR_locations_joined$xy_regional_ensemble_1995_rescaled,
+      risk_hist = scari::calculate_risk_quadrant(
+        suit.x = IVR_locations_joined$xy_global_hist_rescaled,
+        suit.y = IVR_locations_joined$xy_regional_ensemble_hist_rescaled,
         thresh.x = global_MTSS, # this threshold remains the same
-        thresh.y = regional_ensemble_MTSS_1995
+        thresh.y = regional_ensemble_MTSS_hist
       ),
-      risk_2055 = scari::calculate_risk_quadrant(
-        suit.x = IVR_locations_joined$xy_global_2055_rescaled,
-        suit.y = IVR_locations_joined$xy_regional_ensemble_2055_rescaled,
+      risk_future = scari::calculate_risk_quadrant(
+        suit.x = IVR_locations_joined$xy_global_future_rescaled,
+        suit.y = IVR_locations_joined$xy_regional_ensemble_future_rescaled,
         thresh.x = global_MTSS,
-        thresh.y = regional_ensemble_MTSS_2055
+        thresh.y = regional_ensemble_MTSS_future
       ),
-      risk_shift = str_c(risk_1995, risk_2055, sep = "-")
+      risk_shift = str_c(risk_hist, risk_future, sep = "-")
     )
 
 
   # create risk table
   IVR_risk_table <- IVR_locations_risk %>%
     # create counts and make into acrostic table
-    dplyr::group_by(risk_1995, risk_2055) %>%
+    dplyr::group_by(risk_hist, risk_future) %>%
     dplyr::summarize(count = dplyr::n()) %>%
-    tidyr::pivot_wider(names_from = risk_2055, values_from = count) %>%
+    tidyr::pivot_wider(names_from = risk_future, values_from = count) %>%
     dplyr::ungroup()
 
   # add columns that do not exist
@@ -1131,16 +1314,16 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   if(!'low' %in% names(IVR_risk_table)) IVR_risk_table <- IVR_risk_table %>% tibble::add_column(low = 0)
 
   # ensure all combinations of risk exist
-  if(!'extreme' %in% IVR_risk_table$risk_1995) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_1995 = "extreme", extreme = 0, high = 0, moderate = 0, low = 0)
-  if(!'high' %in% IVR_risk_table$risk_1995) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_1995 = "high", extreme = 0, high = 0, moderate = 0, low = 0)
-  if(!'moderate' %in% IVR_risk_table$risk_1995) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_1995 = "moderate", extreme = 0, high = 0, moderate = 0, low = 0)
-  if(!'low' %in% IVR_risk_table$risk_1995) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_1995 = "low", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'extreme' %in% IVR_risk_table$risk_hist) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_hist = "extreme", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'high' %in% IVR_risk_table$risk_hist) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_hist = "high", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'moderate' %in% IVR_risk_table$risk_hist) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_hist = "moderate", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'low' %in% IVR_risk_table$risk_hist) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_hist = "low", extreme = 0, high = 0, moderate = 0, low = 0)
 
   # tidy
   IVR_risk_table <- IVR_risk_table %>%
-    dplyr::rename("rows_1995_cols_2055" = "risk_1995") %>%
-    dplyr::relocate("rows_1995_cols_2055", "extreme", "high", "moderate") %>%
-    dplyr::arrange(factor(.$rows_1995_cols_2055, levels = risk_levels)) %>%
+    dplyr::rename("rows_hist_cols_future" = "risk_hist") %>%
+    dplyr::relocate("rows_hist_cols_future", "extreme", "high", "moderate") %>%
+    dplyr::arrange(factor(.$rows_hist_cols_future, levels = risk_levels)) %>%
     # replace missing categories with 0
     replace(is.na(.), 0)
 
@@ -1148,7 +1331,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # add totals row and column
   IVR_risk_table <- IVR_risk_table %>%
     tibble::add_column("total_present" = rowSums(dplyr::select(., 2:5))) %>%
-    tibble::add_row(rows_1995_cols_2055 = "total_2055", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = nrow(IVR_locations_locality)) %>%
+    tibble::add_row(rows_hist_cols_future = "total_future", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = nrow(IVR_locations_locality)) %>%
     as.data.frame()
 
   # edit column of rownames
@@ -1156,14 +1339,14 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # add rownames
   rownames(IVR_risk_table) <- IVR_risk_table[, 1]
   # get rid of names column
-  IVR_risk_table <- dplyr::select(IVR_risk_table, -rows_1995_cols_2055)
+  IVR_risk_table <- dplyr::select(IVR_risk_table, -rows_hist_cols_future)
   # edit column names
   IVR_risk_table <- dplyr::rename(
     IVR_risk_table,
-    "extreme_2055" = "extreme",
-    "high_2055" = "high",
-    "moderate_2055" = "moderate",
-    "low_2055" = "low"
+    "extreme_future" = "extreme",
+    "high_future" = "high",
+    "moderate_future" = "moderate",
+    "low_future" = "low"
   )
 
 
@@ -1202,6 +1385,9 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # standardize col width
     kableExtra::column_spec(1:5, width_min = '4cm') %>%
     # add footnotes
+    # footnote on time period of predictions
+    kableExtra::add_footnote(paste0("future risk calculated for period ", period.projected), notation = "alphabet") %>%
+    kableExtra::add_footnote(paste0("present risk calculated for period ", period.present), notation = "alphabet") %>%
     kableExtra::add_footnote("number signs indicate whether climate change is increasing or decreasing risk", notation = "alphabet") %>%
     # styling
     kableExtra::add_header_above(., header = c("Risk of L delicatula establishment for important viticultural regions" = 6), bold = TRUE)  %>%
@@ -1217,55 +1403,60 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create risk area table-----------------------------------------------------
 
   # use terra::expanse to calculate predicted area presently and under climate change
-  # 1995
-  slf_model_prop_table_1995 <- terra::expanse(
-    x = slf_binarized_1995,
-    unit = "km",
-    byValue = TRUE
-  )
-  # 2055
-  slf_model_prop_table_2055_ssp_mean <- terra::expanse(
-    x = slf_binarized_2055,
-    unit = "km",
-    byValue = TRUE
-  )
+  # hist
+  slf_model_prop_table_hist <- suppressWarnings(
+    terra::expanse(
+      x = slf_binarized_hist,
+      unit = "km",
+      byValue = TRUE
+    )
+    ) # terra expanse tends to tell me that the UTM projections dont work when they do, so I silenced this warning
+
+  # future
+  slf_model_prop_table_future_ssp_mean <- suppressWarnings(
+    terra::expanse(
+      x = slf_binarized_future,
+      unit = "km",
+      byValue = TRUE
+    )
+    )
 
   # create object to help join risk levels with terra expanse
-  categories.obj <- tibble(
+  categories.obj <- tibble::tibble(
     model_suitability = c("unsuitable_agreement", "regional", "global", "suitable_agreement"),
     value = c(5, 6, 9, 10)
   )
 
   # join
-  slf_model_prop_table_joined <- left_join(slf_model_prop_table_1995, slf_model_prop_table_2055_ssp_mean, join_by(value, layer)) %>%
+  slf_model_prop_table_joined <- dplyr::left_join(slf_model_prop_table_hist, slf_model_prop_table_future_ssp_mean, by = c("value", "layer")) %>%
     # add labels
-    left_join(., categories.obj, join_by(value))
+    dplyr::left_join(., categories.obj, by = "value")
 
 
   # tidy
   slf_model_prop_table_joined <- slf_model_prop_table_joined %>%
     dplyr::select(-c(layer, value)) %>%
     dplyr::rename(
-      "area_km_1995" = "area.x",
-      "area_km_2055" = "area.y"
+      "area_km_hist" = "area.x",
+      "area_km_future" = "area.y"
     ) %>%
     dplyr::mutate(
       # calculate proportions of total area
-      prop_total_area_1995 = scales::label_percent()(area_km_1995 / sum(area_km_1995)),
-      prop_total_area_2055 = scales::label_percent()(area_km_2055 / sum(area_km_2055)),
+      prop_total_area_hist = scales::label_percent()(area_km_hist / sum(area_km_hist)),
+      prop_total_area_future = scales::label_percent()(area_km_future / sum(area_km_future)),
       # change formatting
-      area_km_1995 = scales::label_comma()(area_km_1995),
-      area_km_2055 = scales::label_comma()(area_km_2055)
+      area_km_hist = scales::label_comma()(area_km_hist),
+      area_km_future = scales::label_comma()(area_km_future)
     ) %>%
-    dplyr::relocate(model_suitability, area_km_1995, prop_total_area_1995, area_km_2055, prop_total_area_2055) %>%
+    dplyr::relocate(model_suitability, area_km_hist, prop_total_area_hist, area_km_future, prop_total_area_future) %>%
     dplyr::rename(
-      "prop_area_2041-2070" = "prop_total_area_2055",
-      "prop_area_present" = "prop_total_area_1995"
+      "prop_area_future" = "prop_total_area_future",
+      "prop_area_present" = "prop_total_area_hist"
     )
 
   # add superscript
   colnames(slf_model_prop_table_joined)[2] <- paste0("area_km", common::supsc("2"), "_present")
-  colnames(slf_model_prop_table_joined)[4] <- paste0("area_km", common::supsc("2"), "_2041-2070")
+  colnames(slf_model_prop_table_joined)[4] <- paste0("area_km", common::supsc("2"), "_future")
 
   # .html formatting
   # format row colors
@@ -1276,8 +1467,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   # convert to kable
   slf_model_prop_kable <- knitr::kable(x = slf_model_prop_table_joined, format = "html", escape = FALSE) %>%
-    kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE)
-
+    kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE) %>%
+    # footnotes
+    kableExtra::add_footnote(paste0("present risk calculated for period ", period.present), notation = "alphabet") %>%
+    kableExtra::add_footnote(paste0("future areas at risk calculated for period ", period.projected), notation = "alphabet")
 
 
   # success message
@@ -1289,11 +1482,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create range shift table---------------------------------------------------
 
   # use terra expanse to calculate suitable area
-  slf_range_shift_table <- terra::expanse(
-    x = slf_range_shift,
-    unit = "km",
-    byValue = TRUE
-  )
+  slf_range_shift_table <- suppressWarnings(
+    terra::expanse(
+      x = slf_range_shift,
+      unit = "km",
+      byValue = TRUE
+    )
+    )
 
 
   # naming object
@@ -1334,7 +1529,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   slf_range_shift_table <- slf_range_shift_table %>%
     dplyr::mutate(Ld_range_shift_type = kableExtra::cell_spec(Ld_range_shift_type, format = "html", escape = FALSE, bold = TRUE, background = dplyr::case_when(
       Ld_range_shift_type == "remains_unsuitable" ~ "azure4",
-      Ld_range_shift_type == "contraction" ~ "darkred",
+      Ld_range_shift_type == "contraction" ~ "blue",
       Ld_range_shift_type == "expansion" ~ "darkgreen",
       Ld_range_shift_type == "retained_suitability" ~ "azure"
     )
@@ -1345,7 +1540,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # standardize col width
     kableExtra::column_spec(1:3, width_min = '4cm') %>%
     # styling
-    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+    # footnote on time period
+    kableExtra::add_footnote(paste0("present risk calculated for period ", period.present), notation = "alphabet") %>%
+    kableExtra::add_footnote(paste0("future areas at risk calculated for period ", period.projected), notation = "alphabet")
 
 
 
@@ -1360,54 +1558,55 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create .csv output
   IVR_locations_output <- IVR_locations_locality %>%
     # join rescaled suitability values
-    dplyr::left_join(., xy_joined_rescaled, join_by(ID, x, y)) %>%
+    dplyr::left_join(., xy_joined_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
     # round to 2 decimal places
     dplyr::mutate(
-      xy_global_1995_rescaled = round((xy_global_1995_rescaled * 10), 2),
-      xy_regional_ensemble_1995_rescaled = round((xy_regional_ensemble_1995_rescaled * 10), 2),
-      xy_global_2055_rescaled = round((xy_global_2055_rescaled * 10), 2),
-      xy_regional_ensemble_2055_rescaled = round((xy_regional_ensemble_2055_rescaled * 10), 2)
+      xy_global_hist_rescaled = round((xy_global_hist_rescaled * 10), 2),
+      xy_regional_ensemble_hist_rescaled = round((xy_regional_ensemble_hist_rescaled * 10), 2),
+      xy_global_future_rescaled = round((xy_global_future_rescaled * 10), 2),
+      xy_regional_ensemble_future_rescaled = round((xy_regional_ensemble_future_rescaled * 10), 2)
     )
 
 
   ## tidy IVR_locations_risk to join with IVR_locations_output
-  IVR_locations_risk_join <- dplyr::select(IVR_locations_risk, ID, x, y, risk_1995, risk_2055, risk_shift)
+  IVR_locations_risk_join <- dplyr::select(IVR_locations_risk, join_col_x, join_col_y, ID, risk_hist, risk_future, risk_shift)
   ## join IVR_locations_risk with IVR_locations_output
-  IVR_locations_output <- left_join(IVR_locations_output, IVR_locations_risk_join, join_by(ID, x, y)) %>%
+  IVR_locations_output <- dplyr::left_join(IVR_locations_output, IVR_locations_risk_join, by = c("ID", "join_col_x", "join_col_y")) %>%
     # mutate to also add count of risk levels for quantification and statistics
     # extreme = 4, high = 3, moderate = 2, low = 1
-    # risk_shift_count = risk_2055_count - risk_1995_count
+    # risk_shift_count = risk_future_count - risk_hist_count
     dplyr::mutate(
-      risk_1995_count = dplyr::case_when(
-        risk_1995 == "extreme" ~ 4,
-        risk_1995 == "high" ~ 3,
-        risk_1995 == "moderate" ~ 2,
-        risk_1995 == "low" ~ 1
+      risk_hist_count = dplyr::case_when(
+        risk_hist == "extreme" ~ 4,
+        risk_hist == "high" ~ 3,
+        risk_hist == "moderate" ~ 2,
+        risk_hist == "low" ~ 1
       ),
-      risk_2055_count = dplyr::case_when(
-        risk_2055 == "extreme" ~ 4,
-        risk_2055 == "high" ~ 3,
-        risk_2055 == "moderate" ~ 2,
-        risk_2055 == "low" ~ 1
+      risk_future_count = dplyr::case_when(
+        risk_future == "extreme" ~ 4,
+        risk_future == "high" ~ 3,
+        risk_future == "moderate" ~ 2,
+        risk_future == "low" ~ 1
       ),
-      risk_shift_count = risk_2055_count - risk_1995_count
-    )
+      risk_shift_count = risk_future_count - risk_hist_count
+    ) %>%
+    dplyr::select(-c(join_col_x, join_col_y)) # remove join cols
 
   # rename columns
   IVR_locations_output <- IVR_locations_output %>%
     dplyr::rename(
-      "global_model_risk_present" = "xy_global_1995_rescaled",
-      "regional_ensemble_model_risk_present" = "xy_regional_ensemble_1995_rescaled",
-      "global_model_risk_2041-2070" = "xy_global_2055_rescaled",
-      "regional_ensemble_model_risk_2041-2070" = "xy_regional_ensemble_2055_rescaled",
-      "risk_level_present" = "risk_1995",
-      "risk_level_2041-2070" = "risk_2055",
-      "risk_count_present" = "risk_1995_count",
-      "risk_count_2041-2070" = "risk_2055_count"
+      "global_model_risk_present" = "xy_global_hist_rescaled",
+      "regional_ensemble_model_risk_present" = "xy_regional_ensemble_hist_rescaled",
+      "global_model_risk_2041-2070" = "xy_global_future_rescaled",
+      "regional_ensemble_model_risk_2041-2070" = "xy_regional_ensemble_future_rescaled",
+      "risk_level_present" = "risk_hist",
+      "risk_level_future" = "risk_future",
+      "risk_count_present" = "risk_hist_count",
+      "risk_count_future" = "risk_future_count"
     ) %>%
     # rearrange columns
     dplyr::relocate(risk_count_present, .after = risk_level_present) %>%
-    dplyr::relocate(`risk_count_2041-2070`, .after = `risk_level_2041-2070`) %>%
+    dplyr::relocate(risk_count_future, .after = risk_level_future) %>%
     dplyr::relocate(risk_shift_count, .after = risk_shift)
 
 
@@ -1424,11 +1623,15 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create report--------------------------------------------------------------
 
   slf_risk_report <- list(
-    paste0("Report prepared for: ", stringr::str_to_title(locality_name_internal)),
+    # tibble of info on the report
+    "Report_info" = tibble::tibble(
+      "Report_info" = c("Report prepared for:", "Locality Type:", "Time period of present risk based on historical data:", "Time period of future risk projection:", "CMIP6 model used for future risk projection:", "SSP scenarios included:"),
+      "value" = c(stringr::str_to_title(locality_name_internal), stringr::str_to_title(locality.type), period.present, period.projected, model.projected, ssp.projected)
+    ),
     "viticultural_regions_list" = IVR_locations_output_kable,
     "risk_maps" = list(
-      "present_risk_map" = slf_binarized_1995_plot,
-      "2041-2070_risk_map" = slf_binarized_2055_plot
+      "present_risk_map" = slf_binarized_hist_plot,
+      "future_risk_map" = slf_binarized_future_plot
     ),
     "risk_maps_prop_area_table" = slf_model_prop_kable,
     "viticultural_risk_plot" = xy_joined_rescaled_plot,
@@ -1437,10 +1640,9 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     "range_shift_table" = slf_range_shift_kable
   )
 
-
-
   # success message
   cli::cli_alert_success("Report created")
+
 
   ## return report and save if save.report = TRUE-------------------------------
 
@@ -1464,7 +1666,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     ## risk maps----------------------------------------------------------------
     suppressWarnings(ggsave(
-      slf_binarized_1995_plot,
+      slf_binarized_hist_plot,
       filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_present.jpg")),
       height = 8,
       width = 10,
@@ -1472,8 +1674,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       dpi = "retina"
     ))
     suppressWarnings(ggsave(
-      slf_binarized_2055_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_2041-2070_ssp_126_370_585_GFDL-ESM4.jpg")),
+      slf_binarized_future_plot,
+      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,
@@ -1483,7 +1685,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # range shift map-----------------------------------------------------------
     suppressWarnings(ggsave(
       slf_range_shift_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_map_2041-2070_ssp_126_370_585_GFDL-ESM4.jpg")),
+      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,

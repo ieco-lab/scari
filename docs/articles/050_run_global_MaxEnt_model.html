@@ -184,10 +184,10 @@ has the proper version of java installed (x32 or x64) for your operating
 system.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/checkMaxentInstallation.html" class="external-link">checkMaxentInstallation</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #00BB00;">Java</span> is not installed.</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #00BB00;">Java</span> is installed.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> The packege <span style="color: #0000BB;">rJava</span> is installed.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> The file <span style="color: #0000BB;">maxent.jar</span> is present in the correct folder.</span></span></code></pre>
-<pre><code><span><span class="co">## [1] FALSE</span></span></code></pre>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>This chunk sets the java memory allocation (<code>Xmx</code>). I will
 increase the memory allocation from 512m (the default) to 2GB of
 memory.</p>
@@ -783,7 +783,7 @@ considers the two surrounding cells on any side.</p>
 <span>                     <span class="st">"maxent/models/slf_global_v4"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># load in all IVR points</span></span>
-<span><span class="va">IVR_regions</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_tidied_esri54017.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">IVR_regions</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_esri54017.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">IVR_regions</span> <span class="op">&lt;-</span> <span class="va">IVR_regions</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>

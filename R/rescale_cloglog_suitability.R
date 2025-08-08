@@ -161,11 +161,11 @@ rescale_cloglog_suitability <- function(xy.predicted, thresh, exponential.file, 
 
   # thresh presets--------------------------------------------------------------
   # conditional import to ensure proper thresh preset is used
-  if (thresh == "MTP.CC" && str_detect(summary.file, "_summary.csv") == TRUE) {
+  if (thresh == "MTP.CC" && stringr::str_detect(as.character(summary.file), "_summary.csv") == TRUE) {
     cli::cli_abort("MTP.CC can only be used with a thresh imported for the 'regional_ensemble' model")
     stop()
 
-  } else if (length(thresh) == 1 && thresh == "MTSS.CC" && any(str_detect(summary.file, "_iteration"))) {
+  } else if (length(thresh) == 1 && thresh == "MTSS.CC" && any(stringr::str_detect(as.character(summary.file), "_iteration"))) {
     cli::cli_abort("MTSS.CC can only be used with a thresh imported for the 'regional_ensemble' model")
     stop()
   }

@@ -78,6 +78,10 @@ First used in vignette 050
 
 v0-
 v1- 2024-02-13- name changed and version without _CV created
+v2-
+v3-
+v4-
+v5- 2025-08-07- added scale bars and N arrow functionality
 
 
 

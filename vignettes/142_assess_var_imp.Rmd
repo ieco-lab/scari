@@ -1,10 +1,16 @@
 ---
-title: "Calculate model fit using confusion matrices"
+title: "Plot variable importance for all models"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-08-23"
+date: "2025-08-07"
 ---
+
+This vignette will plot the variable permutation importance for all models. Variable importance is critical for me to explore because it helps me to identify which environmental factors are most influential to the presence of SLF based on each model. Variable permutation importance is especially important for discerning fundamental differences between the regional-scale models. It will help us to discern whether SLF occupies a fundamentally different climate in different regions. We can also compare the permutation importance across models to discern whether SLF presence in our different regions is driven by the same or different environmental factors. 
+
+Finally, the variable perm. importance will tell us if our ensemble of regional-scale models is actually highlighting a different range of climatic factors that is traditionally missed by a global-scale model. The global-scale model is essentially the mean of all data, but this ignores invasion history (SLF has occupied different regions at different times) and the fact that SLF may actually occupy fundamentally different climates in different regions. By modeling these regions separately and ensembling them into a "regional_ensemble" model, we hypothesized this model would emphasize different climatic variables than the global mean model. We also believe that bio 11, which represents winter temperature minimums, will significantly drive our models, and therefore SLF distibution, across regions.
+
+We will plot the variable importance for all models on the same plot for direct comparison.
 
 # Setup
 
@@ -49,15 +55,19 @@ ensemble_colors <- c(
 
 # Variable importance
 
+First, import the variable importance output from `SDMtune`.
+
 ```{r load var imp files- regional ensemble}
 
-regional_native_var_imp <- read.csv(file = file.path(mypath, "slf_regional_native_v3", "regional_native_variable_importance.csv"))
+regional_native_var_imp <- read.csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_variable_importance.csv"))
 
-regional_invaded_var_imp <- read.csv(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_variable_importance.csv"))
+regional_invaded_var_imp <- read.csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_variable_importance.csv"))
 
-regional_invaded_asian_var_imp <- read.csv(file = file.path(mypath, "slf_regional_invaded_asian_v2", "regional_invaded_asian_variable_importance.csv"))
+regional_invaded_asian_var_imp <- read.csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_variable_importance.csv"))
 
 ```
+
+Next, use a built-in function from `SDMtune` to get the base plot for each model.
 
 ```{r get base plots- regional ensemble}
 
@@ -90,6 +100,8 @@ regional_invaded_asian_var_imp_plot <- SDMtune::plotVarImp(
 regional_invaded_asian_var_imp_plot[["data"]][[1]][["x"]] <- c(1, 2, 4, 3)
 
 ```
+
+Finally, plot the regional ensemble models.
 
 ```{r var imp plot- regional ensemble}
 
@@ -137,9 +149,11 @@ ggsave(
 
 ```
 
+Now, repeat the same process, but add the global-scale model to the same plot for direct comparison.
+
 ```{r load var imp files- global}
 
-global_var_imp <- read.csv(file = file.path(mypath, "slf_global_v3", "global_variable_importance.csv"))
+global_var_imp <- read.csv(file = file.path(mypath, "slf_global_v4", "global_variable_importance.csv"))
 
 ```
 
@@ -149,7 +163,6 @@ global_var_imp_plot <- SDMtune::plotVarImp(
   df = global_var_imp
 ) %>%
   ggplot_build()
-
 
 ```
 
@@ -188,7 +201,7 @@ var_imp_ensemble_global
 
 ```
 
-```{r save plot, eval = FALSE}
+```{r save plot, include = FALSE, eval = FALSE}
 
 ggsave(
   var_imp_ensemble_global, 
@@ -202,4 +215,15 @@ ggsave(
   )
 
 ```
+
+Right off, we can see important differences in the variable importance between the global and regional ensemble models. 
+
+The global model emphasizes bio 2 (mean diurnal range) and bio 15 (precipitation seasonality) as the most important variables by far, at about 85%. However, we see that the regional models each disagree on the importance of this variable. The model based on the invaded range in North America agrees that precipitation seasonality is most important, while the Asian invaded and native models each place far less importance on this variable. 
+
+Meanwhile, the regional ensemble models all emphasize bio 11 (mean temperature of the coldest quarter) as being of high importance. The N American invaded model places this variable at second, but still sees it as important. The native and invaded Asian models both place this variable as the most important. This suggests that SLF occupies a fundamentally different climate in different regions, which is consistent with our hypothesis that SLF presence is driven by different environmental factors in different regions. 
+
+Another of our initial hypotheses was that winter temperature minimums would drive the distribution of SLF, which we are seeing from our regional-scale model. However, we would not see this using only the global mean model, which rates bio 11 as among the least important variables. 
+
+Indeed, our regional_ensemble is clarifying important variables we would not have seen with a global mean model.
+
 

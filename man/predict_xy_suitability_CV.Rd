@@ -69,8 +69,10 @@ the suitability value for the buffer around a point. Possible values include:
 \item{buffer.dist}{Numeric. The distance from each xy coordinate at which to
 calculate the suitability value.}
 
-\item{crs}{Character. The crs of the projection used in building the input species data.
-Default is "ESRI:54017", the Behrmann Equal Area projection.}
+\item{crs}{Character. The crs (coordinate reference system) of the projection
+used in building the input species data. Should be in the format of an EPSG or
+ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
+NOTE: If changing, ensure that other input data share the same crs.}
 
 \item{output.name}{The name of the file output. Separate words with _. Relevant
 information might include the name of the model used to predict, the spatial

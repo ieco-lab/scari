@@ -218,7 +218,7 @@ I need to add something I am calling a "join_col". These columns are simply the 
 
 Additionally, I need to rename each coordinate column to reflect its column of origin. This way, I will not lose track of which column is from which data frame among a veritable mess of joins.
 
-```{r add join columns and rename columns}
+```{r add join columns and rename columns- global}
 
 # add join columns to all datasets
 xy_global_1995 <- xy_global_1995 %>%
@@ -512,7 +512,7 @@ xy_regional_ensemble_2055_585 <- read_csv(file = file.path(mypath, "slf_regional
 
 Perform the same edits as above for the global model
 
-```{r add join columns and rename columns}
+```{r add join columns and rename columns- regional_ensemble}
 
 # add join columns to all datasets
 xy_regional_ensemble_1995 <- xy_regional_ensemble_1995 %>%

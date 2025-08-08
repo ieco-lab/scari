@@ -256,7 +256,7 @@ v5- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v
 
 
 
-----------140_plot_response_curves.Rmd----------
+----------140_assess_response_curves.Rmd----------
 
 ## About
 
@@ -269,20 +269,32 @@ v1- 2024-08-16- rework- updated SLF presence data and inclusion of other SSP sce
 v2- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
-----------141_plot_AUC_var_cont.Rmd----------
+----------141_assess_AUC_confusion_matrix.Rmd----------
 
 ## About
 
-This vignette plots the response curve outputs from SDMtune as ggplots and adds all ensemble curves to the same plot.
+This vignette plots the ROC curve for all models, as well as calculates a table of the sensitivity, specificity, commission and omission error (a confusion matrix of each model) to assess fit.
 
 ## changelog
 
 v0- initial version
-v1- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+v1- 2025-08-06- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+
+
+----------142_assess_var_imp.Rmd----------
+
+## About
+
+This vignette plots the variable importance for each model
+
+## changelog
+
+v0- initial version
+v1- 2025-08-07- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
 
 
-----------150_generate_risk_report.Rmd----------
+----------150_create_risk_report_countries_provinces.Rmd----------
 
 ## About
 

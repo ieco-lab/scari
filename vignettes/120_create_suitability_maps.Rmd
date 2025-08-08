@@ -803,7 +803,10 @@ values.obj <- c(
 # plot regional binary
 ggplot() +
   geom_raster(data = regional_ensemble_1995_classified_df, aes(x = x, y = y, fill = as.factor(ensemble_suitability))) +
-  labs(title = "Binarized suitability for 'regional_ensemble' model") +
+  labs(
+    title = "Binarized suitability for 'regional_ensemble' model",
+    subtitle = "1981-2010"
+    ) +
   scale_discrete_manual(
     name = "suitability for SLF",
     values = values.obj,
@@ -2010,7 +2013,7 @@ breaks.obj <- c(5, 10, 6, 9) # i manually ordered these according to the order p
 # labels for the values
 labels.obj <- c("unsuitable area\nretained", "suitabile area\nretained", "contraction\nsuitable area", "expansion\nsuitable area")
 # vector of colors to classify scale
-values.obj <- c("azure4", "azure", "darkred", "darkgreen")
+values.obj <- c("azure4", "azure", "darkblue", "darkgreen")
 
 
 # function
@@ -2068,7 +2071,7 @@ table_range_shift <- function(table.df) {
 # .html formatting
 # format row colors
 table.df.output[1, 1] <- kableExtra::cell_spec(table.df.output[1, 1], format = "html", background = "azure4")
-table.df.output[2, 1] <- kableExtra::cell_spec(table.df.output[2, 1], format = "html", background = "darkred")
+table.df.output[2, 1] <- kableExtra::cell_spec(table.df.output[2, 1], format = "html", background = "darkblue")
 table.df.output[3, 1] <- kableExtra::cell_spec(table.df.output[3, 1], format = "html", background = "darkgreen")
 table.df.output[4, 1] <- kableExtra::cell_spec(table.df.output[4, 1], format = "html", background = "azure")
   

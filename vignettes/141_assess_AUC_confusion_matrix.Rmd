@@ -1,12 +1,18 @@
 ---
-title: "Check model goodness of fit via AUC, TSS and confusion matrices"
+title: "Assess model goodness of fit via AUC, TSS and confusion matrices"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
 date: "2025-08-05"
 ---
 
-I will plot the AUC curves and variable contribution graphs by combining all 4 models into one plot. This will allow for a direct comparison of the AUC (goodness of fit) and var contribution between models.
+In this vignette, I will assess the fit of my models using a few different metrics: the TSS score, AUC score, and confusion matrices.
+
+First, I will look at the TSS score, which is a threshold-dependent metric of model fit. Considering our decision to convert our risk maps to presence/absence maps using the MTSS threshold, this is an important step. The TSS measures the fit at the threshold where the TSS is maximized (the MTSS threshold).
+
+Next, we will look at the AUC score, which is a threshold-independent metric of model fit. The AUC score is the area under the ROC curve, which is a plot of the true positive rate (sensitivity) against the false positive rate (1 - specificity). The AUC score ranges from 0 to 1, with a score of below 0.5 indicating no discrimination, a score of 0.5 being discrimination equal to a random result, and a score of 1 indicating perfect discrimination. Overall, this test assesses the model's ability to discriminate a true positive from a false positive.I will plot all four ROC curves on the same plot, allowing for a direct comparison of the AUC (goodness of fit) between models.
+
+Finally, I will look at confusion matrices, which provide a summary of the model's performance in terms of true positives, false positives, true negatives, and false negatives. These matrices will allow us to calculate sensitivity, specificity, commission error, and omission error for each model.
 
 # Setup
 
@@ -64,13 +70,53 @@ regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_
 
 ```
 
+# TSS Score
+
+First, we will assess the TSS score for each model. The TSS score is a measure of the model's ability to discriminate between presence and absence data, with values ranging from -1 to 1. A value of 0 indicates no discrimination, while a value of 1 indicates perfect discrimination. It is a threshold-dependent measure of accuracy, and we have already calculated the TSS score for each model based on the testing data. I will load those in and display them.
+
+```{r import TSS scores, message = FALSE}
+
+regional_native_tss <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_auc_tss.csv")) %>%
+  # select test TSS
+  dplyr::select(TSS) %>%
+  dplyr::slice_tail()
+
+regional_invaded_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_auc_tss.csv")) %>%
+  dplyr::select(TSS) %>%
+  dplyr::slice_tail()
+
+regional_invaded_asian_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_auc_tss.csv")) %>%
+  dplyr::select(TSS) %>%
+  dplyr::slice_tail()
+
+```
+
+```{r display TSS scores}
+
+tss_scores <- tibble(
+  model = c("regional native", "regional invaded NAmerica", "regional invaded Asia"),
+  TSS = c(
+    regional_native_tss$TSS,
+    regional_invaded_tss$TSS,
+    regional_invaded_asian_tss$TSS
+  )
+)
+
+tss_scores
+
+```
+
+We can see that the native and invaded Asian models have excellent discriminating power, with TSS scores of 0.99 and 0.82, respectively. The invaded North American model has a TSS score of 0.29, indicating that it's discriminating power is poor. 
+
+Despite the poor performance of some of our regional-scale models, we can have confidence in their performance. During the ensemble process (vignette 110), we took a weighted mean of each of the regional-scale models, which allowed us give higher weight to models that performed better according to the AUC metric, and lower weight to the lower performers. Indeed, the native model contributed 44% of the final model output, the invaded Asian model contributed 34% of the final output, and the invaded North American model only contributed 21% of the final weight. This correlates with our TSS scores.
+
 # ROC regional ensemble
 
 ## Prepare data
 
 First, I will build the SWD objects required by `SDMtune::plotROC`
 
-```{r load testing points datasets}
+```{r load testing points datasets, message = FALSE}
 
 regional_native_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv"))
 
@@ -80,7 +126,7 @@ regional_invaded_asian_test <- read_csv(file = file.path(here::here(), "vignette
 
 ```
 
-```{r load in bg points datasets}
+```{r load in bg points datasets, message = FALSE}
 
 # background points
 a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv"))
@@ -91,7 +137,6 @@ a_regional_invaded_asian_background_points <- read.csv(file.path(here::here(), "
 
 ```
 
-
 ```{r load in historical covariates}
 
 # path to directory
@@ -100,27 +145,13 @@ mypath <- file.path(here::here() %>%
                      "maxent/historical_climate_rasters/chelsa2.1_30arcsec")
 
 
-# the env covariate scale used to train the model
-x_invaded_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_KG.asc$", full.names = TRUE)  %>%
-  # dont include Access to cities
-  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
-# the env covariate scale used to train the model
-x_native_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_native_KG.asc$", full.names = TRUE) %>%
-  # dont include Access to cities
-  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
-# the env covariate scale used to train the model
-x_invaded_asian_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_asian_KG.asc$", full.names = TRUE)  %>%
-  # dont include Access to cities
-  grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
-
-
 # the scale used to make xy predictions
 x_global_hist_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\.asc$", full.names = TRUE) %>%
     grep("bio2_1981-2010_global.asc|bio11_1981-2010_global.asc|bio12_1981-2010_global.asc|bio15_1981-2010_global.asc", ., value = TRUE)
 
 ```
 
-I will create rasters of the environmental covariates, stack and gather summary statistics. I will also shorten their names and exclude possible operators from layer names (for example, using the dash symbol was found to interfere with SDMtune making predictions for tables downstream).
+I will create rasters of the environmental covariates, stack and gather summary statistics. I will also shorten their names and exclude possible operators from layer names (for example, using the dash symbol was found to interfere with `SDMtune` making predictions for tables downstream).
 
 ```{r naming object}
 
@@ -130,46 +161,6 @@ env_layer_names <- c("bio11", "bio12", "bio15", "bio2")
 ```
 
 ```{r stack historical covariates and make naming consistent, message = FALSE}
-
-# stack env covariates
-x_invaded_env_covariates <- terra::rast(x = x_invaded_env_covariates_list)
-
-# attributes
-nlyr(x_invaded_env_covariates)
-names(x_invaded_env_covariates)
-minmax(x_invaded_env_covariates)
-# ext(x_invaded_env_covariates)
-# crs(x_invaded_env_covariates)
-
-# I will change the name of the variables because they are throwing errors in SDMtune
-names(x_invaded_env_covariates) <- env_layer_names
-# stack env covariates
-x_invaded_asian_env_covariates <- terra::rast(x = x_invaded_asian_env_covariates_list)
-
-# attributes
-nlyr(x_invaded_asian_env_covariates)
-names(x_invaded_asian_env_covariates)
-minmax(x_invaded_asian_env_covariates)
-# ext(x_invaded_asian_env_covariates)
-# crs(x_invaded_asian_env_covariates)
-
-# I will change the name of the variables because they are throwing errors in SDMtune
-names(x_invaded_asian_env_covariates) <- env_layer_names
-# stack env covariates
-x_native_env_covariates <- terra::rast(x = x_native_env_covariates_list)
-
-# attributes
-nlyr(x_native_env_covariates)
-names(x_native_env_covariates)
-minmax(x_native_env_covariates)
-# ext(x_native_env_covariates)
-# crs(x_native_env_covariates)
-
-# I will change the name of the variables because they are throwing errors in SDMtune
-names(x_native_env_covariates) <- env_layer_names
-
-
-
 
 # global rasters
 # stack env covariates
@@ -191,9 +182,6 @@ names(x_global_hist_env_covariates) <- env_layer_names
 
 ```{r remove lists}
 
-rm(x_invaded_env_covariates_list)
-rm(x_invaded_asian_env_covariates_list)
-rm(x_native_env_covariates_list)
 rm(x_global_hist_env_covariates_list)
 
 ```
@@ -212,7 +200,7 @@ regional_invaded_asian_test_SWD <- SDMtune::prepareSWD(
 # regional native
 regional_native_test_SWD <- SDMtune::prepareSWD(
   species = "Lycorma delicatula",
-  env = x_native_env_covariates,
+  env = x_global_hist_env_covariates,
   p = regional_native_test, 
   a = a_regional_native_background_points,
   verbose = TRUE # print helpful messages
@@ -229,7 +217,6 @@ regional_invaded_test_SWD <- SDMtune::prepareSWD(
 
 ```
 
-
 ## Plot
 
 Next, I will use `SDMtune` to build the ROC plots.
@@ -241,7 +228,6 @@ regional_native_ROC <- SDMtune::plotROC(
   test = regional_native_test_SWD
 ) %>%
   ggplot_build()
-
 
 regional_invaded_ROC <- SDMtune::plotROC(
   model = regional_invaded_model,
@@ -294,7 +280,7 @@ ROC_ensemble
 
 ```
 
-```{r save plot- AUC, include = FALSE}
+```{r save plot- AUC, eval = FALSE, include = FALSE}
 
 ggsave(
   ROC_ensemble, 
@@ -309,7 +295,11 @@ ggsave(
 
 ```
 
-# Add global model to AUC plot
+We see that the regional-scale model has the highest testing AUC (0.99), followed by the invaded Asian model (0.90) and finally the invaded North American model (0.51). The invaded North American model is only slightly better than random (0.5), which is consistent with its low TSS score (0.29). Thankfully, however, we have significantly downweighted this model in our ensemble, so it should not have a large impact on our final risk map.
+
+# Add global model to ROC plot
+
+Now that I have plotted a separate figure for the three regional_ensemble models, I will create an aggregated figure that includes the ROC plot for all three regional_ensemble models and the global model. This will allow for a direct comparison of the AUC (goodness of fit) between the regional_ensemble and global models.
 
 ## ROC
 
@@ -321,12 +311,15 @@ mypath <- file.path(here::here() %>%
 
 ```
 
-```{r load plotting objects}
+```{r load data objects, message = FALSE}
 
-# STOPPED HERE
-
+# model
 global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
-global_test <- read_csv(file = file.path(mypath, "slf_global_v4", "global_test.csv"))
+# background csv
+global_background <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v4.csv"))
+# all 
+slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+  dplyr::select(-species) 
 
 ensemble_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -337,11 +330,35 @@ ensemble_colors <- c(
 
 ```
 
+```{r prepare global SWD and separate test obj}
+
+global_SWD <- SDMtune::prepareSWD(
+  species = "Lycorma delicatula",
+  env = x_global_hist_env_covariates,
+  p = slf_points,
+  a = global_background,
+  verbose = TRUE # print helpful messages
+  )
+
+# split into train and test sets
+global_trainTest <-  SDMtune::trainValTest(
+  x = global_SWD,
+  test = 0.2, # set used for predicting maps and suitability values
+  only_presence = TRUE, # only split presences and recycle bg points
+  seed = 3 # should be the same as the OG because same seed
+)
+
+# separate off testing data
+global_test_SWD <- global_trainTest[[2]]
+
+```
+
+
 ```{r add global ROC}
 
 global_ROC <- SDMtune::plotROC(
-  model = global_model@models[[5]], #pick one because they did not vary too much
-  test = global_test
+  model = global_model@models[[5]], # just pick one because they did not vary too much
+  test = global_test_SWD
 ) %>%
   ggplot_build()
 
@@ -386,7 +403,7 @@ ROC_ensemble_global
 
 ```
 
-```{r save plot- AUC combined, include = FALSE}
+```{r save plot- AUC combined, eval = FALSE, include = FALSE}
 
 ggsave(
   ROC_ensemble_global, 
@@ -401,9 +418,9 @@ ggsave(
 
 ```
 
-I will create a table for some important summary statistics for the models. These include sensitivity, specificity, commission error, and omission error. These are calculated according to the cloglog MTSS threshold per model.
+# Confusion Matrix- Sensitivity and Specificity of Models
 
-# Sensitivity and Specificity of Models
+I will create a table for some important summary statistics for the models. These include sensitivity, specificity, commission error, and omission error. These are calculated according to the cloglog MTSS threshold per model.
 
 ```{r set wd 2}
 
@@ -415,30 +432,40 @@ mypath <- file.path(here::here() %>%
 
 We calculate these according to the cloglog MTSS threshold per model
 
-```{r import confusion matrices}
+```{r import confusion matrices, message = FALSE}
 
 # global
-global_conf_matr <- read_csv(file = file.path(mypath, "slf_global_v3", "global_thresh_confusion_matrix_all_iterations.csv")) %>%
+global_conf_matr <- read_csv(file = file.path(mypath, "slf_global_v4", "global_thresh_confusion_matrix_all_iterations.csv")) %>%
   # only MTSS threshold
   slice(7)
 
 
 # regional models
 # native
-regional_native_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_native_v3", "regional_native_thresh_confusion_matrix.csv")) %>%
+regional_native_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_thresh_confusion_matrix.csv")) %>%
   slice(7)
 # invaded_asia
-regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v2", "regional_invaded_asian_thresh_confusion_matrix.csv")) %>%
+regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_thresh_confusion_matrix.csv")) %>%
   slice(7)
 # invaded_NAmerica
-regional_invaded_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_v7", "regional_invaded_thresh_confusion_matrix.csv")) %>%
+regional_invaded_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_thresh_confusion_matrix.csv")) %>%
   slice(7)
 
 global_conf_matr
 
 ```
 
-Be sure to change the number of test positives and background negatives for each model if this changes.
+I will create some input datasets which contain the number of test positives per model.
+
+```{r input datasets}
+
+global_test_pos <- sum(global_test_SWD@pa == 1)
+# regional
+regional_native_test_pos <- nrow(regional_native_test)
+regional_invaded_test_pos <- nrow(regional_invaded_test)
+regional_invaded_asian_test_pos <- nrow(regional_invaded_asian_test)
+
+```
 
 ```{r calculate sens and spec}
 
@@ -447,10 +474,11 @@ model_sens_spec <- tibble(
   description = rep(c("true_positive rate", "true_negative rate", "1 - true_negative rate", "false_negative rate"), 4),
     model = c(
     rep("global", 4),
-    rep("regional\nnative", 4),
-    rep("regional\ninvaded NAmerica", 4),
-    rep("regional\ninvaded Asia", 4)
+    rep("regional native", 4),
+    rep("regional invaded NAmerica", 4),
+    rep("regional invaded Asia", 4)
   ),
+  # cloglog MTSS threshold
   thresh = "MTSS.cloglog",
   thresh_value = c(
     rep(global_conf_matr$threshold_value, 4), 
@@ -458,31 +486,45 @@ model_sens_spec <- tibble(
     rep(regional_invaded_conf_matr$threshold_value, 4),
     rep(regional_invaded_asian_conf_matr$threshold_value, 4)
     ),
+  # the number of test positives
   test_pos = c(
-    rep(155, 4), # global
-    rep(54, 4),  # native
-    rep(68, 4), # invaded_NAmerica
-    rep(40, 4) # invaded_Asia
+    rep(global_test_pos, 4), # global, this counts the number of positives in the model (the 1s in the training data)
+    rep(regional_native_test_pos, 4),  # native
+    rep(regional_invaded_test_pos, 4), # invaded_NAmerica
+    rep(regional_invaded_asian_test_pos, 4) # invaded_Asia
   ),
+  # the number of background points
   bg_neg = c(
     rep(20000, 4), # global
     rep(10000, 12) # regional
   ),
   value = c(
     # global
-    round(global_conf_matr$tp_mean / 155, 4), round(global_conf_matr$tn_mean / 20000, 4), round(1 - (global_conf_matr$tn_mean / 20000), 4), round((global_conf_matr$fn_mean / 20000), 4),
+    round(global_conf_matr$tp_mean / global_test_pos, 4), # sensitivity (the tp rate)
+    round(global_conf_matr$tn_mean / 20000, 4), # specificity (the tn rate)
+    round(1 - (global_conf_matr$tn_mean / 20000), 4),  # commission error (1 - tn rate)
+    round((global_conf_matr$fn_mean / 20000), 4), # omission error (the fn rate)
     # native
-    round(regional_native_conf_matr$tp / 54, 4), round(regional_native_conf_matr$tn / 10000, 4), round(1 - (regional_native_conf_matr$tn / 10000), 4), round((regional_native_conf_matr$fn / 10000), 4),
+    round(regional_native_conf_matr$tp / regional_native_test_pos, 4), 
+    round(regional_native_conf_matr$tn / 10000, 4), 
+    round(1 - (regional_native_conf_matr$tn / 10000), 4), 
+    round((regional_native_conf_matr$fn / 10000), 4),
     # invaded_NAmerica
-    round(regional_invaded_conf_matr$tp / 68, 4), round(regional_invaded_conf_matr$tn / 10000, 4), round(1 - (regional_invaded_conf_matr$tn / 10000), 4), round((regional_invaded_conf_matr$fn / 10000), 4),
+    round(regional_invaded_conf_matr$tp / regional_invaded_test_pos, 4), 
+    round(regional_invaded_conf_matr$tn / 10000, 4), 
+    round(1 - (regional_invaded_conf_matr$tn / 10000), 4), 
+    round((regional_invaded_conf_matr$fn / 10000), 4),
     # invaded_asia
-    round(regional_invaded_asian_conf_matr$tp / 40, 4), round(regional_invaded_asian_conf_matr$tn / 10000, 4), round(1 - (regional_invaded_asian_conf_matr$tn / 10000), 4), round((regional_invaded_asian_conf_matr$fn / 10000), 4)
+    round(regional_invaded_asian_conf_matr$tp / regional_invaded_asian_test_pos, 4), 
+    round(regional_invaded_asian_conf_matr$tn / 10000, 4), 
+    round(1 - (regional_invaded_asian_conf_matr$tn / 10000), 4), 
+    round((regional_invaded_asian_conf_matr$fn / 10000), 4)
   )
 )
 
 ```
 
-```{r save as .csv, include = FALSE}
+```{r save as .csv, eval = FALSE, include = FALSE}
 
 write_csv(model_sens_spec, file.path(here::here(), "vignette-outputs", "data-tables", "model_sensitivity_specificity.csv"))
 
@@ -490,7 +532,7 @@ write_csv(model_sens_spec, file.path(here::here(), "vignette-outputs", "data-tab
 
 I will also write it to a kable so it can be printed
 
-```{r save tables from above, if desired}
+```{r save tables from above, if desired, eval = FALSE, include = FALSE}
 
 # add column formatting
 model_sens_spec <- mutate(model_sens_spec, bg_neg = scales::label_comma() (bg_neg))
@@ -516,14 +558,26 @@ webshot::webshot(
   zoom = 2
 )
 
+file.remove(file.path(here::here(), "vignette-outputs", "figures", "model_sensitivity_specificity.html"))
+
 # model extents
+
+```
+
+```{r display sens spec kable}
 
 model_sens_spec_kable
 
 ```
 
+We see once again that all models have adequate sensitivity and specificity, but the outlier is the invaded North American model. This model actually had a sensitivity of 0, which means it did not detect any of its test points. The testing range for this model was the invaded range in Asia, where the model predicted no area of suitability above the MTSS threshold. This is likely due to the significant difference in precipitation seasonality. The current invaded North American range has a very narrow range of precipitation seasonality, as compared with the test area in Korea and Japan, which have seasonal monsoons. You can observe this by looking at the variable curve for bio 15; the invaded asian and North American models occupied entirely different ranges of precipitation seasonality. Thus, the training range likely did not translate well to the testing range in Asia.
+
+Otherwise, all models have an adequate fit. The ensemble accounts for the bad fit of the North American model, which we will continue to include due to the potential for this range to expand over time and the important data it includes.
+
 # References
 
-1. Jiménez‐Valverde, A. (2012). Insights into the area under the receiver operating characteristic curve (AUC) as a discrimination measure in species distribution modelling. Global Ecology and Biogeography, 21(4), 498–507. https://doi.org/10.1111/j.1466-8238.2011.00683.x
+1. Allouche, O., Tsoar, A., & Kadmon, R. (2006). Assessing the accuracy of species distribution models: Prevalence, kappa and the true skill statistic (TSS). Journal of Applied Ecology, 43(6), 1223–1232. https://doi.org/10.1111/j.1365-2664.2006.01214.x
 
-2. Zou, K. H., O’Malley, A. J., & Mauri, L. (2007). Receiver-Operating Characteristic Analysis for Evaluating Diagnostic Tests and Predictive Models. Circulation, 115(5), 654–657. https://doi.org/10.1161/CIRCULATIONAHA.105.594929
+2. Jiménez‐Valverde, A. (2012). Insights into the area under the receiver operating characteristic curve (AUC) as a discrimination measure in species distribution modelling. Global Ecology and Biogeography, 21(4), 498–507. https://doi.org/10.1111/j.1466-8238.2011.00683.x
+
+3. Zou, K. H., O’Malley, A. J., & Mauri, L. (2007). Receiver-Operating Characteristic Analysis for Evaluating Diagnostic Tests and Predictive Models. Circulation, 115(5), 654–657. https://doi.org/10.1161/CIRCULATIONAHA.105.594929

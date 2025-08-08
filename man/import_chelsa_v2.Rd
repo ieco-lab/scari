@@ -10,6 +10,7 @@ import_chelsa_v2(
   var.period,
   bioclim.type = NA,
   bioclim.number = NA,
+  bioclim.period = NA,
   bioclim.ssp = NA,
   bioclim.model = NA,
   mypath = NA,
@@ -35,6 +36,8 @@ The type of bioclimatic variable to be downloaded. Normal  See details}
 
 \item{bioclim.number}{Used only if downloading bioclimatic variables (\code{var.type} = "climatologies" and \code{var.subtype} = "bio".)}
 
+\item{bioclim.period}{Used only if downloading bioclimatic variables (\code{var.type} = "climatologies" and \code{var.subtype} = "bio".)}
+
 \item{bioclim.ssp}{Used only if downloading bioclimatic variables (\code{var.type} = "climatologies" and \code{var.subtype} = "bio".)
 If the variable is a projected variable, the Shared Socioeconomic Pathway (SSP) scenario to be downloaded.
 Choices include "ssp126", "ssp245", "ssp370", and "ssp585".
@@ -59,8 +62,6 @@ will be created.}
 
 \item{save.output}{Logical. Should the requested downloads be saved to file? File location
 specified by \code{mypath}.}
-
-\item{bioclim.period}{Used only if downloading bioclimatic variables (\code{var.type} = "climatologies" and \code{var.subtype} = "bio".)}
 }
 \value{
 Returns a spatRaster object of the requested CHELSA climatology or a saved .tif raster file(s).
@@ -174,3 +175,4 @@ save.output = FALSE
 )
 
 }
+\keyword{internal}

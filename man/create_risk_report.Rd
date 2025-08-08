@@ -8,6 +8,11 @@ create_risk_report(
   locality.iso,
   locality.name = locality.iso,
   locality.type,
+  crs = "ESRI:54017",
+  period.present = "1981-2010",
+  period.projected = "2041-2070",
+  model.projected = "GFDL-ESM4",
+  ssp.projected = "ssp_126_370_585",
   save.report = FALSE,
   mypath = NA,
   raster.path = file.path(here::here(), "vignette-outputs", "rasters"),
@@ -32,6 +37,24 @@ not know the state or province you are looking for, you might create a report
 at the country level and then look at the return for the name of the state/province
 included.}
 
+\item{crs}{Character. The crs (coordinate reference system) of the projection
+used in building the input species data. Should be in the format of an EPSG or
+ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
+NOTE: If changing, ensure that other input data share the same crs.}
+
+\item{period.present}{Character. The time period included by the historical climate data.
+This is used to name the output files. Default is period of 1981-2010.}
+
+\item{period.projected}{Character. The time period included by climate data projected
+under climate change. This is used to name the output files. Default is period of 2041-2070.}
+
+\item{model.projected}{Character. The CMIP6 model used for projections of future
+climate conditions. This is used to name the output files. Default is "GFDL-ESM4".}
+
+\item{ssp.projected}{Character string. The ssp scenarios used for projections of future
+climate conditions. This is used to name the output files. Separate names with underscores.
+Default is "ssp_126_370_585".}
+
 \item{save.report}{Logical. Should the report be saved to file? File location
 specified by \code{mypath}. Note, this requires the use of Google Chrome.}
 
@@ -43,8 +66,9 @@ function, set \code{create.dir} = TRUE. This will create a folder from the last
 part of the filepath in \code{mypath}.}
 
 \item{raster.path}{Character. A file path to the directory containing the rasters
-necessary to build this function. See details for the rasters that should be
-included with this data input and for the default path.}
+necessary to build this function. This folder should contain ONLY the three rasters
+used for this function. See details for the rasters that should be included
+with this data input and for the default path.}
 
 \item{create.dir}{Logical. Should the last element of \code{mypath} create a sub
 directory for the report? If TRUE, the main folder will be created for
@@ -60,7 +84,7 @@ ggplot aesthetic options. If not, the built-in default list will be used
 at which to draw buffers zones on risk maps. Should be the same distance that
 was used to calculate the predicted suitability for each IVR region.
 See \code{predict.xy.suitability.R} for details. If not specified, buffers are not
-drawn and suitabiltiy prediction method is assumed to be simple (point-wise).}
+drawn and suitability prediction method is assumed to be simple (point-wise).}
 }
 \value{
 returns a report in list format. If save.report = TRUE, will also save the
@@ -68,7 +92,7 @@ report to file at destination specified by \code{mypath}. The outputs returned t
 the global env in a list object include:
 \itemize{
 \item viticultural_regions_list - a list of known important wine regions within the locality with predicted suitability values and levels.
-\item risk_maps - a current and future map of risk for L delicatula establishment. The CMIP6 predictions are based on the mean of the three ssp scenarios
+\item risk_maps - a present and future map of risk for L delicatula establishment. The CMIP6 predictions are based on the mean of the three ssp scenarios
 \item viticultural_risk_plot = a quantified assessment of the risk for L delicatula establishment for known wine regions within the locality. This plot depicts the intersection of our two modeled scales.
 \item viticultural_risk_table = a risk table quantifying the level of risk to vineyards according to the quadrant plot
 \item range_shift_map = a map of potential range expansion for L delicatula under climate change
@@ -82,11 +106,11 @@ Use caution, this function will overwrite previous files output for the same loc
 \description{
 This function creates a report at the country or state/province level
 for the risk of establishment of Lycorma delicatula. The report covers the major
-data outputs from this R package analysis, including current and future risk maps,
+data outputs from this R package analysis, including present and future risk maps,
 range shift maps, risk plots and risk tables.
 }
 \details{
-Requires the following packages: 'tidyverse', 'terra', 'here', 'cli', 'rnaturalearth', 'rnaturalearthhires', 'kableExtra', 'formattable', 'webshot', 'webshot2', 'ggnewscale', 'common'.
+Requires the following packages: 'cli', 'common', 'formattable', 'ggnewscale', 'ggspatial', 'here', 'kableExtra','rnaturalearth', 'rnaturalearthdata', 'rnaturalearthhires', 'scari', 'sf', 'tidyverse', 'terra', 'webshot', and 'webshot2'.
 \strong{NOTE} This function requires the use of Google Chrome if save.report = TRUE
 
 Note that this function performs downloads from
@@ -103,7 +127,7 @@ Here is a list of the files included in \code{sysdata.rda}:
 \itemize{
 \item global_model_summary.rds                                            | created in vignette 050
 \item ensemble_thresh_values.rds                                          | created in vignette 110
-\item wineries_tidied.rds                                                 | created in vignette 130
+\item wineries_esri54017_tidied.rds                                       | created in vignette 130
 \item regional_ensemble_wineries_1981-2010_xy_pred_suit.rds               | created in vignette 130
 \item regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.rds | created in vignette 130
 \item global_wineries_1981-2010_xy_pred_suit.rds                          | created in vignette 130
@@ -158,12 +182,12 @@ theme_classic()
 viticultural_regions <- slf_risk_report[[2]]
 
 # alternatively, call elements by name:
-risk_map_2055 <- slf_risk_report[["risk_maps"]][["2055_risk_map"]]
+risk_map_future <- slf_risk_report[["risk_maps"]][["future_risk_map"]]
 
 # sometimes a plot is off-center because the shapefile includes an outlying territory
 # you can edit this directly in the ggplot object and save over the report output
 
-map_current <- slf_risk_report[["risk_maps"]][["current_risk_map"]] +
+map_present <- slf_risk_report[["risk_maps"]][["present_risk_map"]] +
 xlim(-10, 5) +
 ylim(35, 44)
 
