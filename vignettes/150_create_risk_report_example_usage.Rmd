@@ -53,7 +53,7 @@ I will start by creating an internal dataset to be used by the function. These d
 
 If you have other datasets to use, you can replace the datasets below with your own, so long as they are in a similar format.
 
-```{r datasets for function data import}
+```{r datasets for function data import, eval = FALSE}
 
 # .csv files
 threshold_exponential_values <- read.csv(file = file.path(here::here(), "data-raw", "threshold_exponential_values.csv"))
@@ -71,7 +71,7 @@ xy_regional_ensemble_future <- readr::read_rds(file = file.path(here::here(), "d
 
 I need to make some edits to the xy datasets.
 
-```{r rename columns}
+```{r rename columns, eval = FALSE}
 
 xy_global_hist <- dplyr::rename(xy_global_hist, "xy_global_hist" = "xy_global_1995")
 xy_global_future <- dplyr::rename(xy_global_future, "xy_global_future" = "xy_global_2055")
@@ -81,7 +81,7 @@ xy_regional_ensemble_future <- dplyr::rename(xy_regional_ensemble_future, "xy_re
 ```
 
 
-```{r import raster files and save to new location for create_risk_report function}
+```{r import raster files and save to new location for create_risk_report function, eval = FALSE}
 
 # mypath
 mypath <- file.path(here::here() %>% 
@@ -116,7 +116,7 @@ terra::writeRaster(
 
 ```
 
-```{r internal data object}
+```{r internal data object, eval = FALSE}
 
 # transform all data frames to internal dataset
 usethis::use_data(
@@ -151,7 +151,28 @@ Next, we can optionally specify arguments for the aesthetics. If not specified, 
 
 `crs`: The crs chosen for all input data and rasters. Note that changing this would require a complete rerun of the package vignettes.
 
-Finally, we have `map.style`, which is a purely aesthetic argument. It should be specified as a list argument (the default is shown below). Again, this does not need to be specified.
+Finally, we have `map.style`, which is a purely aesthetic argument. It should be specified as a list argument if not the default (the default is shown below). Again, this does not need to be specified.
+
+```{r default of map.style, eval = FALSE}
+
+  # map stype argument as a list
+  map.style <- list(
+      xlab("UTM_eastings"), # if raster is in lonlat, label as lon/lat, otherwise UTM
+      ylab("UTM_northings"), # if raster is in lonlat, label as lon/lat, otherwise UTM
+      # aesthetics
+      theme_classic(),
+      theme(
+        # legend
+        legend.position = "bottom",
+        legend.key = element_rect(color = "black")
+      ),
+      guides(fill = guide_legend(nrow = 1, byrow = TRUE)),
+      # scales
+      scale_x_continuous(expand = c(0, 0)),
+      scale_y_continuous(expand = c(0, 0))
+    )
+
+```
 
 ```{r generate a report for France}
 
@@ -170,24 +191,119 @@ scari::create_risk_report(
   period.projected = "2041-2070",
   model.projected = "GFDL-ESM4",
   ssp.projected = "ssp_126_370_585",
-  crs = "ESRI:54017",
-  # map stype argument as a list
-  map.style = list(
-      xlab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "longitude", "UTM_eastings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
-      ylab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "latitude", "UTM_northings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
-      # aesthetics
-      theme_classic(),
-      theme(
-        # legend
-        legend.position = "bottom",
-        legend.key = element_rect(color = "black")
-      ),
-      guides(fill = guide_legend(nrow = 1, byrow = TRUE)),
-      # scales
-      scale_x_continuous(expand = c(0, 0)),
-      scale_y_continuous(expand = c(0, 0))
-    )
+  crs = "ESRI:54017"
 )
+
+```
+
+Now, lets call the various elements of this report.
+
+First, we have the summary of this report, which shows important data.
+
+```{r analyze France report 1}
+
+france_slf_risk_report[["Report_info"]]
+
+```
+
+Next, we have a summary of the viticultural regions in France, which shows each IVR (winery), its published coordinates, and the risk associated with each winery:
+
+```{r analyze France report 2}
+
+france_slf_risk_report[["viticultural_regions_list"]]
+
+```
+
+Here are some of the column explanations:
+
+- columns that include the word "risk" are a calculation of the risk level, on a scale from 0-1. There are columns for both the present and future projections of risk. 
+- Columns labeled "risk_level" and the current level of risk; low, moderate, high, or extreme.
+- the risk_shift column shows the present and future risk, separated by an underscore
+- the risk_shift_count column tallys how many risk levels were gained or lost, in order of the risk level.
+
+Now, we will call up the risk maps, which depict the level of risk and the location of any wineries.
+
+```{r analyze France report 3}
+
+france_slf_risk_report[["risk_maps"]][["present_risk_map"]]
+
+france_slf_risk_report[["risk_maps"]][["present_risk_map"]]
+
+```
+
+Unfortunately, the map did not format well because France possesses some territories outside its mainland. We can fix this with a few simple lines of code; we merely need to edit the axes of the plot:
+
+```{r change view on maps 1}
+
+france_current <- france_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4804640.544946612, 5695846.383707797)
+
+france_current
+
+```
+
+```{r change view on maps 2}
+
+france_future <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4804640.544946612, 5695846.383707797)
+
+france_future
+
+```
+
+Now we can see the map of the mainland much better.
+
+The next table shows the proportion of the map that is occupied by each risk level. This is a useful table to see how much of the viticultural area is at risk.
+
+```{r analyze France report 4}
+
+france_slf_risk_report[["risk_maps_prop_area_table"]]
+
+```
+
+Next, we have the viticultural risk plot, which shows the risk level of each winery in France. This is a useful plot to see the overall trend of how the wineries in France are changing risk over time. The arrows point from a vineyard in the present, to its risk in the future.
+
+```{r analyze France report 5}
+
+france_slf_risk_report[["viticultural_risk_plot"]]
+
+```
+
+Next is the viticultural risk table, which shows a tally of the wineries at each risk level, both now and in the future. This is a useful table to see how many wineries are at each risk level, and how that changes over time. It serves to quantify the risk plot above. Negative numbers are decreasing in risk over time, and positive numbers are increasing in risk over time.
+
+```{r analyze France report 6}
+
+france_slf_risk_report[["viticultural_risk_table"]]
+
+```
+
+Next, we have a map of the shift in risk for SLF over time. Green areas will gain risk in the future, while blue areas will lose risk in the future. This is a useful map to see where SLF is expected to shift its range over time. The white areas remain consistently at risk over time, while the grey areas are never at risk.
+
+```{r analyze France report 7}
+
+france_slf_risk_report[["range_shift_map"]]
+
+```
+
+We cannot see this map well either; lets change the view on it.
+
+```{r change view on maps 3}
+
+france_shift <- france_slf_risk_report[["range_shift_map"]] +
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4804640.544946612, 5695846.383707797)
+
+france_shift
+
+```
+
+Finally, we havea table which calculates the total area for each of the categories in the above map.
+
+```{r analyze France report 8}
+
+france_slf_risk_report[["range_shift_table"]]
 
 ```
 

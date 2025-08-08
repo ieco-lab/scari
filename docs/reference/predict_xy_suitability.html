@@ -26,7 +26,9 @@ xy coordinate by setting buffer.pred = TRUE."><meta property="og:image" content=
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="../articles/150_create_risk_report.html">Example usage of create_risk_report() to create reports of key viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
+    <li><a class="dropdown-item" href="../articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
     <li><a class="dropdown-item" href="../articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
@@ -47,15 +49,19 @@ xy coordinate by setting buffer.pred = TRUE."><meta property="og:image" content=
     <li><a class="dropdown-item" href="../articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
     <li><a class="dropdown-item" href="../articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk and model fit</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
     <li><a class="dropdown-item" href="../articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
     <li><a class="dropdown-item" href="../articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
     <li><a class="dropdown-item" href="../articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="../articles/140_plot_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="../articles/141_plot_AUC_var_cont.html">Check model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="../articles/142_calculate_model_fit.html">Calculate model fit using confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
+    <li><a class="dropdown-item" href="../articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
+    <li><a class="dropdown-item" href="../articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -166,8 +172,10 @@ calculate the suitability value.</p></dd>
 
 
 <dt id="arg-crs">crs<a class="anchor" aria-label="anchor" href="#arg-crs"></a></dt>
-<dd><p>Character. The crs of the projection used in building the input species data.
-Default is "ESRI:54017", the Behrmann Equal Area projection.</p></dd>
+<dd><p>Character. The crs (coordinate reference system) of the projection
+used in building the input species data. Should be in the format of an EPSG or
+ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
+NOTE: If changing, ensure that other input data share the same crs.</p></dd>
 
 
 <dt id="arg-output-name">output.name<a class="anchor" aria-label="anchor" href="#arg-output-name"></a></dt>

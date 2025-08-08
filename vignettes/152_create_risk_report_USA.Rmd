@@ -1,0 +1,345 @@
+---
+title: "Create risk reports specifically for the USA and US States"
+output: rmarkdown::html_document
+author: 
+    - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
+date: "2025-08-07"
+---
+
+VIGNETTE UNDER CONSTRUCTION
+
+```{r library packages, message = FALSE}
+
+# general tools
+library(tidyverse)
+library(cli)
+library(here)
+library(common)
+
+# spatial data
+library(terra)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthhires)
+library(rnaturalearthdata)
+library(ggspatial)
+
+# aesthetics
+library(kableExtra)
+library(formattable)
+library(webshot)
+library(webshot2)
+library(ggnewscale) ## MUST use version 0.4.10- 0.5.0 has a bug that breaks this function
+
+# for analysis
+library(patchwork)
+library(gginnards)
+
+library(scari)
+
+```
+
+**Note:** I will be setting the global options of this document so that only certain code chunks are rendered in the final .html file. I will set the `eval = FALSE` so that none of the code is re-run (preventing files from being overwritten during knitting) and will simply overwrite this in chunks with plots.
+
+```{r set global chunk opts, include = FALSE}
+
+# eval = FALSE so that outputs not overwritten
+knitr::opts_chunk$set(eval = FALSE)
+
+```
+
+## USA
+
+USA as a country
+
+```{r USA reports}
+
+scari::create_risk_report(
+  locality.iso = "usa",
+  locality.name = "united states",
+  locality.type = "country",
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
+  create.dir = FALSE,
+  save.report = FALSE,
+  buffer.dist = 20000
+)
+
+```
+
+```{r edit USA reports, eval = FALSE}
+
+### USA
+# the USA map usually comes including Alaska and hawaii, which we do not want
+
+USA_current <- united_states_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+  xlim(-12060785.031362064, -6271608.216308273) + # the boundaries in UTM
+  ylim(3091555.5611515422, 5614050.1030608015)
+
+USA_future <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  xlim(-12060785.031362064, -6271608.216308273) +
+  ylim(3091555.5611515422, 5614050.1030608015)
+
+USA_shift <- united_states_slf_risk_report[["range_shift_map"]] +
+  xlim(-12060785.031362064, -6271608.216308273) +
+  ylim(3091555.5611515422, 5614050.1030608015)
+
+
+#save
+ggsave(
+  USA_current,
+  filename = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_risk_map_present_edited.jpg"),
+  height = 8,
+  width = 10,
+  device = jpeg,
+  dpi = "retina"
+)
+
+ggsave(
+  USA_future,
+  filename = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_risk_map_2055_edited.jpg"),
+  height = 8,
+  width = 10,
+  device = jpeg,
+  dpi = "retina"
+)
+
+ggsave(
+  USA_shift,
+  filename = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_shift_map_edited.jpg"),
+  height = 8,
+  width = 10,
+  device = jpeg,
+  dpi = "retina"
+)
+
+# save USA report for other uses
+readr::write_rds(united_states_slf_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_slf_risk_report.rds"))
+
+```
+
+### US States
+
+```{r CA and PA}
+
+# try state level
+scari::create_risk_report(
+  locality.iso = "usa",
+  locality.name = "california",
+  locality.type = "state_province",
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
+  create.dir = FALSE,
+  save.report = FALSE,
+  buffer.dist = 20000
+)
+
+scari::create_risk_report(
+  locality.iso = "usa",
+  locality.name = "pennsylvania",
+  locality.type = "state_province",
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
+  create.dir = FALSE,
+  save.report = FALSE,
+  buffer.dist = 20000
+)
+
+```
+
+
+```{r US states, eval = FALSE}
+
+washington_risk_plot <- washington_slf_risk_report[["viticultural_risk_plot"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank()
+    ) +
+  labs(tag = "A") +
+  theme(
+    legend.position = "none", 
+    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    plot.tag.position = c(0.2, 0.9),
+    plot.tag = element_text(face = "bold")
+    )
+
+# edits
+# remove geom_text
+washington_risk_plot <- washington_risk_plot %>%
+  gginnards::delete_layers(match_type = "GeomLabel") %>%
+  ggplot_build()
+# edit point size
+washington_risk_plot$data[[4]]$size <- 1.5
+washington_risk_plot$data[[5]]$size <- 1.5
+# edit linewidth
+#washington_risk_plot$data[[3]]$linewidth <- 0.1
+
+washington_risk_plot <- ggplot_gtable(washington_risk_plot) %>%
+  wrap_ggplot_grob()
+
+
+
+oregon_risk_plot <- oregon_slf_risk_report[["viticultural_risk_plot"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank()
+    ) +
+  labs(tag = "C") +
+  theme(
+    legend.position = "none", 
+    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    plot.tag.position = c(0.2, 0.9),
+    plot.tag = element_text(face = "bold")
+    )
+
+oregon_risk_plot <- oregon_risk_plot %>%
+  gginnards::delete_layers(match_type = "GeomLabel") %>%
+  ggplot_build()
+# edit point size
+oregon_risk_plot$data[[4]]$size <- 1.5
+oregon_risk_plot$data[[5]]$size <- 1.5
+# edit linewidth
+#oregon_risk_plot$data[[3]]$linewidth <- 0.1
+
+oregon_risk_plot <- ggplot_gtable(oregon_risk_plot) %>%
+  wrap_ggplot_grob()
+
+  
+
+michigan_risk_plot <- michigan_slf_risk_report[["viticultural_risk_plot"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank()
+    ) +
+  labs(tag = "E") +
+  theme(
+    legend.position = "none", 
+    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    plot.tag.position = c(0.2, 0.9),
+    plot.tag = element_text(face = "bold")
+    )
+
+michigan_risk_plot <- michigan_risk_plot %>%
+  gginnards::delete_layers(match_type = "GeomLabel") %>%
+  ggplot_build()
+# edit point size
+michigan_risk_plot$data[[4]]$size <- 1.5
+michigan_risk_plot$data[[5]]$size <- 1.5
+# edit linewidth
+#michigan_risk_plot$data[[3]]$linewidth <- 0.1
+
+michigan_risk_plot <- ggplot_gtable(michigan_risk_plot) %>%
+  wrap_ggplot_grob()
+
+
+  # edit maps
+
+washington_risk_map <- washington_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+    ) +
+  labs(tag = "B") +
+  theme(
+    legend.position = "none", 
+    plot.tag.position = c(-0.1, 0.9),
+    plot.tag = element_text(face = "bold")
+    )
+
+
+washington_risk_map <- ggplot_build(washington_risk_map)
+# edit point size
+washington_risk_map$data[[3]]$size <- 1.5
+
+washington_risk_map <- ggplot_gtable(washington_risk_map) %>%
+  wrap_ggplot_grob()
+
+
+
+oregon_risk_map <-  oregon_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+    ) +
+  labs(tag = "D") +
+  theme(
+    legend.position = "none", 
+    plot.tag.position = c(-0.1, 0.9),
+    plot.tag = element_text(face = "bold")
+    ) 
+
+oregon_risk_map <- ggplot_build(oregon_risk_map)
+# edit point size
+oregon_risk_map$data[[3]]$size <- 1.5
+
+oregon_risk_map <- ggplot_gtable(oregon_risk_map) %>%
+  wrap_ggplot_grob()
+ 
+
+
+michigan_risk_map <- michigan_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+    ) +
+  labs(tag = "F") +
+  theme(
+    legend.position = "none", 
+    plot.tag.position = c(-0.1, 0.9),
+    plot.tag = element_text(face = "bold")
+    )
+  
+michigan_risk_map <- ggplot_build(michigan_risk_map)
+# edit point size
+michigan_risk_map$data[[3]]$size <- 1.5
+# rebuild plot
+michigan_risk_map <- ggplot_gtable(michigan_risk_map) %>%
+  wrap_ggplot_grob()
+  
+  
+```
+
+```{r example states- patchwork, eval = FALSE}
+
+example_states_patchwork <- (
+  # washington top row
+  washington_risk_plot + plot_spacer() + washington_risk_map + 
+  # USA 2nd row
+  oregon_risk_plot + plot_spacer() + oregon_risk_map + 
+  # michigan 3rd row
+  michigan_risk_plot + plot_spacer() + michigan_risk_map
+  ) +
+  # annotation
+  plot_annotation(title = "Risk shift in US states of future interest for viticulture") +
+  plot_layout(ncol = 3, nrow = 3, widths = unit(c(5.5, 1, 5.5), "cm"), heights = unit(5.5, "cm"))
+
+
+```
+
+```{r save plot- example states, eval = FALSE}
+
+ggsave(
+  example_states_patchwork, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "risk_shift_viticultural_states.jpg"),
+  height = 8, 
+  width = 10,
+  device = jpeg,
+  dpi = 500
+  )
+
+```

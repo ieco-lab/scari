@@ -1597,8 +1597,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     dplyr::rename(
       "global_model_risk_present" = "xy_global_hist_rescaled",
       "regional_ensemble_model_risk_present" = "xy_regional_ensemble_hist_rescaled",
-      "global_model_risk_2041-2070" = "xy_global_future_rescaled",
-      "regional_ensemble_model_risk_2041-2070" = "xy_regional_ensemble_future_rescaled",
+      "global_model_risk_future" = "xy_global_future_rescaled",
+      "regional_ensemble_model_risk_future" = "xy_regional_ensemble_future_rescaled",
       "risk_level_present" = "risk_hist",
       "risk_level_future" = "risk_future",
       "risk_count_present" = "risk_hist_count",

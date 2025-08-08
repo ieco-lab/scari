@@ -66,10 +66,12 @@ reference:
 
 articles:
 - title: Quantify risk to specific viticultural regions
-  desc: Example usage for `create_risk_report()` for creation of localized reports
+  desc: Example usage of create_risk_report(), applied to create reports for French Viticultural areas
   navbar: Quantify risk to specific viticultural regions
   contents:
-  - 150_create_risk_report
+  - 150_create_risk_report_example_usage
+  - 151_create_risk_report_global
+  - 152_create_risk_report_USA
 
 - title: Initialize scari
   desc: Initialization of renv package for dependencies
@@ -102,20 +104,25 @@ articles:
   - 100_run_ExDet_MIC
   - 110_ensemble_regional_models
 
-- title: Quantify SLF risk and model fit
-  desc: Create suitability maps, scatter plots and figures depicting the AUC, var cont and response curves
-  navbar: 4. Quantify SLF risk and model fit
+- title: Quantify SLF risk
+  desc: Create suitability maps, scatter plots and figures of results
+  navbar: 4. Quantify SLF risk
   contents:
   - 120_create_suitability_maps
   - 130_create_suitability_xy_plots_viticultural
   - 131_create_suitability_xy_plots_SLF
-  - 140_plot_response_curves
-  - 141_plot_AUC_var_cont
-  - 142_calculate_model_fit
-
-- title: Workflows and figures
-  desc: Format figures for publication and outline specific workflows for functions
-  contents:
-  - 051_compute_MaxEnt_summary_statistics_workflow
   - 160_generate_format_figures
 
+- title: Quantify model fit
+  desc: Assess model fit using ROC plots, variable contribution, confusion matrices, and response curves
+  navbar: 5. Quantify model fit
+  contents:
+  - 140_assess_response_curves
+  - 141_assess_AUC_confusion_matrix
+  - 142_assess_var_imp
+
+- title: Workflows
+  desc: Outlines specific workflows for functions
+  navbar: 6. Function Workflows
+  contents:
+  - 051_compute_MaxEnt_summary_statistics_workflow

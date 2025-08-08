@@ -22,7 +22,9 @@ to run various types of models."><meta property="og:image" content="https://ieco
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="../articles/150_create_risk_report.html">Example usage of create_risk_report() to create reports of key viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
+    <li><a class="dropdown-item" href="../articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
     <li><a class="dropdown-item" href="../articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
@@ -43,15 +45,19 @@ to run various types of models."><meta property="og:image" content="https://ieco
     <li><a class="dropdown-item" href="../articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
     <li><a class="dropdown-item" href="../articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk and model fit</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
     <li><a class="dropdown-item" href="../articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
     <li><a class="dropdown-item" href="../articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
     <li><a class="dropdown-item" href="../articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="../articles/140_plot_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="../articles/141_plot_AUC_var_cont.html">Check model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="../articles/142_calculate_model_fit.html">Calculate model fit using confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
+    <li><a class="dropdown-item" href="../articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
+    <li><a class="dropdown-item" href="../articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -83,6 +89,7 @@ to run various types of models.</p>
 <span>  <span class="va">var.period</span>,</span>
 <span>  bioclim.type <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  bioclim.number <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  bioclim.period <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  bioclim.ssp <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  bioclim.model <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -122,6 +129,10 @@ The type of bioclimatic variable to be downloaded. Normal  See details</p></dd>
 <dd><p>Used only if downloading bioclimatic variables (<code>var.type</code> = "climatologies" and <code>var.subtype</code> = "bio".)</p></dd>
 
 
+<dt id="arg-bioclim-period">bioclim.period<a class="anchor" aria-label="anchor" href="#arg-bioclim-period"></a></dt>
+<dd><p>Used only if downloading bioclimatic variables (<code>var.type</code> = "climatologies" and <code>var.subtype</code> = "bio".)</p></dd>
+
+
 <dt id="arg-bioclim-ssp">bioclim.ssp<a class="anchor" aria-label="anchor" href="#arg-bioclim-ssp"></a></dt>
 <dd><p>Used only if downloading bioclimatic variables (<code>var.type</code> = "climatologies" and <code>var.subtype</code> = "bio".)
 If the variable is a projected variable, the Shared Socioeconomic Pathway (SSP) scenario to be downloaded.
@@ -155,10 +166,6 @@ will be created.</p></dd>
 <dt id="arg-save-output">save.output<a class="anchor" aria-label="anchor" href="#arg-save-output"></a></dt>
 <dd><p>Logical. Should the requested downloads be saved to file? File location
 specified by <code>mypath</code>.</p></dd>
-
-
-<dt id="arg-bioclim-period">bioclim.period<a class="anchor" aria-label="anchor" href="#arg-bioclim-period"></a></dt>
-<dd><p>Used only if downloading bioclimatic variables (<code>var.type</code> = "climatologies" and <code>var.subtype</code> = "bio".)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -247,8 +254,7 @@ Date format should be a range years. Choices are "1981-2010" (historical data), 
 <span class="r-in"><span>bioclim.model <span class="op">=</span> <span class="cn">NA</span>, <span class="co"># historical data</span></span></span>
 <span class="r-in"><span>save.output <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> proceeding without creating report output subdirectory folder</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in scari::import_chelsa_v2(var.type = "climatologies", var.subtype = "bio",     var.period = "1981-2010", bioclim.type = "bioclim", bioclim.number = 1:19,     bioclim.period = "1981-2010", bioclim.ssp = NA, bioclim.model = NA,     save.output = FALSE):</span> object 'var.value' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'import_chelsa_v2' is not an exported object from 'namespace:scari'</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># download projected bioclimatic variables under climate change:</span></span></span>
 <span class="r-in"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu">import_chelsa_v2</span><span class="op">(</span></span></span>
@@ -262,8 +268,7 @@ Date format should be a range years. Choices are "1981-2010" (historical data), 
 <span class="r-in"><span>bioclim.model <span class="op">=</span> <span class="st">'gfdl-esm4'</span>, <span class="co"># historical data</span></span></span>
 <span class="r-in"><span>save.output <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> proceeding without creating report output subdirectory folder</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in scari::import_chelsa_v2(var.type = "climatologies", var.subtype = "bio",     var.period = "1981-2010", bioclim.type = "bioclim", bioclim.number = 1:19,     bioclim.period = "1981-2010", bioclim.ssp = "ssp126", bioclim.model = "gfdl-esm4",     save.output = FALSE):</span> object 'var.value' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'import_chelsa_v2' is not an exported object from 'namespace:scari'</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

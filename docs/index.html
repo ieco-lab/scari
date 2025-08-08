@@ -43,7 +43,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="articles/150_create_risk_report.html">Example usage of create_risk_report() to create reports of key viticultural areas</a></li>
+    <li><a class="dropdown-item" href="articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
+    <li><a class="dropdown-item" href="articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
+    <li><a class="dropdown-item" href="articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
     <li><a class="dropdown-item" href="articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
@@ -64,15 +66,19 @@
     <li><a class="dropdown-item" href="articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
     <li><a class="dropdown-item" href="articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk and model fit</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
     <li><a class="dropdown-item" href="articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
     <li><a class="dropdown-item" href="articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
     <li><a class="dropdown-item" href="articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="articles/140_plot_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="articles/141_plot_AUC_var_cont.html">Check model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="articles/142_calculate_model_fit.html">Calculate model fit using confusion matrices</a></li>
+    <li><a class="dropdown-item" href="articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
+    <li><a class="dropdown-item" href="articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
+    <li><a class="dropdown-item" href="articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
+    <li><a class="dropdown-item" href="articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
+    <li><a class="dropdown-item" href="articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
   </ul>
 </li>
       </ul>
@@ -118,7 +124,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ieco-lab.github.io/scari/">scari</a></span><span class="op">)</span></span></code></pre>
 <p>The <strong>dependency</strong> packages should then be installed for the package to run properly:</p>
 <p>Here are the main packages that <code>scari</code> depends on:</p>
-<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cli'</span>, <span class="st">'common'</span>, <span class="st">'CoordinateCleaner'</span>, <span class="st">'devtools'</span>, <span class="st">'dismo'</span>, <span class="st">'ENMTools'</span>, <span class="st">'formattable'</span>, <span class="st">'gginnards'</span>, <span class="st">'gitcreds'</span>, <span class="st">'grid'</span>, <span class="st">'here'</span>, <span class="st">'httr'</span>, <span class="st">'kableExtra'</span>, <span class="st">'kgc'</span>, <span class="st">'patchwork'</span>, <span class="st">'pkgdown'</span>, <span class="st">'plotROC'</span>, <span class="st">'pROC'</span>, <span class="st">'raster'</span>, <span class="st">'rasterVis'</span>, <span class="st">'remotes'</span>, <span class="st">'renv'</span>, <span class="st">'rgbif'</span>, <span class="st">'rJava'</span>, <span class="st">'rmarkdown'</span>, <span class="st">'rnaturalearth'</span>, <span class="st">'scales'</span>, <span class="st">'SDMtune'</span>, <span class="st">'sf'</span>, <span class="st">'sp'</span>, <span class="st">'stats'</span>, <span class="st">'stringr'</span>, <span class="st">'terra'</span>, <span class="st">'tidygeocoder'</span>, <span class="st">'tidyverse'</span>, <span class="st">'usethis'</span>, <span class="st">'utils'</span>, <span class="st">'viridis'</span>, <span class="st">'webshot'</span>, <span class="st">'webshot2'</span><span class="op">)</span><span class="op">)</span></span>
+<pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cli'</span>, <span class="st">'common'</span>, <span class="st">'CoordinateCleaner'</span>, <span class="st">'devtools'</span>, <span class="st">'dismo'</span>, <span class="st">'ENMTools'</span>, <span class="st">'formattable'</span>, <span class="st">'gginnards'</span>, <span class="st">'ggspatial'</span>, <span class="st">'gitcreds'</span>, <span class="st">'grid'</span>, <span class="st">'here'</span>, <span class="st">'httr'</span>, <span class="st">'kableExtra'</span>, <span class="st">'kgc'</span>, <span class="st">'patchwork'</span>, <span class="st">'pkgdown'</span>, <span class="st">'plotROC'</span>, <span class="st">'pROC'</span>, <span class="st">'raster'</span>, <span class="st">'rasterVis'</span>, <span class="st">'remotes'</span>, <span class="st">'renv'</span>, <span class="st">'rgbif'</span>, <span class="st">'rJava'</span>, <span class="st">'rmarkdown'</span>, <span class="st">'rnaturalearth'</span>, <span class="st">'scales'</span>, <span class="st">'SDMtune'</span>, <span class="st">'sf'</span>, <span class="st">'sp'</span>, <span class="st">'stats'</span>, <span class="st">'stringr'</span>, <span class="st">'terra'</span>, <span class="st">'tidygeocoder'</span>, <span class="st">'tidyverse'</span>, <span class="st">'usethis'</span>, <span class="st">'utils'</span>, <span class="st">'viridis'</span>, <span class="st">'webshot'</span>, <span class="st">'webshot2'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install package which cannot be obtained from the CRAN</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
