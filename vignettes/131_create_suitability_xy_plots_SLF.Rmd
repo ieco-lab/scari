@@ -984,13 +984,27 @@ slf_risk_table <- slf_populations_risk %>%
   dplyr::summarize(count = n()) %>%
   pivot_wider(names_from = risk_2055, values_from = count) %>%
   # tidy
+  ungroup()
+
+# add columns that do not exist
+  if(!'extreme' %in% names(slf_risk_table)) slf_risk_table <- slf_risk_table %>% tibble::add_column(extreme = 0)
+  if(!'high' %in% names(slf_risk_table)) slf_risk_table <- slf_risk_table %>% tibble::add_column(high = 0)
+  if(!'moderate' %in% names(slf_risk_table)) slf_risk_table <- slf_risk_table %>% tibble::add_column(moderate = 0)
+  if(!'low' %in% names(slf_risk_table)) slf_risk_table <- slf_risk_table %>% tibble::add_column(low = 0)
+
+  # ensure all combinations of risk exist
+  if(!'extreme' %in% slf_risk_table$risk_1995) slf_risk_table <- slf_risk_table %>% tibble::add_row(risk_1995 = "extreme", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'high' %in% slf_risk_table$risk_1995) slf_risk_table <- slf_risk_table %>% tibble::add_row(risk_1995 = "high", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'moderate' %in% slf_risk_table$risk_1995) slf_risk_table <- slf_risk_table %>% tibble::add_row(risk_1995 = "moderate", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'low' %in% slf_risk_table$risk_1995) slf_risk_table <- slf_risk_table %>% tibble::add_row(risk_1995 = "low", extreme = 0, high = 0, moderate = 0, low = 0)
+
+
+slf_risk_table <- slf_risk_table %>%
   dplyr::rename("rows_1995_cols_2055" = "risk_1995") %>%
   dplyr::relocate("rows_1995_cols_2055", "extreme", "high", "moderate") %>%
   dplyr::arrange(factor(.$rows_1995_cols_2055, levels = risk_levels)) %>%
   # replace missing categories with 0
-  replace(is.na(.), 0) %>%
-  ungroup()
-
+  replace(is.na(.), 0) 
 
 # tidy
 slf_risk_table <- slf_risk_table %>%

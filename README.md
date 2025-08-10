@@ -29,7 +29,7 @@ The **dependency** packages should then be installed for the package to run prop
 Here are the main packages that `scari` depends on:
 
 ```
-install.packages(c('cli', 'common', 'CoordinateCleaner', 'devtools', 'dismo', 'ENMTools', 'formattable', 'gginnards', 'ggspatial', 'gitcreds', 'grid', 'here', 'httr', 'kableExtra', 'kgc', 'patchwork', 'pkgdown', 'plotROC', 'pROC', 'raster', 'rasterVis', 'remotes', 'renv', 'rgbif', 'rJava', 'rmarkdown', 'rnaturalearth', 'scales', 'SDMtune', 'sf', 'sp', 'stats', 'stringr', 'terra', 'tidygeocoder', 'tidyverse', 'usethis', 'utils', 'viridis', 'webshot', 'webshot2'))
+install.packages(c('cli', 'common', 'CoordinateCleaner', 'devtools', 'dismo', 'ENMTools', 'formattable', 'gginnards', 'ggspatial', 'gitcreds', 'grid', 'here', 'httr', 'kableExtra', 'kgc', 'patchwork', 'pkgdown', 'plotROC', 'pROC', 'raster', 'rasterVis', 'remotes', 'renv', 'rgbif', 'rJava', 'rmarkdown', 'rnaturalearth', 'scales', 'SDMtune', 'sf', 'sp', 'stats', 'stringr', 'terra', 'tidyverse', 'usethis', 'utils', 'viridis', 'webshot', 'webshot2'))
 
 # Install package which cannot be obtained from the CRAN
 library(devtools)
@@ -41,6 +41,8 @@ remotes::install_github("densitymodelling/dsmextra")
 # install specific versions of packages
 remotes::install_version("ggnewscale", version = "0.4.10") # due to issue with color scales
 remotes::install_version("GeoThinneR", version = "1.1.0") # due to issue with thin_points
+remotes::install_version("tidygeocoder", version = "1.0.5") # due to issue with reverse_geocode()
+
 
 # we also suggest installing the following packages if using the appendix in vignette 050:
 install.packages("blockCV")

@@ -52,7 +52,6 @@ Imports:
     stats,
     stringr,
     terra,
-    tidygeocoder,
     tidyverse,
     usethis,
     utils,
@@ -63,6 +62,7 @@ Remotes:
     densitymodelling/dsmextra,
     eliocamp/ggnewscale@v0.4.10,
     ieco-lab/lydemapr,
+    jessecambon/tidygeocoder@v1.0.5,
     jmestret/GeoThinneR@v1.1.0,
     ropensci/rnaturalearthdata,
     ropensci/rnaturalearthhires

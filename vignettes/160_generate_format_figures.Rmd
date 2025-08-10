@@ -8,7 +8,7 @@ date: "2025-08-08"
 
 # Overview
 
-
+I will create the risk tables to accompany the main risk plots in this vignette. These tables summarize the number of globally important viticultural regions (IVRs) and spotted lanternfly (SLF) populations that fall into each risk category (extreme, high, moderate, low) for both the present (1981-2010) and future (2041-2070) time periods. 
 
 # Setup
 
@@ -350,26 +350,113 @@ slf_populations_latlon <- terra::as.data.frame(slf_populations_sv) %>%
 slf_populations_latlon$x <- as.numeric(slf_populations_latlon$x)
 slf_populations_latlon$y <- as.numeric(slf_populations_latlon$y) 
 
+# convert to tbl
+slf_populations_latlon <- tibble::tibble(slf_populations_latlon)
 # will not need this object again
 rm(slf_populations_sv)
 
 ```
 
+```{r split into segments for geocoding}
+
+slf_populations_latlon_200 <- dplyr::slice_head(slf_populations_latlon, n = 200) 
+slf_populations_latlon_400 <- dplyr::slice(slf_populations_latlon, 201:400) 
+slf_populations_latlon_600 <- dplyr::slice(slf_populations_latlon, 401:600)
+slf_populations_latlon_800 <- dplyr::slice(slf_populations_latlon, 601:800)
+slf_populations_latlon_1000 <- dplyr::slice(slf_populations_latlon, 801:1000)
+slf_populations_latlon_1200 <- dplyr::slice(slf_populations_latlon, 1001:1200)
+slf_populations_latlon_tail <- dplyr::slice(slf_populations_latlon, 1201:1282)
+
+```
+
 ## Geocode country codes
 
-```{r geocode country}
+I discovered that the ArcGIS api will only allow me to geocode in chunks of about 200, so I will need to do these separately and then combine them.
+
+```{r geocode country in groups}
 
 # geocode
-slf_populations_geocoded <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon, 
+slf_populations_geocoded_200 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_200, 
   lat = y, 
   long = x, 
-  address = "country", # name of output col
   full_results = TRUE, # give each element of the address in a column
   method = "arcgis",
-  mode = "single", # one result per point
   progress_bar = TRUE
   )
+
+slf_populations_geocoded_400 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_400, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+slf_populations_geocoded_600 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_600, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+slf_populations_geocoded_800 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_800, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+slf_populations_geocoded_1000 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_1000, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+slf_populations_geocoded_1200 <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_1200, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+slf_populations_geocoded_tail <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon_tail, 
+  lat = y, 
+  long = x, 
+  full_results = TRUE, # give each element of the address in a column
+  method = "arcgis",
+  progress_bar = TRUE
+  )
+
+```
+
+```{r combine datasets}
+
+slf_populations_geocoded <- rbind(
+  slf_populations_geocoded_200,
+  slf_populations_geocoded_400,
+  slf_populations_geocoded_600,
+  slf_populations_geocoded_800,
+  slf_populations_geocoded_1000,
+  slf_populations_geocoded_1200,
+  slf_populations_geocoded_tail
+)
+
+```
+
+
+```{r tidy and save}
 
 # get unique values- should only be 4 countries
 unique(slf_populations_geocoded$CountryCode)
