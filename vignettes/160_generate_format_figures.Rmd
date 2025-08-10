@@ -8,7 +8,7 @@ date: "2025-08-08"
 
 # Overview
 
-I will create the risk tables to accompany the main risk plots in this vignette. These tables summarize the number of globally important viticultural regions (IVRs) and spotted lanternfly (SLF) populations that fall into each risk category (extreme, high, moderate, low) for both the present (1981-2010) and future (2041-2070) time periods. 
+I will create the risk tables to accompany the main risk plots in this vignette. These tables summarize the number of globally important viticultural regions (IVRs) and spotted lanternfly (SLF) populations that fall into each risk category (extreme, high, moderate, low) for both the present (1981-2010) and future (2041-2070) time periods. I will also calculate the proportion of IVRs and SLF populations that experience an increase, decrease, or no change in risk due to climate change by 2055 (the mean year of the future time period).
 
 # Setup
 
@@ -84,7 +84,7 @@ IVR_shift_prop_table <- tibble(
 
 For reporting purposes, we see that about 69.7% of the 1063 IVRs experience no change in risk of SLF establishment due to climate change by 2055. Meanwhile, about 1.7% actually experience an increase in risk due to climate change and the remaining 28.6% move down one or more levels of risk by 2055.
 
-```{r save table from above, if desired- IVR prop plot}
+```{r make kable}
   
 # make kable
 IVR_shift_prop_table <- knitr::kable(IVR_shift_prop_table, "html", escape = FALSE) %>% 
@@ -93,6 +93,9 @@ IVR_shift_prop_table <- knitr::kable(IVR_shift_prop_table, "html", escape = FALS
   kableExtra::column_spec(1:2, width_min = '4cm') %>%
   kableExtra::add_header_above(., header = c("IVR risk table shift proportions" = 2), bold = TRUE)
 
+```
+
+```{r save table from above, if desired- IVR prop plot, include = FALSE}
 
 # save as .html
 kableExtra::save_kable(
@@ -154,9 +157,13 @@ IVR_risk_table <- kable(IVR_risk_table, format = "html", escape = FALSE) %>%
   kableExtra::column_spec(1:5, width_min = '4cm') %>%
   # add footnotes
   kableExtra::add_footnote("number signs indicate whether climate change is increasing (+) or decreasing (-) risk", notation = "alphabet") %>%
+  kableExtra::add_footnote("future risk calculated for period 2041-2070", notation = "alphabet") %>%
+  kableExtra::add_footnote("present risk calculated for period 1981-2010", notation = "alphabet") %>%
+  kableExtra::add_footnote("20000m buffer used for suitability of viticultural areas", notation = "alphabet") %>%
   # add header
-  kableExtra::add_header_above(., header = c("Risk of L delicatula establishment in globally important viticultural regions" = 6), bold = TRUE)
+  kableExtra::add_header_above(., header = c("Risk of L delicatula establishment in globally important viticultural regions" = 6), bold = TRUE)  
 
+IVR_risk_table
   
 ```
 
@@ -182,6 +189,17 @@ webshot::webshot(
 file.remove(file.path(here::here(), "vignette-outputs", "figures", "IVR_risk_table.html"))
 
 ```
+
+Let's interpret this table. 
+
+The rows and their totals represent the number of viticultural regions presently at risk. The columns and their totals represent the number that will be at risk in the future (by a mean of 2055, in this case.) 
+
+There are three general sections to it: 
+- The diagonal, which stretches from the top left to the bottom right, where the rows match the columns (for example, row 2, col 2, which is high_present and high_future). This represents the viticultural regions which will not change risk due to climate change (there are no number signs to indicate this).
+- The upper-right triangle of this diagonal. This represents viticultural regions which will lose risk due to climate change (they have a negative sign to reflect this). These were at a higher risk level and decreased by at least 1 level.
+- The lower-right triangle. This represents viticultural regions which will gain risk due to climate change (they have a positive sign to reflect this).
+
+You can see that generally, most IVRs will lose risk or remain the same. Only a small number of IVRs will gain risk in the future. We cannot say that climate change will increase risk to IVRs, but we can still see interesting trends in how it will affect those which decrease. Of those that decrease, the highest number of IVRs will shift from 'extreme' to 'high' (-131), which means that they will lose risk in only the global-scale model (not the regional-scale model). This is alarming, because we would not have detected these IVRs as potentially being at risk without having created an ensemble of regional-scale models. We can see that our regional-scale model is in fact detecting risk that the global-scale mean model does not pick up.
 
 # SLF risk table
 
@@ -221,8 +239,7 @@ slf_shift_prop_table <- tibble(
 
 For reporting purposes, we see that about 86.2% of the 769 slf populations experience no change in risk of persistence due to climate change by 2055. Meanwhile, about 2.7% actually experience an increase in risk due to climate change and the remaining 11% move down one or more levels of risk by 2055.
 
-
-```{r save table from above, if desired- SLF prop plot}
+```{r make kable 2}
   
 # make kable
 slf_shift_prop_table <- kable(slf_shift_prop_table, "html", escape = FALSE) %>% 
@@ -230,6 +247,10 @@ slf_shift_prop_table <- kable(slf_shift_prop_table, "html", escape = FALSE) %>%
   # standardize col width
   kableExtra::column_spec(1:2, width_min = '4cm') %>%
   kableExtra::add_header_above(., header = c("SLF risk table shift proportions" = 2), bold = TRUE)
+
+```
+
+```{r save table from above, if desired- SLF prop plot, include = FALSE}
 
 
 # save as .html
@@ -289,9 +310,12 @@ slf_risk_table <- kable(slf_risk_table, "html", escape = FALSE) %>%
   kableExtra::column_spec(1:5, width_min = '4cm') %>%
   # add footnotes
   kableExtra::add_footnote("number signs indicate whether climate change is increasing (+) or decreasing (-) risk", notation = "alphabet") %>%
+  kableExtra::add_footnote("future risk calculated for period 2041-2070", notation = "alphabet") %>%
+  kableExtra::add_footnote("present risk calculated for period 1981-2010", notation = "alphabet") %>%
   # add header
   add_header_above(., header = c("Risk of persistence for known L delicatula populations" = 6), bold = TRUE)
 
+slf_risk_table
   
 ```
 
@@ -322,11 +346,9 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_tab
 
 For the remainder of this vignette, I will format an assortment of tables and figures for publication:
 
-1. IVR risk tables
-2. SLF risk tables
-3. SLF risk plots- faceted by country
-4. Map of globally important viticultural regions
-5. bioclim variables
+1. SLF risk plots- faceted by country
+2. Map of globally important viticultural regions
+3. bioclim variables
 
 # SLF quadrant plots- facet by country
 
@@ -357,119 +379,55 @@ rm(slf_populations_sv)
 
 ```
 
-```{r split into segments for geocoding}
-
-slf_populations_latlon_200 <- dplyr::slice_head(slf_populations_latlon, n = 200) 
-slf_populations_latlon_400 <- dplyr::slice(slf_populations_latlon, 201:400) 
-slf_populations_latlon_600 <- dplyr::slice(slf_populations_latlon, 401:600)
-slf_populations_latlon_800 <- dplyr::slice(slf_populations_latlon, 601:800)
-slf_populations_latlon_1000 <- dplyr::slice(slf_populations_latlon, 801:1000)
-slf_populations_latlon_1200 <- dplyr::slice(slf_populations_latlon, 1001:1200)
-slf_populations_latlon_tail <- dplyr::slice(slf_populations_latlon, 1201:1282)
-
-```
-
 ## Geocode country codes
 
 I discovered that the ArcGIS api will only allow me to geocode in chunks of about 200, so I will need to do these separately and then combine them.
 
 ```{r geocode country in groups}
 
-# geocode
-slf_populations_geocoded_200 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_200, 
+slf_populations_geocoded <- tidygeocoder::reverse_geocode(
+  .tbl = slf_populations_latlon, 
   lat = y, 
   long = x, 
   full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_400 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_400, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_600 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_600, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_800 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_800, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_1000 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_1000, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_1200 <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_1200, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
-  progress_bar = TRUE
-  )
-
-slf_populations_geocoded_tail <- tidygeocoder::reverse_geocode(
-  .tbl = slf_populations_latlon_tail, 
-  lat = y, 
-  long = x, 
-  full_results = TRUE, # give each element of the address in a column
-  method = "arcgis",
+  method = "osm",
   progress_bar = TRUE
   )
 
 ```
 
-```{r combine datasets}
-
-slf_populations_geocoded <- rbind(
-  slf_populations_geocoded_200,
-  slf_populations_geocoded_400,
-  slf_populations_geocoded_600,
-  slf_populations_geocoded_800,
-  slf_populations_geocoded_1000,
-  slf_populations_geocoded_1200,
-  slf_populations_geocoded_tail
-)
-
-```
-
+The Nomanitim server returned the 2-letter iso codes in a column called `country_code`. I will retrieve all unique codes and will also create a new column of 3-letter iso codes for plotting purposes later. I will get those 3-letter codes from [iso.org](https://www.iso.org/obp/ui/#search). 
 
 ```{r tidy and save}
 
 # get unique values- should only be 4 countries
-unique(slf_populations_geocoded$CountryCode)
+unique(slf_populations_geocoded$country_code)
 
 # filter out presences with no country code
 slf_populations_geocoded_tidy <- slf_populations_geocoded %>%
-  dplyr::filter(!CountryCode %in% c("", "NA"), !is.na(CountryCode)) %>%
-  dplyr::select(species, x, y, CountryCode) 
+  dplyr::filter(!country_code %in% c("", "NA"), !is.na(country_code)) %>%
+  dplyr::select(x, y, country_code) %>% # we only need these
+  dplyr::mutate(
+    Species = "Lycorma delicatula", # add species column
+    country_code = toupper(country_code) # made uppercase
+    ) 
 
-slf_populations_geocoded_tidy$CountryCode <- toupper(slf_populations_geocoded_tidy$CountryCode)
+# add A3-iso
+slf_populations_geocoded_tidy <- slf_populations_geocoded_tidy %>%
+  dplyr::mutate(country_code_a3iso = dplyr::case_when(
+    country_code == "CN" ~ "CHN", # china
+    country_code == "KR" ~ "KOR", # Republic of Korea
+    country_code == "IN" ~ "IND", # india
+    country_code == "JP" ~ "JPN", # japan
+    country_code == "KP" ~ "PRK", # peoples republic of korea
+    country_code == "US" ~ "USA" # united states
+  )) %>%
+  # rename country_code
+  dplyr::rename("country_code_a2iso" = "country_code") %>%
+  dplyr::relocate(Species, x, y, country_code_a2iso)
 
 nrow(slf_populations_geocoded_tidy)
-# we only lost about 4 records
+# we lost no records!
 
 # save
 write_csv(
@@ -485,6 +443,8 @@ readr::write_rds(
 
 ```
 
+Now, re-import, summarize and plot
+
 ```{r re-import geocoded data, eval = TRUE}
 
 slf_populations_geocoded_tidy <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_withCountries.rds"))
@@ -494,13 +454,12 @@ slf_populations_geocoded_tidy <- readr::read_rds(file = file.path(here::here(), 
 ```{r summarize slf records per country, eval = TRUE}
 
 slf_populations_geocoded_table <- slf_populations_geocoded_tidy %>%
-  dplyr::group_by(CountryCode) %>%
+  dplyr::group_by(country_code_a3iso) %>%
   dplyr::summarize(slf_record_count = n()) %>%
   dplyr::arrange(desc(slf_record_count)) %>%
-  dplyr::mutate(country_name = c("United_States", "China", "South_Korea", "Japan", "North_Korea")) %>%
-  dplyr::rename("country_code" = "CountryCode") %>%
-  dplyr::relocate(country_code, country_name) %>%
-  tibble::add_row(country_code = "Total", country_name = "-", slf_record_count = sum(.$slf_record_count))
+  dplyr::mutate(country_name = c("United_States", "China", "South_Korea", "Japan", "India", "North_Korea")) %>%
+  dplyr::relocate(country_code_a3iso, country_name) %>%
+  tibble::add_row(country_code_a3iso = "Total", country_name = "-", slf_record_count = sum(.$slf_record_count))
 
 ```
 
@@ -541,14 +500,35 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_records_
 ```{r re-load rescaled values, eval = TRUE}
 
 # global
-xy_global_1995_rescaled <- read_rds(file = file.path(here::here(), "data", "global_slf_all_coords_1981-2010_xy_pred_suit_rescaled.rds"))
+xy_global_1995_rescaled <- read_rds(file = file.path(here::here(), "data", "global_slf_all_coords_1981-2010_xy_pred_suit_rescaled.rds")) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
 
-xy_global_2055_rescaled <- read_rds(file = file.path(here::here(), "data", "global_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds"))
+xy_global_2055_rescaled <- read_rds(file = file.path(here::here(), "data", "global_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds")) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
 
 # regional
-xy_regional_ensemble_1995_rescaled <- read_rds(file = file.path(here::here(), "data", "regional_ensemble_slf_all_coords_1981-2010_xy_pred_suit_rescaled.rds"))
+xy_regional_ensemble_1995_rescaled <- read_rds(file = file.path(here::here(), "data", "regional_ensemble_slf_all_coords_1981-2010_xy_pred_suit_rescaled.rds")) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
 
-xy_regional_ensemble_2055_rescaled <- read_rds(file = file.path(here::here(), "data", "regional_ensemble_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds"))
+xy_regional_ensemble_2055_rescaled <- read_rds(file = file.path(here::here(), "data", "regional_ensemble_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds")) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
+
 
 ```
 
@@ -569,12 +549,12 @@ xy_regional_ensemble_2055_rescaled_thresholds <- read_rds(file = file.path(here:
 ```{r join datasets, eval = TRUE}
 
 # join datasets for plotting
-xy_joined_rescaled <- full_join(xy_global_1995_rescaled, xy_regional_ensemble_1995_rescaled, join_by(ID, x, y)) %>%
+xy_joined_rescaled <- full_join(xy_global_1995_rescaled, xy_regional_ensemble_1995_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
   # join CC datasets
-  full_join(., xy_global_2055_rescaled, join_by(ID, x, y)) %>%
-  full_join(., xy_regional_ensemble_2055_rescaled, join_by(ID, x, y)) %>%
+  full_join(., xy_global_2055_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
+  full_join(., xy_regional_ensemble_2055_rescaled, by = c("ID", "join_col_x", "join_col_y")) %>%
   # order
-  dplyr::relocate(ID, x, y, xy_global_1995_rescaled, xy_global_2055_rescaled) %>%
+  dplyr::relocate(ID, join_col_x, join_col_y, xy_global_1995_rescaled, xy_global_2055_rescaled) %>%
   dplyr::select(-c(xy_global_1995, xy_global_2055, xy_regional_ensemble_1995, xy_regional_ensemble_2055))
 
 
@@ -606,21 +586,26 @@ breaks <- c(0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
 
 labels <- c(0, 2, 4, 6, 8, 10)
 
+slf_populations_geocoded_tidy <- slf_populations_geocoded_tidy %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
 
 # for loop
-for(i in unique(slf_populations_geocoded_tidy$CountryCode)) {
+for(i in unique(slf_populations_geocoded_tidy$country_code_a3iso)) {
 
   ## create datasets
   
   # filter datasets
   slf_populations_internal <- slf_populations_geocoded_tidy %>%
-    dplyr::filter(CountryCode == i)
+    dplyr::filter(country_code_a3iso == i)
   
   # filter out only records from country using join
   xy_joined_rescaled_internal <- xy_joined_rescaled %>%
-    right_join(., slf_populations_internal, join_by(x, y)) %>%
-    dplyr::select(-c(species, CountryCode))
-  
+    right_join(., slf_populations_internal, join_by(join_col_x, join_col_y)) %>%
+    dplyr::select(join_col_x, join_col_y)
   
   ## boundary crossing arrows 
   
@@ -673,7 +658,7 @@ for(i in unique(slf_populations_geocoded_tidy$CountryCode)) {
      ) +
    # GFDL ssp370 data
    geom_point(
-     aes(x = xy_global_2055_rescaled, y = xy_regional_ensemble_2055_rescaled, shape = "2041-2070\nGFDL ssp370"), 
+     aes(x = xy_global_2055_rescaled, y = xy_regional_ensemble_2055_rescaled, shape = "Future | GFDL-ESM4\nmean of ssp126_370_585"), 
      size = 2, stroke = 0.7, color = "black", fill = "wheat3"
      ) +
    # axes scaling

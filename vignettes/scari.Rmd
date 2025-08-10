@@ -3,7 +3,7 @@ title: "Get started using scari"
 output: rmarkdown::html_document
 author:
     - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
-date: "2024-10-23"
+date: "2025-08-10"
 ---
 
 ```{r library packages, echo = FALSE, message = FALSE}
@@ -26,26 +26,27 @@ library(kableExtra)
 library(rgbif)
 library(kgc)
 
+library(scari)
+
 ```
 
 # How to use this project
 
 ## 1. Produce localized reports on SLF risk to viticulture
 
-Our primary datasets, including risk maps and a viticultural risk analysis, can be accessed by executing the function `create_risk_report()`. This function creates a localized (at the country or state/provincial level) report of the risk for *Lycorma delicatula* to local viticulture. It can be applied to globally important winegrowing regions because it uses our dataset `data/wineries_tidied.rds`, which contains a sample (1,074) of the world's most important winegrowing regions. Users can and should apply this function for their locality as we are projecting that the risk of *Lycorma delicatula* establishment will exapnd under climate change. *Lycorma delicatula* has been classified as being capable of (global) pan-invasion and viticulure has already been devastated in some regions, so there is high potential for viticultural damage under climate change (Huron et al, 2022).
+Our primary datasets, including risk maps and a viticultural risk analysis, can be accessed by executing the function `create_risk_report()`. This function creates a localized (at the country or state/provincial level) report of the risk for *Lycorma delicatula* to local viticulture. It can be applied to globally important wine growing regions because it uses our dataset `data/wineries_esri54017_tidied.rds`, which contains a sample (1,072) of the world's most important wine growing regions. Users can and should apply this function for their locality as we are projecting that the risk of *Lycorma delicatula* establishment will expand under climate change. *Lycorma delicatula* has been classified as being capable of (global) pan-invasion and viticulure has already been devastated in some regions, so there is high potential for viticultural damage under climate change (Huron et al, 2022).
 
-For examples and best practice for usage of `create_risk_report()`, see the vignette [150_create_risk_report](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd)
+In this vignette, I will give an example of how this function can be applied to both a country and state/province to assess risk at different scales. For a more complete example of the usage of the `create_risk_report()` function and all of its outputs, see the vignette [150_create_risk_report_example_usage](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report_example_usage.Rmd).
 
-Our function recreates major datasets that we provide in our main analysis, including:
+Our function recreates major data sets that we provide in our main analysis, including:
 
 1. list of known important wine regions within the locality with predicted suitability values and levels
 2. current and future risk maps for SLF establishment
-3. range shift map of potential range expansion for L delicatula under climate change
-4. viticultural quadrant plot depicting of the risk for SLF establishment for known wine regions within the locality. This plot depicts the intersection of our two modeled scales.
+3. range shift map of potential range expansion for L. delicatula under climate change
+4. Viticultural quadrant plot depicting of the risk for SLF establishment for known wine regions within the locality. This plot depicts the intersection of our two modeled scales.
 5. risk table quantifying the level of risk to vineyards according to the quadrant plot
 
-
-Here is an example of a workflow for creating a localized risk map and how this might be applied:
+Here is an example of a workflow for creating a localized risk map and how this might be applied. I will give an example of how I might interpret the risk for *Lycorma delicatula* establishment in the United States, and then I will show how to narrow its scope to a more localized region, Washington State. 
 
 I might begin by creating a report at the national level. To create this, you will need the alpha-3 iso country code.
 
@@ -83,7 +84,7 @@ USA_current
 
 ```{r retrieve projected future risk map for USA, message = FALSE, warning = FALSE}
 
-USA_future <- usa_slf_risk_report[["risk_maps"]][["2041-2070_risk_map"]] +
+USA_future <- usa_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   # you may need to crop the map due to outlying territories, as we have done here
   xlim(-125, -65) +
   ylim(25, 50)
@@ -165,7 +166,7 @@ washington_current
 
 ```{r retrieve projected future risk map for washington USA, message = FALSE, warning = FALSE, echo = FALSE}
 
-washington_future <- washington_slf_risk_report[["risk_maps"]][["2041-2070_risk_map"]] +
+washington_future <- washington_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(
     title = element_blank(),
     subtitle = element_blank(),
@@ -284,9 +285,9 @@ Once the input data have been adapted to the user's needs, the regional-scale mo
 ```{r import SLF presence data, echo = FALSE}
 
 # note these data have been tidied between the download and here- see vig 020 for details
-presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2024-08-05.rds")) %>%
+presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
   dplyr::select(-species) %>%
-  sf::st_as_sf(coords = c("x", "y"), crs = 4326)
+  sf::st_as_sf(coords = c("x", "y"), crs = "ESRI:54017")
 
 ```
 
@@ -313,12 +314,20 @@ KG_zones_rast <- terra::rast(
   crs = "EPSG:4326"
   )
 
+# reproject to ESRI:54017
+kmz_data_rast <- terra::project(
+  x = kmz_data_rast,
+  y = "ESRI:54017",
+  method = "bilinear", # bilinear interpolation for continuous data
+  threads = TRUE # use multiple threads for faster processing
+)
+
 # next, convert raster to polygon
 KG_zones_poly <- terra::as.polygons(
   x = KG_zones_rast,
   aggregate = TRUE, # combine cells with the same value into one area
   values = TRUE, # include cell values as attributes
-  crs = "EPSG:4326"
+  crs = "ESRI:54017"
 )
 KG_zones_poly <- sf::st_as_sf(KG_zones_poly)
 
