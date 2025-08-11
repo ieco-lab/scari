@@ -1242,7 +1242,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
      ) +
      # future data
      geom_point(
-       aes(x = xy_global_future_rescaled, y = xy_regional_ensemble_future_rescaled, shape = paste0("Future | ", model.projected, "\nmean of", ssp.projected)),
+       aes(x = xy_global_future_rescaled, y = xy_regional_ensemble_future_rescaled, shape = paste0("Future | ", model.projected, "\nmean of ", ssp.projected)),
        size = 2, stroke = 0.7, color = "black", fill = "purple3"
      ) +
      # axes scaling

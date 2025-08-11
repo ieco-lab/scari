@@ -432,7 +432,7 @@ mypath <- file.path(here::here() %>%
 
 We calculate these according to the cloglog MTSS threshold per model
 
-```{r import confusion matrices, message = FALSE}
+```{r import confusion matrices, message = FALSE, results = "hide"}
 
 # global
 global_conf_matr <- read_csv(file = file.path(mypath, "slf_global_v4", "global_thresh_confusion_matrix_all_iterations.csv")) %>%
@@ -451,9 +451,14 @@ regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regio
 regional_invaded_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_thresh_confusion_matrix.csv")) %>%
   slice(7)
 
+```
+
+```{r display plot}
+
 global_conf_matr
 
 ```
+
 
 I will create some input datasets which contain the number of test positives per model.
 
@@ -532,14 +537,20 @@ write_csv(model_sens_spec, file.path(here::here(), "vignette-outputs", "data-tab
 
 I will also write it to a kable so it can be printed
 
-```{r save tables from above, if desired, eval = FALSE, include = FALSE}
+```{r write and display sens spec kable}
 
 # add column formatting
-model_sens_spec <- mutate(model_sens_spec, bg_neg = scales::label_comma() (bg_neg))
+model_sens_spec <- dplyr::mutate(model_sens_spec, bg_neg = scales::label_comma() (bg_neg))
 
 # convert to kable
 model_sens_spec_kable <- knitr::kable(x = model_sens_spec, format = "html", escape = FALSE) %>%
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE)
+
+model_sens_spec_kable
+
+```
+
+```{r save tables from above if desired, eval = FALSE, include = FALSE}
 
 # save as .html
 kableExtra::save_kable(
@@ -561,12 +572,6 @@ webshot::webshot(
 file.remove(file.path(here::here(), "vignette-outputs", "figures", "model_sensitivity_specificity.html"))
 
 # model extents
-
-```
-
-```{r display sens spec kable}
-
-model_sens_spec_kable
 
 ```
 

@@ -342,7 +342,7 @@ file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_tab
 
 ```
 
-# <!--
+<!--
 
 For the remainder of this vignette, I will format an assortment of tables and figures for publication:
 
@@ -576,7 +576,7 @@ regional_ensemble_MTSS_2055 <- as.numeric(xy_regional_ensemble_2055_rescaled_thr
 
 Now lets plot the data. I will create 4 plots, 1 per country using a for loop.
 
-```{r plot SLF suitability values, fig.asp = 1, eval = TRUE}
+```{r plot SLF suitability values, fig.asp = 1, eval = FALSE}
 
 # create empty list for appending
 slf_plots_output <- list()
@@ -698,7 +698,8 @@ for(i in unique(slf_populations_geocoded_tidy$country_code_a3iso)) {
 
 ## patchwork figure
 
-```{r edit plots, eval = TRUE}
+```{r edit plots, eval = FALSE}
+# change eval to TRUE
 
 # USA
 USA_risk_plot <- slf_plots_output[["USA"]] +
@@ -821,7 +822,8 @@ KOR_risk_plot <- ggplot_gtable(KOR_risk_plot) %>%
   
 ```
 
-```{r patchwork plots, eval = TRUE}
+```{r patchwork plots, eval = FALSE}
+# change eval to TRUE
 
 slf_plot_patchwork <- (
   USA_risk_plot + plot_spacer() + CHN_risk_plot +
@@ -837,7 +839,7 @@ slf_plot_patchwork <- (
 
 ```
 
-```{r save plot- SLF patchwork}
+```{r save plot- SLF patchwork, inclue = FALSE}
 
 ggsave(
   slf_plot_patchwork, 
@@ -899,5 +901,5 @@ bio11_hist_plot <- ggplot() +
 
 ```
 
-# -->
+-->
 

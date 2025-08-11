@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Get started using scari • scari</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scari</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +40,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="../articles/150_create_risk_report.html">Example usage of create_risk_report() to create reports of key viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
+    <li><a class="dropdown-item" href="../articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
     <li><a class="dropdown-item" href="../articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
@@ -62,15 +63,19 @@
     <li><a class="dropdown-item" href="../articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
     <li><a class="dropdown-item" href="../articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk and model fit</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
     <li><a class="dropdown-item" href="../articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
     <li><a class="dropdown-item" href="../articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
     <li><a class="dropdown-item" href="../articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="../articles/140_plot_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="../articles/141_plot_AUC_var_cont.html">Check model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="../articles/142_calculate_model_fit.html">Calculate model fit using confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
+    <li><a class="dropdown-item" href="../articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
+    <li><a class="dropdown-item" href="../articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
   </ul>
 </li>
       </ul>
@@ -98,7 +103,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University &lt;a href="http://www.biodiversitycenter.org/" class="external-link"&gt;Center for Biodiversity&lt;/a&gt; &lt;a href="https://www.iecolab.org/" class="external-link"&gt;iEco Lab&lt;/a&gt; &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2025-08-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/scari.Rmd" class="external-link"><code>vignettes/scari.Rmd</code></a></small>
       <div class="d-none name"><code>scari.Rmd</code></div>
@@ -117,33 +122,39 @@ analysis, can be accessed by executing the function
 <code><a href="../reference/create_risk_report.html">create_risk_report()</a></code>. This function creates a localized (at
 the country or state/provincial level) report of the risk for
 <em>Lycorma delicatula</em> to local viticulture. It can be applied to
-globally important winegrowing regions because it uses our dataset
-<code>data/wineries_tidied.rds</code>, which contains a sample (1,074)
-of the world’s most important winegrowing regions. Users can and should
-apply this function for their locality as we are projecting that the
-risk of <em>Lycorma delicatula</em> establishment will exapnd under
-climate change. <em>Lycorma delicatula</em> has been classified as being
-capable of (global) pan-invasion and viticulure has already been
+globally important wine growing regions because it uses our dataset
+<code>data/wineries_esri54017_tidied.rds</code>, which contains a sample
+(1,072) of the world’s most important wine growing regions. Users can
+and should apply this function for their locality as we are projecting
+that the risk of <em>Lycorma delicatula</em> establishment will expand
+under climate change. <em>Lycorma delicatula</em> has been classified as
+being capable of (global) pan-invasion and viticulure has already been
 devastated in some regions, so there is high potential for viticultural
 damage under climate change (Huron et al, 2022).</p>
-<p>For examples and best practice for usage of
-<code><a href="../reference/create_risk_report.html">create_risk_report()</a></code>, see the vignette <a href="https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd" class="external-link">150_create_risk_report</a></p>
-<p>Our function recreates major datasets that we provide in our main
+<p>In this vignette, I will give an example of how this function can be
+applied to both a country and state/province to assess risk at different
+scales. For a more complete example of the usage of the
+<code><a href="../reference/create_risk_report.html">create_risk_report()</a></code> function and all of its outputs, see
+the vignette <a href="https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report_example_usage.Rmd" class="external-link">150_create_risk_report_example_usage</a>.</p>
+<p>Our function recreates major data sets that we provide in our main
 analysis, including:</p>
 <ol style="list-style-type: decimal">
 <li>list of known important wine regions within the locality with
 predicted suitability values and levels</li>
 <li>current and future risk maps for SLF establishment</li>
-<li>range shift map of potential range expansion for L delicatula under
+<li>range shift map of potential range expansion for L. delicatula under
 climate change</li>
-<li>viticultural quadrant plot depicting of the risk for SLF
+<li>Viticultural quadrant plot depicting of the risk for SLF
 establishment for known wine regions within the locality. This plot
 depicts the intersection of our two modeled scales.</li>
 <li>risk table quantifying the level of risk to vineyards according to
 the quadrant plot</li>
 </ol>
 <p>Here is an example of a workflow for creating a localized risk map
-and how this might be applied:</p>
+and how this might be applied. I will give an example of how I might
+interpret the risk for <em>Lycorma delicatula</em> establishment in the
+United States, and then I will show how to narrow its scope to a more
+localized region, Washington State.</p>
 <p>I might begin by creating a report at the national level. To create
 this, you will need the alpha-3 iso country code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -173,7 +184,7 @@ higher risk.</p>
 <p><strong>Fig 1.</strong> Projected current risk of <em>Lycorma
 delicatula</em> establishment | USA</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">USA_future</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"2041-2070_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="va">USA_future</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"future_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
 <span>  <span class="co"># you may need to crop the map due to outlying territories, as we have done here</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">65</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span><span class="op">)</span></span>
@@ -271,16 +282,16 @@ Risk of L delicatula establishment for important viticultural regions
 <th style="text-align:left;">
 </th>
 <th style="text-align:left;">
-extreme_2055
+extreme_future
 </th>
 <th style="text-align:left;">
-high_2055
+high_future
 </th>
 <th style="text-align:left;">
-moderate_2055
+moderate_future
 </th>
 <th style="text-align:left;">
-low_2055
+low_future
 </th>
 <th style="text-align:left;">
 total_present
@@ -293,7 +304,7 @@ total_present
 extreme_present
 </td>
 <td style="text-align:left;min-width: 4cm; ">
-1
+0
 </td>
 <td style="text-align:left;min-width: 4cm; ">
 0
@@ -305,7 +316,7 @@ extreme_present
 0
 </td>
 <td style="text-align:left;">
-<span style=" font-weight: bold;    color: darkred !important;">1</span>
+<span style=" font-weight: bold;    color: darkred !important;">0</span>
 </td>
 </tr>
 <tr>
@@ -316,7 +327,7 @@ high_present
 +0
 </td>
 <td style="text-align:left;min-width: 4cm; ">
-6
+7
 </td>
 <td style="text-align:left;min-width: 4cm; ">
 0
@@ -325,7 +336,7 @@ high_present
 0
 </td>
 <td style="text-align:left;">
-<span style=" font-weight: bold;    color: darkorange !important;">6</span>
+<span style=" font-weight: bold;    color: darkorange !important;">7</span>
 </td>
 </tr>
 <tr>
@@ -370,13 +381,13 @@ low_present
 </tr>
 <tr>
 <td style="text-align:left;min-width: 4cm; ">
-total_2055
+total_future
 </td>
 <td style="text-align:left;min-width: 4cm; ">
-<span style=" font-weight: bold;    color: darkred !important;">1</span>
+<span style=" font-weight: bold;    color: darkred !important;">0</span>
 </td>
 <td style="text-align:left;min-width: 4cm; ">
-<span style=" font-weight: bold;    color: darkorange !important;">6</span>
+<span style=" font-weight: bold;    color: darkorange !important;">7</span>
 </td>
 <td style="text-align:left;min-width: 4cm; ">
 <span style=" font-weight: bold;    color: gold !important;">0</span>
@@ -398,6 +409,16 @@ total_2055
 <td style="padding: 0; border:0;" colspan="100%">
 <sup>a</sup> number signs indicate whether climate change is increasing
 or decreasing risk
+</td>
+</tr></tfoot>
+<tfoot><tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup>a</sup> present risk calculated for period 1981-2010
+</td>
+</tr></tfoot>
+<tfoot><tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup>a</sup> future risk calculated for period 2041-2070
 </td>
 </tr></tfoot>
 </table>
@@ -451,10 +472,10 @@ species occurrence records using GBIF.</p>
 <span>  type <span class="op">=</span> <span class="st">"and"</span>,</span>
 <span>  format <span class="op">=</span> <span class="st">"SIMPLE_CSV"</span>,</span>
 <span>  <span class="co"># inclusion rules</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The input covariates would also need to change based on what is
 biologically relevant for the particular species. I outline the process
@@ -491,12 +512,20 @@ this analysis:</p>
 <span>  crs <span class="op">=</span> <span class="st">"EPSG:4326"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
+<span><span class="co"># reproject to ESRI:54017</span></span>
+<span><span class="va">kmz_data_rast</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">kmz_data_rast</span>,</span>
+<span>  y <span class="op">=</span> <span class="st">"ESRI:54017"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"bilinear"</span>, <span class="co"># bilinear interpolation for continuous data</span></span>
+<span>  threads <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># use multiple threads for faster processing</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># next, convert raster to polygon</span></span>
 <span><span class="va">KG_zones_poly</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html" class="external-link">as.polygons</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">KG_zones_rast</span>,</span>
 <span>  aggregate <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># combine cells with the same value into one area</span></span>
 <span>  values <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># include cell values as attributes</span></span>
-<span>  crs <span class="op">=</span> <span class="st">"EPSG:4326"</span></span>
+<span>  crs <span class="op">=</span> <span class="st">"ESRI:54017"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">KG_zones_poly</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="va">KG_zones_poly</span><span class="op">)</span></span>
 <span></span>
@@ -549,7 +578,7 @@ Journal of Open Source Software, 4(43), 1686. <a href="doi:10.21105/joss.01686" 
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

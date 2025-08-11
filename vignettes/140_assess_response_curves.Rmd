@@ -53,7 +53,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 These plots depict the activity of the variables put into the MaxEnt models. I will create a combined figure for the 3 models in the regional_ensemble
 
-```{r set wd, eval = TRUE}
+```{r set wd, eval = TRUE, warning = FALSE, message = FALSE}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
@@ -63,7 +63,7 @@ mypath <- file.path(here::here() %>%
 
 Lastly, load in the model objects for plotting the curves.
 
-```{r load model objects- regional ensemble, eval = TRUE}
+```{r load model objects- regional ensemble, eval = TRUE, warning = FALSE, message = FALSE}
 
 regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model.rds"))
 
@@ -537,7 +537,7 @@ I will smooth these plots using a GAM formula, after the methods of Elith et al,
 
 First, I will create the plotting objects I need.
 
-```{r scatter style object- univar, eval = TRUE}
+```{r scatter style object- univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 ensemble_colors <- c(
   "Rn (native)" = "#4daf4a",
@@ -569,7 +569,7 @@ univar_plots_style <- list(
 
 ## Bio 11- Mean temperature of the coldest Quarter
 
-```{r extract univar plots per model- bio 11 univar, eval = TRUE}
+```{r extract univar plots per model- bio 11 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 regional_native_univar_bio11 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -608,7 +608,7 @@ regional_invaded_asian_univar_bio11 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 11 univar, eval = TRUE}
+```{r maximum activity- bio 11 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 # peak y trendline object 
 bio11_univar_max_activity_values <- c(
@@ -619,7 +619,7 @@ bio11_univar_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 11 univar, eval = TRUE}
+```{r combine plots- bio 11 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio11_univar_combined <- ggplot() +
   # native model data
@@ -673,7 +673,7 @@ ggsave(
 
 ## Bio 12- Annual Precipitation
 
-```{r extract univar plots per model- bio 12, eval = TRUE}
+```{r extract univar plots per model- bio 12, eval = TRUE, warning = FALSE, message = FALSE}
 
 regional_native_univar_bio12 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -712,7 +712,7 @@ regional_invaded_asian_univar_bio12 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 12 univar, eval = TRUE}
+```{r maximum activity- bio 12 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 # peak y trendline object 
 bio12_univar_max_activity_values <- c(
@@ -723,7 +723,7 @@ bio12_univar_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 12 univar, eval = TRUE}
+```{r combine plots- bio 12 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio12_univar_combined <- ggplot() +
   # native model data
@@ -777,7 +777,7 @@ ggsave(
 
 ## Bio 15- Precipitation Seasonality
 
-```{r extract univar plots per model- bio 15, eval = TRUE}
+```{r extract univar plots per model- bio 15, eval = TRUE, warning = FALSE, message = FALSE}
 
 regional_native_univar_bio15 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -816,7 +816,7 @@ regional_invaded_asian_univar_bio15 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 15 univar, eval = TRUE}
+```{r maximum activity- bio 15 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 # peak y trendline object 
 bio15_univar_max_activity_values <- c(
@@ -827,7 +827,7 @@ bio15_univar_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 15 univar, eval = TRUE}
+```{r combine plots- bio 15 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio15_univar_combined <- ggplot() +
   # native model data
@@ -881,7 +881,7 @@ ggsave(
 
 ## Bio 2- Mean Daily Diurnal Temperature Range
 
-```{r extract univar plots per model- bio 2, eval = TRUE}
+```{r extract univar plots per model- bio 2, eval = TRUE, warning = FALSE, message = FALSE}
 
 regional_native_univar_bio2 <- SDMtune::plotResponse(
   model = regional_native_model,
@@ -920,7 +920,7 @@ regional_invaded_asian_univar_bio2 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- bio 2 univar, eval = TRUE}
+```{r maximum activity- bio 2 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 # peak y trendline object 
 bio2_univar_max_activity_values <- c(
@@ -931,7 +931,7 @@ bio2_univar_max_activity_values <- c(
 
 ```
 
-```{r combine plots- bio 2 univar, eval = TRUE}
+```{r combine plots- bio 2 univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio2_univar_combined <- ggplot() +
   # native model data
@@ -987,7 +987,7 @@ ggsave(
 
 ## Load in objects and setup
 
-```{r univar plot style object, eval = TRUE}
+```{r univar plot style object, eval = TRUE, warning = FALSE, message = FALSE}
 
 univar_plots_style_global <- list(
   theme_bw(),
@@ -1004,7 +1004,7 @@ univar_plots_style_global <- list(
 
 ```
 
-```{r load model objects- global, eval = TRUE}
+```{r load model objects- global, eval = TRUE, warning = FALSE, message = FALSE}
 
 global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
 
@@ -1242,7 +1242,7 @@ ggsave(
 
 ## Create univariate plots
 
-```{r extract univariate plots for global model, eval = TRUE}
+```{r extract univariate plots for global model, eval = TRUE, warning = FALSE, message = FALSE}
 
 global_univar_bio11 <- SDMtune::plotResponse(
   model = global_model,
@@ -1292,7 +1292,7 @@ global_univar_bio2 <- SDMtune::plotResponse(
 
 ```
 
-```{r maximum activity- global univar, eval = TRUE}
+```{r maximum activity- global univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 # peak y trendline object 
 bio11_univar_max_activity_global <- global_univar_bio11$data[[1]][which.max(global_univar_bio11$data[[1]]$y), ]$x
@@ -1345,7 +1345,7 @@ ggsave(
 
 ```
 
-```{r bio12 plot- global univar, eval = TRUE}
+```{r bio12 plot- global univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio12_univar_global <- ggplot() +
   geom_smooth(data = global_univar_bio12$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1383,7 +1383,7 @@ ggsave(
 
 ```
 
-```{r bio15 plot- global univar, eval = TRUE}
+```{r bio15 plot- global univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio15_univar_global <- ggplot() +
   geom_smooth(data = global_univar_bio15$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +
@@ -1420,7 +1420,7 @@ ggsave(
 
 ```
 
-```{r bio2 plot- global univar, eval = TRUE}
+```{r bio2 plot- global univar, eval = TRUE, warning = FALSE, message = FALSE}
 
 bio2_univar_global <- ggplot() +
   geom_smooth(data = global_univar_bio2$data[[1]], aes(x = x, y = y), color = "orangered2", se = FALSE, method = "gam") +

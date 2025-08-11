@@ -174,7 +174,7 @@ Finally, we have `map.style`, which is a purely aesthetic argument. It should be
 
 ```
 
-```{r generate a report for France}
+```{r generate a report for France, message = FALSE, results = "hide"}
 
 scari::create_risk_report(
   locality.iso = "fra", # A3-iso
@@ -210,7 +210,7 @@ Next, we have a summary of the viticultural regions in France, which shows each 
 
 ```{r analyze France report 2}
 
-france_slf_risk_report[["viticultural_regions_list"]]
+head(france_slf_risk_report[["viticultural_regions_list"]])
 
 ```
 
@@ -223,17 +223,17 @@ Here are some of the column explanations:
 
 Now, we will call up the risk maps, which depict the level of risk and the location of any wineries.
 
-```{r analyze France report 3}
+```{r analyze France report 3, warning = FALSE}
 
 france_slf_risk_report[["risk_maps"]][["present_risk_map"]]
 
-france_slf_risk_report[["risk_maps"]][["present_risk_map"]]
+france_slf_risk_report[["risk_maps"]][["future_risk_map"]]
 
 ```
 
 Unfortunately, the map did not format well because France possesses some territories outside its mainland. We can fix this with a few simple lines of code; we merely need to edit the axes of the plot:
 
-```{r change view on maps 1}
+```{r change view on maps 1, warning = FALSE}
 
 france_current <- france_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
@@ -243,7 +243,7 @@ france_current
 
 ```
 
-```{r change view on maps 2}
+```{r change view on maps 2, warning = FALSE}
 
 france_future <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
@@ -281,7 +281,7 @@ france_slf_risk_report[["viticultural_risk_table"]]
 
 Next, we have a map of the shift in risk for SLF over time. Green areas will gain risk in the future, while blue areas will lose risk in the future. This is a useful map to see where SLF is expected to shift its range over time. The white areas remain consistently at risk over time, while the grey areas are never at risk.
 
-```{r analyze France report 7}
+```{r analyze France report 7, warning = FALSE}
 
 france_slf_risk_report[["range_shift_map"]]
 
@@ -289,7 +289,7 @@ france_slf_risk_report[["range_shift_map"]]
 
 We cannot see this map well either; lets change the view on it.
 
-```{r change view on maps 3}
+```{r change view on maps 3, warning = FALSE}
 
 france_shift <- france_slf_risk_report[["range_shift_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
@@ -371,7 +371,7 @@ length(unique_name)
 
 We ran checks and everything seems correct. Above is a list of countries that will get a report, 64 in total. Now, I will run a loop to create those reports and save the, to `root/vignette-outputs/reports`.
 
-```{r loop for report}
+```{r loop for report, warning = FALSE, results = "hide"}
 
 # loop thru country iso codes and names together
 for (a in seq_along(unique_iso)) {

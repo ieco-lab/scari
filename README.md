@@ -57,7 +57,7 @@ This project is organized into general sections of our modeling pipeline: Our [v
 * 040-090: SDM modeling pipeline: train global and 3 regional-scale models
 * 100-110: Ensemble Regional-scale SDMs
 * 120-142: Quantify SLF risk and model fit
-* 150: Quantify risk to specific viticultural regions using our function [create_risk_report()](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd)
+* 150-152: Example usage of our function [create_risk_report()](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
 
 ## How to Use this Project
 
