@@ -50,13 +50,14 @@ install.packages("blockCV")
 
 ### Sitemap
 
-This project is organized into general sections of our modeling pipeline: Our [vignettes](https://github.com/ieco-lab/scari/tree/master/vignettes) follow this general order: 
+This GitHub project is organized into general sections of our modeling pipeline. Each article can be found in [vignettes](https://github.com/ieco-lab/scari/tree/master/vignettes). Please see this sitemap for navigating both the GitHub repo and our site:
 
-* 010: Initialize `scari` and usage of `renv` package for dependencies
-* 020-030: Retrieve and tidy input data for MaxEnt
-* 040-090: SDM modeling pipeline: train global and 3 regional-scale models
-* 100-110: Ensemble Regional-scale SDMs
-* 120-142: Quantify SLF risk and model fit
+* vignette 010: Initialize `scari` and usage of `renv` package for dependencies
+* 020-030: 1. Retrieve and tidy input data for MaxEnt
+* 040-090: 2. SDM modeling pipeline: train global and 3 regional-scale models
+* 100-110: 3. Ensemble Regional-scale SDMs
+* 120-130: 4. Quantify SLF risk
+* 140-142: 5. Quantify Model fitmodel fit
 * 150-152: Example usage of our function [create_risk_report()](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
 
 ## How to Use this Project

@@ -1,6 +1,8 @@
 
 # scari 0.3.0
 
+## Release Notes
+
 * built on R 4.5.1
 * uses `renv` for package management
   * updated all packages and specified usage of older versions where code breaks
