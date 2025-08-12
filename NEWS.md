@@ -6,7 +6,7 @@
   * updated all packages and specified usage of older versions where code breaks
 * changed main map projections used for models to [Behrmann Equal Area, ESRI:54017](https://epsg.io/54017) 
   * re-wrote all vignettes to use this projection (it is in meters, not lat/lon)
-* re-ran all models using new projection and updated SLF data from GBIF, lydemapr, and published sources
+* re-ran all models using new projection and updated SLF data from GBIF, lydemapr, and [published sources](https://github.com/ieco-lab/scari/blob/master/data-raw/slf_publishedOccurrenceRecords_papers.csv)
 * added usage of `CoordinateCleaner` package
 * streamlined vignette [150_create_risk_report_example_usage](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report_example_usage.Rmd) to be a simplified example of the function `create_risk_report()`
 * created example vignette for `create_risk_report_USA()` function (will be used specifically for IVRs in the USA and is not yet deployed): [152_create_risk_report_USA](https://github.com/ieco-lab/scari/blob/master/vignettes/152_create_risk_report_USA.Rmd)

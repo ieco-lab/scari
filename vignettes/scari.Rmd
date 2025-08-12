@@ -73,8 +73,8 @@ First, we observe the risk map, which depicts the risk of SLF establishment usin
 
 USA_current <- usa_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
   # you may need to crop the map due to outlying territories, as we have done here
-  xlim(-125, -65) +
-  ylim(25, 50)
+  xlim(-12060785.03, -6271608.22) + # the boundaries in UTM
+  ylim(3091555.56, 5614050.10)
 
 USA_current
 
@@ -86,8 +86,8 @@ USA_current
 
 USA_future <- usa_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   # you may need to crop the map due to outlying territories, as we have done here
-  xlim(-125, -65) +
-  ylim(25, 50)
+  xlim(-12060785.03, -6271608.22) + # the boundaries in UTM
+  ylim(3091555.56, 5614050.10)
 
 USA_future
 

@@ -1,10 +1,10 @@
-pandoc: '3.2'
-pkgdown: 2.1.1
+pandoc: '3.4'
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   010_initialize_pkg: 010_initialize_pkg.html
-  020_retrieve_SLF_records: 020_retrieve_SLF_records.html
-  030_retrieve_bioclim_variables: 030_retrieve_bioclim_variables.html
+  020_retrieve_bioclim_variables: 020_retrieve_bioclim_variables.html
+  030_retrieve_occurrence_records: 030_retrieve_occurrence_records.html
   040_setup_global_MaxEnt_model: 040_setup_global_MaxEnt_model.html
   050_run_global_MaxEnt_model: 050_run_global_MaxEnt_model.html
   051_compute_MaxEnt_summary_statistics_workflow: 051_compute_MaxEnt_summary_statistics_workflow.html
@@ -17,12 +17,15 @@ articles:
   120_create_suitability_maps: 120_create_suitability_maps.html
   130_create_suitability_xy_plots_viticultural: 130_create_suitability_xy_plots_viticultural.html
   131_create_suitability_xy_plots_SLF: 131_create_suitability_xy_plots_SLF.html
-  140_plot_response_curves: 140_plot_response_curves.html
-  141_plot_AUC_var_cont: 141_plot_AUC_var_cont.html
-  142_calculate_model_fit: 142_calculate_model_fit.html
-  150_create_risk_report: 150_create_risk_report.html
+  140_assess_response_curves: 140_assess_response_curves.html
+  141_assess_AUC_confusion_matrix: 141_assess_AUC_confusion_matrix.html
+  142_assess_var_imp: 142_assess_var_imp.html
+  150_create_risk_report_example_usage: 150_create_risk_report_example_usage.html
+  151_create_risk_report_global: 151_create_risk_report_global.html
+  152_create_risk_report_USA: 152_create_risk_report_USA.html
   160_generate_format_figures: 160_generate_format_figures.html
-last_built: 2024-10-16T19:38Z
+  scari: scari.html
+last_built: 2025-08-11T19:47Z
 urls:
-  reference: https://ieco-lab.github.io/slfSpread/reference
-  article: https://ieco-lab.github.io/slfSpread/articles
+  reference: https://ieco-lab.github.io/scari/reference
+  article: https://ieco-lab.github.io/scari/articles

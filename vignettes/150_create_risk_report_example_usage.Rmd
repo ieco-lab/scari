@@ -371,7 +371,7 @@ length(unique_name)
 
 We ran checks and everything seems correct. Above is a list of countries that will get a report, 64 in total. Now, I will run a loop to create those reports and save the, to `root/vignette-outputs/reports`.
 
-```{r loop for report, warning = FALSE, results = "hide"}
+```{r loop for report, eval = FALSE, warning = FALSE, message = FALSE, results = "hide"}
 
 # loop thru country iso codes and names together
 for (a in seq_along(unique_iso)) {
@@ -382,7 +382,7 @@ for (a in seq_along(unique_iso)) {
     locality.type = "country",
     mypath = file.path(here::here(), "vignette-outputs", "reports", unique_name[a]),
     create.dir = TRUE, # create subdirectory for plots
-    save.report = FALSE,
+    save.report = TRUE,
     buffer.dist = 20000 # distance at which buffers should be drawn on maps to indicate IVR suitability predictions
     )
   

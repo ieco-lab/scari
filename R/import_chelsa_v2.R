@@ -53,7 +53,7 @@
 #'
 #'See (CHELSA v2.1 Technical Specifications)[https://chelsa-climate.org/wp-admin/download-page/CHELSA_tech_specification_V2.pdf] for more detail on specific climatologies, including their units, usage, and interpretation.
 #'
-#'# var.subtype
+#'### var.subtype
 #'
 #'For the argument `var.subtype`, the following options are available, depending on the input for `var.type`:
 #'`var.type` == "daily":
@@ -91,7 +91,7 @@
 #'- "tasmin" (mean minimum air temperature)
 #'- "vpd" (vapor pressure deficit)
 #'
-#'# var.period
+#'### var.period
 #'For the argument `var.period`, the date range should be formatted differently, depending on the input for `var.type`:
 #'
 #'`var.type` == "daily":
@@ -103,12 +103,12 @@
 #'`var.type` == "climatologies":
 #'Date format should be a range years. Choices are "1981-2010" (historical data), "2011-2040", "2041-2070", or "2071-2100" (projected data).
 #'
-#'# bioclim.type
+#'### bioclim.type
 #'
 #'
-#'# bioclim.number
+#'### bioclim.number
 #'
-#'# bioclim.period
+#'### bioclim.period
 #'
 #'*Note* Please include all quotation marks in above formats
 #'

@@ -13,8 +13,8 @@
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Run an Extrapolation Detection (NT2) analysis and calculate MIC">
 </head>
 <body>
@@ -40,7 +40,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="../articles/150_create_risk_report.html">Example usage of create_risk_report() to create reports of key viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
+    <li><a class="dropdown-item" href="../articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
+    <li><a class="dropdown-item" href="../articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
     <li><a class="dropdown-item" href="../articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
@@ -61,15 +63,19 @@
     <li><a class="dropdown-item" href="../articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
     <li><a class="dropdown-item" href="../articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk and model fit</h6></li>
+    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
     <li><a class="dropdown-item" href="../articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
     <li><a class="dropdown-item" href="../articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
     <li><a class="dropdown-item" href="../articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="../articles/140_plot_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="../articles/141_plot_AUC_var_cont.html">Check model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="../articles/142_calculate_model_fit.html">Calculate model fit using confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
+    <li><a class="dropdown-item" href="../articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
+    <li><a class="dropdown-item" href="../articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
+    <li><a class="dropdown-item" href="../articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
   </ul>
 </li>
       </ul>
