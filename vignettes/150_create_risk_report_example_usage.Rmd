@@ -131,7 +131,29 @@ The internal dataset `sysdata.rda` is used for this function in the remainder of
 
 # Example usage for `create_risk_report()`: France
 
-I will now pull out a specific example of France to analyze and demonstrate usage of this function. I will use France as a case study.
+I will now pull out a specific example of France to analyze and demonstrate usage of this function. I will use France as a case study. Here is an example of the code we could use to retrieve a report for France. We will work through each argument:
+
+```{r generate a report for France, message = FALSE, results = "hide"}
+
+scari::create_risk_report(
+  locality.iso = "fra", # A3-iso
+  locality.name = "France", #name
+  locality.type = "country", # record type
+  # saving output
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
+  create.dir = FALSE, # not saving so not necessary
+  save.report = FALSE, # dont save, this is an example
+  raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters
+  # aesthetics- dont necessarily need to be specified
+  buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
+  period.present = "1981-2010",
+  period.projected = "2041-2070",
+  model.projected = "GFDL-ESM4",
+  ssp.projected = "ssp_126_370_585",
+  crs = "ESRI:54017"
+)
+
+```
 
 First, we need to look up the A3-iso code for France. It is "FRA". We also need to specify that this is a country.
 
@@ -171,28 +193,6 @@ Finally, we have `map.style`, which is a purely aesthetic argument. It should be
       scale_x_continuous(expand = c(0, 0)),
       scale_y_continuous(expand = c(0, 0))
     )
-
-```
-
-```{r generate a report for France, message = FALSE, results = "hide"}
-
-scari::create_risk_report(
-  locality.iso = "fra", # A3-iso
-  locality.name = "France", #name
-  locality.type = "country", # record type
-  # saving output
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
-  create.dir = FALSE, # not saving so not necessary
-  save.report = FALSE, # dont save, this is an example
-  raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters
-  # aesthetics- dont necessarily need to be specified
-  buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
-  period.present = "1981-2010",
-  period.projected = "2041-2070",
-  model.projected = "GFDL-ESM4",
-  ssp.projected = "ssp_126_370_585",
-  crs = "ESRI:54017"
-)
 
 ```
 
