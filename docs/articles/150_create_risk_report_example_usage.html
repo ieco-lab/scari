@@ -239,8 +239,27 @@ function in the remainder of the vignette; this file is stored at
 <h2 id="example-usage-for-create_risk_report-france">Example usage for <code>create_risk_report()</code>: France<a class="anchor" aria-label="anchor" href="#example-usage-for-create_risk_report-france"></a>
 </h2>
 <p>I will now pull out a specific example of France to analyze and
-demonstrate usage of this function. I will use France as a case
-study.</p>
+demonstrate usage of this function. I will use France as a case study.
+Here is an example of the code we could use to retrieve a report for
+France. We will work through each argument:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_risk_report.html">create_risk_report</a></span><span class="op">(</span></span>
+<span>  locality.iso <span class="op">=</span> <span class="st">"fra"</span>, <span class="co"># A3-iso</span></span>
+<span>  locality.name <span class="op">=</span> <span class="st">"France"</span>, <span class="co">#name</span></span>
+<span>  locality.type <span class="op">=</span> <span class="st">"country"</span>, <span class="co"># record type</span></span>
+<span>  <span class="co"># saving output</span></span>
+<span>  mypath <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"reports"</span>, <span class="st">"France"</span><span class="op">)</span>, <span class="co"># the output location</span></span>
+<span>  create.dir <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># not saving so not necessary</span></span>
+<span>  save.report <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># dont save, this is an example</span></span>
+<span>  raster.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"rasters"</span><span class="op">)</span>, <span class="co"># path to rasters</span></span>
+<span>  <span class="co"># aesthetics- dont necessarily need to be specified</span></span>
+<span>  buffer.dist <span class="op">=</span> <span class="fl">20000</span>, <span class="co"># 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions</span></span>
+<span>  period.present <span class="op">=</span> <span class="st">"1981-2010"</span>,</span>
+<span>  period.projected <span class="op">=</span> <span class="st">"2041-2070"</span>,</span>
+<span>  model.projected <span class="op">=</span> <span class="st">"GFDL-ESM4"</span>,</span>
+<span>  ssp.projected <span class="op">=</span> <span class="st">"ssp_126_370_585"</span>,</span>
+<span>  crs <span class="op">=</span> <span class="st">"ESRI:54017"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>First, we need to look up the A3-iso code for France. It is “FRA”. We
 also need to specify that this is a country.</p>
 <p>Now, we need to specify arguments for the report output.
@@ -283,7 +302,7 @@ vignettes.</p>
 argument. It should be specified as a list argument if not the default
 (the default is shown below). Again, this does not need to be
 specified.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># map stype argument as a list</span></span>
 <span>  <span class="va">map.style</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"UTM_eastings"</span><span class="op">)</span>, <span class="co"># if raster is in lonlat, label as lon/lat, otherwise UTM</span></span>
@@ -300,24 +319,6 @@ specified.</p>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_risk_report.html">create_risk_report</a></span><span class="op">(</span></span>
-<span>  locality.iso <span class="op">=</span> <span class="st">"fra"</span>, <span class="co"># A3-iso</span></span>
-<span>  locality.name <span class="op">=</span> <span class="st">"France"</span>, <span class="co">#name</span></span>
-<span>  locality.type <span class="op">=</span> <span class="st">"country"</span>, <span class="co"># record type</span></span>
-<span>  <span class="co"># saving output</span></span>
-<span>  mypath <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"reports"</span>, <span class="st">"France"</span><span class="op">)</span>, <span class="co"># the output location</span></span>
-<span>  create.dir <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># not saving so not necessary</span></span>
-<span>  save.report <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># dont save, this is an example</span></span>
-<span>  raster.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"rasters"</span><span class="op">)</span>, <span class="co"># path to rasters</span></span>
-<span>  <span class="co"># aesthetics- dont necessarily need to be specified</span></span>
-<span>  buffer.dist <span class="op">=</span> <span class="fl">20000</span>, <span class="co"># 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions</span></span>
-<span>  period.present <span class="op">=</span> <span class="st">"1981-2010"</span>,</span>
-<span>  period.projected <span class="op">=</span> <span class="st">"2041-2070"</span>,</span>
-<span>  model.projected <span class="op">=</span> <span class="st">"GFDL-ESM4"</span>,</span>
-<span>  ssp.projected <span class="op">=</span> <span class="st">"ssp_126_370_585"</span>,</span>
-<span>  crs <span class="op">=</span> <span class="st">"ESRI:54017"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 <p>Now, lets call the various elements of this report.</p>
 <p>First, we have the summary of this report, which shows important
 data.</p>
@@ -889,8 +890,8 @@ create those reports and save the, to
 <span>    locality.name <span class="op">=</span> <span class="va">unique_name</span><span class="op">[</span><span class="va">a</span><span class="op">]</span>, <span class="co"># names</span></span>
 <span>    locality.type <span class="op">=</span> <span class="st">"country"</span>,</span>
 <span>    mypath <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"reports"</span>, <span class="va">unique_name</span><span class="op">[</span><span class="va">a</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>    create.dir <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># create subdirectory for plots</span></span>
-<span>    save.report <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    create.dir <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># create subdirectory for plots</span></span>
+<span>    save.report <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    buffer.dist <span class="op">=</span> <span class="fl">20000</span> <span class="co"># distance at which buffers should be drawn on maps to indicate IVR suitability predictions</span></span>
 <span>    <span class="op">)</span></span>
 <span>  </span>

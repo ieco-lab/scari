@@ -209,7 +209,7 @@ First, let's look at the risk map area table:
 
 **Table 2:** Table quantifying the projected current and future suitable area for *Lycorma delicatula* establishment | Washington, USA
 
-```{r retrieve prop area table for washington USA, echo = FALSE, message = FALSE, warning = FALSE, results = "hide"}
+```{r retrieve prop area table for washington USA, echo = FALSE, message = FALSE, warning = FALSE}
 
 washington_prop_area <- washington_slf_risk_report[["risk_maps_prop_area_table"]]
 
