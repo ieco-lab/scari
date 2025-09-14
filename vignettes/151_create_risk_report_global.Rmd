@@ -204,16 +204,16 @@ scari::create_risk_report(
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
 spain_current <- spain_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(-10, 5) +
-  ylim(35, 44)
+  xlim(-964862.802508965, 482431.4012544825) +
+  ylim(4198673.820940024, 5088510.34806054)
 
 spain_future <- spain_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(-10, 5) +
-  ylim(35, 44)
+  xlim(-964862.802508965, 482431.4012544825) +
+  ylim(4198673.820940024, 5088510.34806054)
 
 spain_shift <- spain_slf_risk_report[["range_shift_map"]] +
-  xlim(-10, 5) +
-  ylim(35, 44)
+  xlim(-964862.802508965, 482431.4012544825) +
+  ylim(4198673.820940024, 5088510.34806054)
 
 
 #save
@@ -1049,6 +1049,20 @@ Before I perform this operation, I will save reports as a .Rdata file so that I 
 
 ### Example countries
 
+```{r USA report}
+
+scari::create_risk_report(
+  locality.iso = "usa",
+  locality.name = "united states",
+  locality.type = "country",
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
+  create.dir = FALSE,
+  save.report = FALSE,
+  buffer.dist = 20000
+)
+
+```
+
 ```{r example countries}
 
 romania_risk_plot <- romania_slf_risk_report[["viticultural_risk_plot"]] +
@@ -1061,7 +1075,7 @@ romania_risk_plot <- romania_slf_risk_report[["viticultural_risk_plot"]] +
   labs(tag = "A") +
   theme(
     legend.position = "none", 
-    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    panel.border = element_rect(linewidth = 1, linetype = "solid", color = "black"), 
     plot.tag.position = c(0.2, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
@@ -1092,7 +1106,7 @@ united_states_risk_plot <- united_states_slf_risk_report[["viticultural_risk_plo
   labs(tag = "C") +
   theme(
     legend.position = "none", 
-    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    panel.border = element_rect(linewidth = 1, linetype = "solid", color = "black"), 
     plot.tag.position = c(0.2, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
@@ -1111,7 +1125,7 @@ united_states_risk_plot <- ggplot_gtable(united_states_risk_plot) %>%
 
   
 
-australia_risk_plot <- australia_slf_risk_report[["viticultural_risk_plot"]] +
+spain_risk_plot <- spain_slf_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1126,16 +1140,16 @@ australia_risk_plot <- australia_slf_risk_report[["viticultural_risk_plot"]] +
     plot.tag = element_text(face = "bold", size = 20)
     )
 
-australia_risk_plot <- australia_risk_plot %>%
+spain_risk_plot <- spain_risk_plot %>%
   gginnards::delete_layers(match_type = "GeomLabel") %>%
   ggplot_build()
 # edit point size
-australia_risk_plot$data[[4]]$size <- 1.5
-australia_risk_plot$data[[5]]$size <- 1.5
+spain_risk_plot$data[[4]]$size <- 1.5
+spain_risk_plot$data[[5]]$size <- 1.5
 # edit linewidth
-#australia_risk_plot$data[[3]]$linewidth <- 0.1
+#spain_risk_plot$data[[3]]$linewidth <- 0.1
 
-australia_risk_plot <- ggplot_gtable(australia_risk_plot) %>%
+spain_risk_plot <- ggplot_gtable(spain_risk_plot) %>%
   wrap_ggplot_grob()
 
 
@@ -1167,7 +1181,7 @@ romania_risk_map <- ggplot_gtable(romania_risk_map) %>%
 
 
 
-USA_risk_map <-  united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+USA_risk_map <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1179,11 +1193,11 @@ USA_risk_map <-  united_states_slf_risk_report[["risk_maps"]][["future_risk_map"
   labs(tag = "D") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0.035, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     ) +
-  xlim(-125, -65) +
-  ylim(25, 50)
+  xlim(-12060785.031362064, -6271608.216308273) + # the boundaries in UTM
+  ylim(3091555.5611515422, 5614050.1030608015)
 
 USA_risk_map <- ggplot_build(USA_risk_map)
 # edit point size
@@ -1194,7 +1208,7 @@ USA_risk_map <- ggplot_gtable(USA_risk_map) %>%
  
 
 
-australia_risk_map <- australia_future +
+spain_risk_map <- spain_future +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1206,15 +1220,15 @@ australia_risk_map <- australia_future +
   labs(tag = "F") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.15, 0.9),
+    plot.tag.position = c(0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
-australia_risk_map <- ggplot_build(australia_risk_map)
+spain_risk_map <- ggplot_build(spain_risk_map)
 # edit point size
-australia_risk_map$data[[3]]$size <- 1.5
+spain_risk_map$data[[3]]$size <- 1.5
 # rebuild plot
-australia_risk_map <- ggplot_gtable(australia_risk_map) %>%
+spain_risk_map <- ggplot_gtable(spain_risk_map) %>%
   wrap_ggplot_grob()
   
   
@@ -1237,7 +1251,7 @@ example_countries_patchwork <- (
   # USA 2nd row
   united_states_risk_plot + plot_spacer() + USA_risk_map + 
   # australia 3rd row
-  australia_risk_plot + plot_spacer() + australia_risk_map
+  spain_risk_plot + plot_spacer() + spain_risk_map
   ) +
   # annotation
   plot_annotation(title = "Differential risk shift due to climate change among countries") +

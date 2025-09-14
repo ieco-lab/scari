@@ -210,7 +210,7 @@ Next, we have a summary of the viticultural regions in France, which shows each 
 
 ```{r analyze France report 2}
 
-head(france_slf_risk_report[["viticultural_regions_list"]])
+france_slf_risk_report[["viticultural_regions_list"]]
 
 ```
 
