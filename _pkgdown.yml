@@ -22,8 +22,13 @@ navbar:
     right:
     - reference
     - news
-    - github
     - search
+  components:
+    left:
+    - icon: fa-home fa-lg
+    right:
+    - icon: fa-github fa-lg
+      href: https://github.com/ieco_lab/scari
 search:
   exclude: news/index.html
 reference:
