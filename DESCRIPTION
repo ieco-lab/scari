@@ -68,3 +68,4 @@ Remotes:
     ropensci/rnaturalearthhires
 Suggests:
     blockCV
+Config/Needs/website: rmarkdown
