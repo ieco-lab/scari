@@ -24,8 +24,9 @@ articles:
   151_create_risk_report_global: 151_create_risk_report_global.html
   152_create_risk_report_USA: 152_create_risk_report_USA.html
   160_generate_format_figures: 160_generate_format_figures.html
+  articles/articles_index: articles_index.html
   scari: scari.html
-last_built: 2026-01-19T17:08Z
+last_built: 2026-01-19T19:36Z
 urls:
   reference: https://ieco-lab.github.io/scari/reference
   article: https://ieco-lab.github.io/scari/articles

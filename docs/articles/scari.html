@@ -35,57 +35,15 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/scari.html">Get started</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Quantify risk to specific viticultural regions</h6></li>
-    <li><a class="dropdown-item" href="../articles/150_create_risk_report_example_usage.html">Example usage of create_risk_report(), applied to create reports for French Viticultural areas</a></li>
-    <li><a class="dropdown-item" href="../articles/151_create_risk_report_global.html">Create risk reports for global countries and provinces</a></li>
-    <li><a class="dropdown-item" href="../articles/152_create_risk_report_USA.html">Create risk reports specifically for the USA and US States</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Initialize scari</h6></li>
-    <li><a class="dropdown-item" href="../articles/010_initialize_pkg.html">Initialization of renv package for dependencies</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>1. Retrieve and tidy input data for MaxEnt</h6></li>
-    <li><a class="dropdown-item" href="../articles/020_retrieve_bioclim_variables.html">Bioclim variable rasters: CHELSA</a></li>
-    <li><a class="dropdown-item" href="../articles/030_retrieve_occurrence_records.html">SLF occurrence records: GBIF, lydemapR, literature</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>2. SDM modeling pipeline</h6></li>
-    <li><a class="dropdown-item" href="../articles/040_setup_global_MaxEnt_model.html">Setup for global-scale MaxEnt model</a></li>
-    <li><a class="dropdown-item" href="../articles/050_run_global_MaxEnt_model.html">Run global-scale MaxEnt model</a></li>
-    <li><a class="dropdown-item" href="../articles/060_setup_regional_MaxEnt_models.html">Setup for regional-scale MaxEnt models</a></li>
-    <li><a class="dropdown-item" href="../articles/070_run_regional_invaded_MaxEnt_model.html">Run 'Ri.NAmerica' model trained on SLF invaded region in North America</a></li>
-    <li><a class="dropdown-item" href="../articles/080_run_regional_invaded_asian_MaxEnt_model.html">Run 'Ri.Asia' model trained on SLF invaded range in Japan and South Korea</a></li>
-    <li><a class="dropdown-item" href="../articles/090_run_regional_native_MaxEnt_model.html">Run 'Rn' model trained on SLF native range in east Asia</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>3. Ensemble Regional-scale SDMs</h6></li>
-    <li><a class="dropdown-item" href="../articles/100_run_ExDet_MIC.html">Run an Extrapolation Detection (NT2) analysis and calculate MIC</a></li>
-    <li><a class="dropdown-item" href="../articles/110_ensemble_regional_models.html">Ensemble regional-scale models using a weighted mean</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>4. Quantify SLF risk</h6></li>
-    <li><a class="dropdown-item" href="../articles/120_create_suitability_maps.html">Create risk maps of each model scale and intersect predictions</a></li>
-    <li><a class="dropdown-item" href="../articles/130_create_suitability_xy_plots_viticultural.html">Plot shift in SLF risk to important viticultural regions under climate change</a></li>
-    <li><a class="dropdown-item" href="../articles/131_create_suitability_xy_plots_SLF.html">Infer stability of known SLF populations due climate change effects</a></li>
-    <li><a class="dropdown-item" href="../articles/160_generate_format_figures.html">Generate IVR/SLF risk tables and other figures</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>5. Quantify model fit</h6></li>
-    <li><a class="dropdown-item" href="../articles/140_assess_response_curves.html">Analyze biological realism of model response curves</a></li>
-    <li><a class="dropdown-item" href="../articles/141_assess_AUC_confusion_matrix.html">Assess model goodness of fit via AUC, TSS and confusion matrices</a></li>
-    <li><a class="dropdown-item" href="../articles/142_assess_var_imp.html">Plot variable importance for all models</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>6. Function Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/051_compute_MaxEnt_summary_statistics_workflow.html">Workflow for the functions 'compute_MaxEnt_summary_statistics()'</a></li>
-  </ul>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/articles_index.html">Analyses</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco-lab/scari/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco_lab/scari"><span class="fa fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -176,8 +134,8 @@ higher risk.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">USA_current</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"present_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
 <span>  <span class="co"># you may need to crop the map due to outlying territories, as we have done here</span></span>
-<span>  <span class="fu">xlim</span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
-<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">USA_current</span></span></code></pre></div>
 <p><img src="scari_files/figure-html/retrieve%20current%20risk%20map%20for%20USA-1.png" width="700"></p>
@@ -186,8 +144,8 @@ delicatula</em> establishment | USA</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">USA_future</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"future_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
 <span>  <span class="co"># you may need to crop the map due to outlying territories, as we have done here</span></span>
-<span>  <span class="fu">xlim</span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
-<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">USA_future</span></span></code></pre></div>
 <p><img src="scari_files/figure-html/retrieve%20projected%20future%20risk%20map%20for%20USA-1.png" width="700"></p>
@@ -559,9 +517,9 @@ species occurrence records using GBIF.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="fu">rgbif</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/occ_search.html" class="external-link">occ_search</a></span><span class="op">(</span>scientificName <span class="op">=</span> <span class="st">"Lycorma delicatula"</span><span class="op">)</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="va">slf_id</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">taxonKey</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="va">slf_id</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">taxonKey</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -571,10 +529,10 @@ species occurrence records using GBIF.</p>
 <span>  type <span class="op">=</span> <span class="st">"and"</span>,</span>
 <span>  format <span class="op">=</span> <span class="st">"SIMPLE_CSV"</span>,</span>
 <span>  <span class="co"># inclusion rules</span></span>
-<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
-<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The input covariates would also need to change based on what is
 biologically relevant for the particular species. I outline the process
@@ -598,11 +556,11 @@ this analysis:</p>
 <span><span class="va">kmz_lon</span> <span class="op">&lt;-</span> <span class="fu">kgc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kgc/man/genCoords.html" class="external-link">genCoords</a></span><span class="op">(</span>latlon <span class="op">=</span> <span class="st">"lon"</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># join data and coordinates</span></span>
-<span><span class="va">kmz_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">kmz_lat</span>, <span class="va">kmz_lon</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">kmz_data</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span><span class="va">kmz_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">kmz_lat</span>, <span class="va">kmz_lon</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">kmz_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># relocate column</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">kmz_lon</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">kmz_lon</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># convert to raster</span></span>
 <span><span class="va">KG_zones_rast</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span></span>
