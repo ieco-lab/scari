@@ -4,6 +4,7 @@ template:
   bootswatch: united
 development:
   mode: auto
+
 home:
   links:
   - text: iEco Lab
@@ -14,39 +15,107 @@ home:
     href: https://www.biodiversitycenter.org
   - text: Temple University Biology
     href: https://cst.temple.edu/department-biology
+
 navbar:
-  structure:
-    left:
-    - intro
-    - articles
-    right:
-    - reference
-    - news
-    - search
   components:
     left:
     - icon: fa-home fa-lg
+      href: index.html
+    - text: "Get Started"
+      href: articles/scari.html
+    - text: "Analyses"
+      menu:
+        - text: "Quantify risk to specific viticultural regions"
+          href: articles/_articles1_quantify_risk.html
+        - text: "Initialize scari and dependencies"
+          href: articles/010_initialize_pkg.html
+        - text: "Step 1: Retrieve and tidy input data for MaxEnt"
+         # menu:
+          #  - text: ----------------
+          #  - text: "Retrieve climatic rasters"
+           #   href: articles/020_retrieve_bioclim_variables.html
+          #  - text: "Retrive occurrence data"
+          #    href: articles/030_retrieve_occurrence_records.html
+           # - text: ----------------
+        #- text: "Step 2: SDM modeling pipeline"
+         # menu:
+          #  - text: ----------------
+           ## - text: "Setup global-scale MaxEnt model"
+            #  href: articles/040_setup_global_MaxEnt_model.html
+         #   - text: "Run global-scale MaxEnt model"
+        #      href: articles/050_run_global_MaxEnt_model.html
+  #          - text: "Setup regional-scale MaxEnt models"
+   #           href: articles/060_setup_regional_MaxEnt_models.html
+    #        - text: "Run regional-scale MaxEnt model- invaded range in North America"
+     #         href: articles/070_run_regional_invaded_MaxEnt_model.html
+      #      - text: "Run regional-scale MaxEnt model- invaded range in Asia"
+       #       href: articles/080_run_regional_invaded_asian_MaxEnt_model.html
+        #    - text: "Run regional-scale MaxEnt model- native range"
+         #     href: articles/090_run_regional_native_MaxEnt_model.html
+          #  - text: ----------------
+   #     - text: "Step 3: Ensemble Regional-scale SDMs"
+    #      menu:
+     #       - text: ----------------
+      #      - text: "Analyze extrapolation using ExDet and MIC analyses"
+       #       href: articles/100_run_ExDet_MIC.html
+        #    - text: "Ensemble regional-scale models using measures of extrapolation and best fit"
+         #     href: articles/110_ensemble_regional_models.html
+          #  - text: ----------------
+  #      - text: "Step 4: Quantify SLF risk"
+   #       menu:
+    #        - text: ----------------
+     #       - text: "Create suitability maps per model scale"
+      #        href: articles/120_create_suitability_maps.html
+       #     - text: "Create suitability xy plots for viticultural areas"
+        #      href: articles/130_create_suitability_xy_plots_viticultural.html
+         #   - text: "Create suitability xy plots for SLF occurrences"
+          #    href: articles/131_create_suitability_xy_plots_SLF.html
+           # - text: "Generate and format figures of results"
+   #           href: articles/160_generate_format_figures.html
+    #        - text: ----------------
+    #    - text: "Step 5: Quantify model fit"
+     #     menu:
+      #      - text: ----------------
+       #     - text: "Assess biological realism of variable response curves"
+        #      href: articles/140_assess_response_curves.html
+         #   - text: "Assess goodness of fit via AUC, TSS and confusion matrices"
+  #            href: articles/141_assess_AUC_confusion_matrix.html
+   #         - text: "Assess variable importance"
+     #         href: articles/142_assess_var_imp.html
+    #        - text: ----------------
+    #    - text: "Function Workflows"
+    #      menu:
+  #          - text: ----------------
+   #         - text: "Function: compute_MaxEnt_summary_statistics()"
+    #          href: articles/051_compute_MaxEnt_summary_statistics_workflow.html
+     #       - text: ----------------
     right:
+    - text: "Reference"
+      href: reference/index.html
+    - text: "News"
+      href: news/index.html
+    - icon: fa-search fa-lg
+      href: search.html
     - icon: fa-github fa-lg
       href: https://github.com/ieco_lab/scari
+
 search:
   exclude: news/index.html
+
 reference:
 - title: Import data for SDM
   contents: import_chelsa_v2
 - title: Create localized risk reports
-  desc: Quantify SLF risk to viticultural areas at the state/provincial or country
+  desc: Quantify SLF risk to viticultural areas at the state/provincial or country.
     level
   contents: create_risk_report
-- title: Global-scale MaxEnt model functions
-  subtitle: Created for cross-validated MaxEnt models
+- title: Global-scale MaxEnt model functions (for those using cross-validation)
   desc: Calculate summary statistics, predict risk via maps or point-wise predictions
   contents:
   - compute_MaxEnt_summary_statistics_CV
   - create_MaxEnt_suitability_maps_CV
   - predict_xy_suitability_CV
-- title: Regional-scale MaxEnt model functions
-  subtitle: Created for MaxEnt models without cross-validation
+- title: Regional-scale MaxEnt model functions (for those without cross validation)
   desc: Calculate summary statistics, predict risk via maps or point-wise predictions
   contents:
   - compute_MaxEnt_summary_statistics
@@ -58,60 +127,61 @@ reference:
   contents:
   - rescale_cloglog_suitability
   - calculate_risk_quadrant
-articles:
-- title: Quantify risk to specific viticultural regions
-  desc: Example usage of create_risk_report(), applied to create reports for French
-    Viticultural areas
-  navbar: Quantify risk to specific viticultural regions
-  contents:
-  - 150_create_risk_report_example_usage
-  - 151_create_risk_report_global
-  - 152_create_risk_report_USA
-- title: Initialize scari
-  desc: Initialization of renv package for dependencies
-  navbar: Initialize scari
-  contents: 010_initialize_pkg
-- title: Retrieve and tidy input data for MaxEnt
-  desc: Retrieve occurrence data and climate rasters
-  navbar: 1. Retrieve and tidy input data for MaxEnt
-  contents:
-  - 020_retrieve_bioclim_variables
-  - 030_retrieve_occurrence_records
-- title: SDM modeling pipeline
-  desc: Setup and create a global-scale model and 3 regional-scale models
-  navbar: 2. SDM modeling pipeline
-  contents:
-  - 040_setup_global_MaxEnt_model
-  - 050_run_global_MaxEnt_model
-  - 060_setup_regional_MaxEnt_models
-  - 070_run_regional_invaded_MaxEnt_model
-  - 080_run_regional_invaded_asian_MaxEnt_model
-  - 090_run_regional_native_MaxEnt_model
-- title: Ensemble Regional-scale SDMs
-  desc: Analyze extrapolation and use as weighting factor to ensemble regional-scale
-    models
-  navbar: 3. Ensemble Regional-scale SDMs
-  contents:
-  - 100_run_ExDet_MIC
-  - 110_ensemble_regional_models
-- title: Quantify SLF risk
-  desc: Create suitability maps, scatter plots and figures of results
-  navbar: 4. Quantify SLF risk
-  contents:
-  - 120_create_suitability_maps
-  - 130_create_suitability_xy_plots_viticultural
-  - 131_create_suitability_xy_plots_SLF
-  - 160_generate_format_figures
-- title: Quantify model fit
-  desc: Assess model fit using ROC plots, variable contribution, confusion matrices,
-    and response curves
-  navbar: 5. Quantify model fit
-  contents:
-  - 140_assess_response_curves
-  - 141_assess_AUC_confusion_matrix
-  - 142_assess_var_imp
-- title: Workflows
-  desc: Outlines specific workflows for functions
-  navbar: 6. Function Workflows
-  contents: 051_compute_MaxEnt_summary_statistics_workflow
 
+## OLD articles
+#articles:
+#- title: Quantify risk to specific viticultural regions
+#  desc: Example usage of create_risk_report(), applied to create reports for French
+#    Viticultural areas
+#  navbar: Quantify risk to specific viticultural regions
+#  contents:
+#  - 150_create_risk_report_example_usage
+#  - 151_create_risk_report_global
+#  - 152_create_risk_report_USA
+#- title: Initialize scari
+#  desc: Initialization of renv package for dependencies
+#  navbar: Initialize scari
+#  contents: 010_initialize_pkg
+#- title: Retrieve and tidy input data for MaxEnt
+#  desc: Retrieve occurrence data and climate rasters
+#  navbar: 1. Retrieve and tidy input data for MaxEnt
+#  contents:
+#  - 020_retrieve_bioclim_variables
+#  - 030_retrieve_occurrence_records
+#- title: SDM modeling pipeline
+#  desc: Setup and create a global-scale model and 3 regional-scale models
+#  navbar: 2. SDM modeling pipeline
+#  contents:
+#  - 040_setup_global_MaxEnt_model
+#  - 050_run_global_MaxEnt_model
+#  - 060_setup_regional_MaxEnt_models
+#  - 070_run_regional_invaded_MaxEnt_model
+#  - 080_run_regional_invaded_asian_MaxEnt_model
+#  - 090_run_regional_native_MaxEnt_model
+#- title: Ensemble Regional-scale SDMs
+#  desc: Analyze extrapolation and use as weighting factor to ensemble regional-scale
+#    models
+#  navbar: 3. Ensemble Regional-scale SDMs
+#  contents:
+#  - 100_run_ExDet_MIC
+#  - 110_ensemble_regional_models
+#- title: Quantify SLF risk
+#  desc: Create suitability maps, scatter plots and figures of results
+#  navbar: 4. Quantify SLF risk
+#  contents:
+#  - 120_create_suitability_maps
+#  - 130_create_suitability_xy_plots_viticultural
+#  - 131_create_suitability_xy_plots_SLF
+#  - 160_generate_format_figures
+#- title: Quantify model fit
+#  desc: Assess model fit using ROC plots, variable contribution, confusion matrices,
+#    and response curves
+#  navbar: 5. Quantify model fit
+#  contents:
+#  - 140_assess_response_curves
+#  - 141_assess_AUC_confusion_matrix
+#  - 142_assess_var_imp
+#- title: Workflows
+#  desc: Outlines specific workflows for functions
+#  navbar: 6. Function Workflows
+#  contents: 051_compute_MaxEnt_summary_statistics_workflow
