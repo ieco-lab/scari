@@ -9,95 +9,93 @@ home:
   links:
   - text: iEco Lab
     href: https://www.iecolab.org
-  - text: iEco's GitHub
-    href: https://github.com/ieco-lab
   - text: Center for Biodiversity
     href: https://www.biodiversitycenter.org
   - text: Temple University Biology
     href: https://cst.temple.edu/department-biology
 
 navbar:
-  components:
-    left:
-    - icon: fa-home fa-lg
-      href: index.html
-    - text: "Get Started"
-      href: articles/scari.html
-    - text: "Analyses"
-      menu:
-        - text: "Quantify risk to specific viticultural regions"
-          href: articles/_articles1_quantify_risk.html
-        - text: "Initialize scari and dependencies"
-          href: articles/010_initialize_pkg.html
-        - text: "Step 1: Retrieve and tidy input data for MaxEnt"
-         # menu:
-          #  - text: ----------------
-          #  - text: "Retrieve climatic rasters"
-           #   href: articles/020_retrieve_bioclim_variables.html
-          #  - text: "Retrive occurrence data"
-          #    href: articles/030_retrieve_occurrence_records.html
-           # - text: ----------------
-        #- text: "Step 2: SDM modeling pipeline"
-         # menu:
-          #  - text: ----------------
-           ## - text: "Setup global-scale MaxEnt model"
-            #  href: articles/040_setup_global_MaxEnt_model.html
-         #   - text: "Run global-scale MaxEnt model"
-        #      href: articles/050_run_global_MaxEnt_model.html
-  #          - text: "Setup regional-scale MaxEnt models"
-   #           href: articles/060_setup_regional_MaxEnt_models.html
-    #        - text: "Run regional-scale MaxEnt model- invaded range in North America"
-     #         href: articles/070_run_regional_invaded_MaxEnt_model.html
-      #      - text: "Run regional-scale MaxEnt model- invaded range in Asia"
-       #       href: articles/080_run_regional_invaded_asian_MaxEnt_model.html
-        #    - text: "Run regional-scale MaxEnt model- native range"
-         #     href: articles/090_run_regional_native_MaxEnt_model.html
-          #  - text: ----------------
-   #     - text: "Step 3: Ensemble Regional-scale SDMs"
-    #      menu:
-     #       - text: ----------------
-      #      - text: "Analyze extrapolation using ExDet and MIC analyses"
-       #       href: articles/100_run_ExDet_MIC.html
-        #    - text: "Ensemble regional-scale models using measures of extrapolation and best fit"
-         #     href: articles/110_ensemble_regional_models.html
-          #  - text: ----------------
-  #      - text: "Step 4: Quantify SLF risk"
-   #       menu:
-    #        - text: ----------------
-     #       - text: "Create suitability maps per model scale"
-      #        href: articles/120_create_suitability_maps.html
-       #     - text: "Create suitability xy plots for viticultural areas"
-        #      href: articles/130_create_suitability_xy_plots_viticultural.html
-         #   - text: "Create suitability xy plots for SLF occurrences"
-          #    href: articles/131_create_suitability_xy_plots_SLF.html
-           # - text: "Generate and format figures of results"
-   #           href: articles/160_generate_format_figures.html
-    #        - text: ----------------
-    #    - text: "Step 5: Quantify model fit"
-     #     menu:
-      #      - text: ----------------
-       #     - text: "Assess biological realism of variable response curves"
-        #      href: articles/140_assess_response_curves.html
-         #   - text: "Assess goodness of fit via AUC, TSS and confusion matrices"
-  #            href: articles/141_assess_AUC_confusion_matrix.html
-   #         - text: "Assess variable importance"
-     #         href: articles/142_assess_var_imp.html
-    #        - text: ----------------
-    #    - text: "Function Workflows"
-    #      menu:
-  #          - text: ----------------
-   #         - text: "Function: compute_MaxEnt_summary_statistics()"
-    #          href: articles/051_compute_MaxEnt_summary_statistics_workflow.html
-     #       - text: ----------------
-    right:
-    - text: "Reference"
-      href: reference/index.html
-    - text: "News"
-      href: news/index.html
-    - icon: fa-search fa-lg
-      href: search.html
-    - icon: fa-github fa-lg
-      href: https://github.com/ieco_lab/scari
+  left:
+  - icon: fa-home fa-lg
+    href: index.html
+  - text: "Get Started"
+    href: articles/scari.html
+  - text: "Articles"
+    menu:
+      - text: "Quantify risk to specific viticultural regions"
+        href: articles/_articles1_quantify_risk.html
+      - text: "Initialize scari and dependencies"
+        href: articles/010_initialize_pkg.html
+      - text: "Step 1: Retrieve and tidy input data for MaxEnt"
+       # menu:
+        #  - text: ----------------
+        #  - text: "Retrieve climatic rasters"
+         #   href: articles/020_retrieve_bioclim_variables.html
+        #  - text: "Retrive occurrence data"
+        #    href: articles/030_retrieve_occurrence_records.html
+         # - text: ----------------
+      #- text: "Step 2: SDM modeling pipeline"
+       # menu:
+        #  - text: ----------------
+         ## - text: "Setup global-scale MaxEnt model"
+          #  href: articles/040_setup_global_MaxEnt_model.html
+       #   - text: "Run global-scale MaxEnt model"
+      #      href: articles/050_run_global_MaxEnt_model.html
+#          - text: "Setup regional-scale MaxEnt models"
+ #           href: articles/060_setup_regional_MaxEnt_models.html
+  #        - text: "Run regional-scale MaxEnt model- invaded range in North America"
+   #         href: articles/070_run_regional_invaded_MaxEnt_model.html
+    #      - text: "Run regional-scale MaxEnt model- invaded range in Asia"
+     #       href: articles/080_run_regional_invaded_asian_MaxEnt_model.html
+      #    - text: "Run regional-scale MaxEnt model- native range"
+       #     href: articles/090_run_regional_native_MaxEnt_model.html
+        #  - text: ----------------
+ #     - text: "Step 3: Ensemble Regional-scale SDMs"
+  #      menu:
+   #       - text: ----------------
+    #      - text: "Analyze extrapolation using ExDet and MIC analyses"
+     #       href: articles/100_run_ExDet_MIC.html
+      #    - text: "Ensemble regional-scale models using measures of extrapolation and best fit"
+       #     href: articles/110_ensemble_regional_models.html
+        #  - text: ----------------
+#      - text: "Step 4: Quantify SLF risk"
+ #       menu:
+  #        - text: ----------------
+   #       - text: "Create suitability maps per model scale"
+    #        href: articles/120_create_suitability_maps.html
+     #     - text: "Create suitability xy plots for viticultural areas"
+      #      href: articles/130_create_suitability_xy_plots_viticultural.html
+       #   - text: "Create suitability xy plots for SLF occurrences"
+        #    href: articles/131_create_suitability_xy_plots_SLF.html
+         # - text: "Generate and format figures of results"
+ #           href: articles/160_generate_format_figures.html
+  #        - text: ----------------
+  #    - text: "Step 5: Quantify model fit"
+   #     menu:
+    #      - text: ----------------
+     #     - text: "Assess biological realism of variable response curves"
+      #      href: articles/140_assess_response_curves.html
+       #   - text: "Assess goodness of fit via AUC, TSS and confusion matrices"
+#            href: articles/141_assess_AUC_confusion_matrix.html
+ #         - text: "Assess variable importance"
+   #         href: articles/142_assess_var_imp.html
+  #        - text: ----------------
+  #    - text: "Function Workflows"
+  #      menu:
+#          - text: ----------------
+ #         - text: "Function: compute_MaxEnt_summary_statistics()"
+  #          href: articles/051_compute_MaxEnt_summary_statistics_workflow.html
+   #       - text: ----------------
+  right:
+  - text: "Reference"
+    href: reference/index.html
+  - text: "Changelog"
+    href: news/index.html
+  - text: "Search"
+    icon: fa-search fa-lg
+    href: search.html
+  - icon: fa-github fa-lg
+    href: https://github.com/ieco_lab/scari
 
 search:
   exclude: news/index.html
