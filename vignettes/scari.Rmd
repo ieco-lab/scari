@@ -63,6 +63,7 @@ scari::create_risk_report(
 ```
 
 You should first note the three most important outputs of this function:
+
 1. the risk maps
 2. the accompanying viticultural risk quadrant plot
 3. tabled list of viticultural regions in this locality
