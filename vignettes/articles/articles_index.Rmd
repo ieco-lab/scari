@@ -23,44 +23,44 @@ Here is the index of articles for our package analyses. Start at "Initialize sca
 
 This section explains how to quantify the risk to specific viticultural regions using `scari`.
 
-1. [Example usage of create_risk_report(), applied to create reports for French Viticultural areas](articles/150_create_risk_report_example_usage.html)
-2. [Create risk reports for global countries and provinces](articles/151_create_risk_report_global.html)
-3. [Create risk reports for the USA nationally and per state](articles/152_create_risk_report_USA.html)
+1. [Example usage of create_risk_report(), applied to create reports for French Viticultural areas](150_create_risk_report_example_usage.html)
+2. [Create risk reports for global countries and provinces](151_create_risk_report_global.html)
+3. [Create risk reports for the USA nationally and per state](152_create_risk_report_USA.html)
 
-# Step 1: [Initialize scari and dependencies](articles/010_initialize_pkg.html)
+# Step 1: [Initialize scari and dependencies](010_initialize_pkg.html)
 
 # Step 2: Retrieve and tidy input data for MaxEnt
 
-1. [Retrieve climatic rasters](articles/020_retrieve_bioclim_variables.html)
-2. [Retrieve occurrence data](articles/030_retrieve_occurrence_records.html)
+1. [Retrieve climatic rasters](020_retrieve_bioclim_variables.html)
+2. [Retrieve occurrence data](030_retrieve_occurrence_records.html)
 
 # Step 3: Execute SDM modeling pipeline
 
-1. [Setup and run global-scale MaxEnt model](articles/040_setup_and_run_global_MaxEnt_model.html)
-2. [Run global-scale MaxEnt model](articles/050_run_global_MaxEnt_model.html)
-3. [Setup regional-scale MaxEnt models](articles/060_setup_regional_MaxEnt_models.html)
-4. [Run regional-scale MaxEnt model- invaded range in North America](articles/070_run_regional_invaded_MaxEnt_model.html)
-5. [Run regional-scale MaxEnt model- invaded range in Asia](articles/080_run_regional_invaded_asian_MaxEnt_model.html)
-6. [Run regional-scale MaxEnt model- native range](articles/090_run_regional_native_MaxEnt_model.html)
+1. [Setup and run global-scale MaxEnt model](040_setup_and_run_global_MaxEnt_model.html)
+2. [Run global-scale MaxEnt model](050_run_global_MaxEnt_model.html)
+3. [Setup regional-scale MaxEnt models](060_setup_regional_MaxEnt_models.html)
+4. [Run regional-scale MaxEnt model- invaded range in North America](070_run_regional_invaded_MaxEnt_model.html)
+5. [Run regional-scale MaxEnt model- invaded range in Asia](080_run_regional_invaded_asian_MaxEnt_model.html)
+6. [Run regional-scale MaxEnt model- native range](090_run_regional_native_MaxEnt_model.html)
 
 # Step 4: Ensemble regional-scale SDMs
 
-1. [Analyze extrapolation using ExDet and MIC analyses](articles/100_run_ExDet_MIC.html)
-2. [Ensemble regional-scale models using measures of extrapolation and best fit](articles/110_ensemble_regional_models.html)
+1. [Analyze extrapolation using ExDet and MIC analyses](100_run_ExDet_MIC.html)
+2. [Ensemble regional-scale models using measures of extrapolation and best fit](110_ensemble_regional_models.html)
 
 # Step 5: Quantify SLF risk
 
-1. [Create suitability maps per model scale](articles/120_create_suitability_maps.html)
-2. [Create suitability xy plots for viticultural areas](articles/130_create_suitability_xy_plots_viticultural.html)
-3. [Create suitability xy plots for SLF occurrences](articles/131_create_suitability_xy_plots_SLF.html)
-4. [Generate and format figures of results](articles/160_generate_format_figures.html)
+1. [Create suitability maps per model scale](120_create_suitability_maps.html)
+2. [Create suitability xy plots for viticultural areas](130_create_suitability_xy_plots_viticultural.html)
+3. [Create suitability xy plots for SLF occurrences](131_create_suitability_xy_plots_SLF.html)
+4. [Generate and format figures of results](160_generate_format_figures.html)
 
 # Step 6: Validate model fit
 
-1. [Assess biological realism of variable response curves](articles/140_assess_response_curves.html)
-2. [Assess goodness of fit via AUC, TSS and confusion matrices](articles/141_assess_AUC_confusion_matrix.html)
-3. [Assess variable importance](articles/142_assess_var_imp.html)
+1. [Assess biological realism of variable response curves](140_assess_response_curves.html)
+2. [Assess goodness of fit via AUC, TSS and confusion matrices](141_assess_AUC_confusion_matrix.html)
+3. [Assess variable importance](142_assess_var_imp.html)
 
 # Function Workflows
 
-- Function: [compute_MaxEnt_summary_statistics()](articles/051_compute_MaxEnt_summary_statistics_workflow.html)
+- Function: [compute_MaxEnt_summary_statistics()](051_compute_MaxEnt_summary_statistics_workflow.html)
