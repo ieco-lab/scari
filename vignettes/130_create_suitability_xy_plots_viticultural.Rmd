@@ -3,7 +3,7 @@ title: "Plot shift in SLF risk to important viticultural regions under climate c
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-04"
+date: "2026-01-27"
 ---
 
 # Overview
@@ -14,7 +14,7 @@ In this vignette, I will focus on making more specific predictions for SLF estab
 
 Gallien et al, 2012 originally defined this method for discerning the "stage of invasion" for invasive populations according to different scales of SDM. I will apply this method and re-interpret it as a method for assessing the risk of establishment. These two models will not completely agree on the suitability for a particular location, so agreement between the modeled scales can give us more confidence in that prediction. Where the modeled scales disagree, we might make different interpretations of the biological mechanism at play. 
 
-```{r example quadrant plot, echo = FALSE}
+```{r example quadrant plot, echo = FALSE, message = FALSE}
 
 library(tidyverse)
 
@@ -1381,3 +1381,174 @@ We now have risk quadrant plots and tables that we can use to assess the level o
 
 2. Smith, T. 2021, August 11. Evaluating Invasion Stage with SDMs - plantarum.ca. <https://plantarum.ca/2021/08/11/invasion-stage/>.
 
+<!--
+
+# Appendix
+
+## plot unweighted mean versions of suitability plots
+
+This workflow follows steps 1-3, except that it plots based on the unweighted mean of the calculated regional ensemble (rather than an ensemble created based on AUC and ExDet weights).
+
+```{r load in summary files}
+# summary file to extract thresholds from
+
+summary_regional_ensemble_unweighted <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values_unweighted.csv"))
+
+
+```
+
+Finally, I will load in the global and regional ensemble suitability maps. These will be used both for extracting the new xy suitability values and for plotting.
+
+```{r load in suitability rasters}
+
+# regional_ensemble
+regional_ensemble_1995_unweighted <- terra::rast(
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_1981-2010.asc")
+  )
+
+regional_ensemble_2055_unweighted <- terra::rast(
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  )
+
+```
+
+### Retrieve/Import xy suitability
+
+These scatter plots will be based on the suitability for the IVR points in both the global and regional_ensemble models. I have already calculated the xy suitability for the global model based on these points, using the function `slfSpread::predict_xy_suitability()`. This function will not work for the regional_ensemble because it calls for a model object, which we did not use to predict the ensemble suitability. So, I will use `terra::extract()` to perform this action.
+
+I will retrieve the suitability values for the regional_ensemble. Instead of returning the coordinates from the map, I will join the coordinates from the original IVR_locations dataset so that the coordinates are exact for joining with other datasets.
+
+```{r retrieve xy suitability for regional_ensemble}
+
+# 1995
+xy_regional_ensemble_1995_unweighted <- terra::extract(
+  x = regional_ensemble_1995_unweighted,
+  y = dplyr::select(IVR_locations, x, y), # points
+  method = "simple",
+  xy = FALSE, # dont return coordinates
+  ID = TRUE,
+  raw = FALSE # return as df
+)
+
+
+# 2055
+xy_regional_ensemble_2055_unweighted <- terra::extract(
+  x = regional_ensemble_2055_unweighted,
+  y = dplyr::select(IVR_locations, x, y), # points
+  method = "simple",
+  xy = FALSE, # dont return coordinates 
+  ID = TRUE,
+  raw = FALSE # return as df
+) 
+
+```
+
+```{r join xy coordinates}
+
+# joining object
+IVR_coordinates <- dplyr::select(IVR_locations, ID, x, y)
+
+# perform join
+xy_regional_ensemble_1995_unweighted <- dplyr::left_join(xy_regional_ensemble_1995_unweighted, IVR_coordinates, by = "ID") %>%
+  dplyr::select(-ID)
+
+xy_regional_ensemble_2055_unweighted <- dplyr::left_join(xy_regional_ensemble_2055_unweighted, IVR_coordinates, by = "ID") %>%
+  dplyr::select(-ID)
+
+```
+
+Now, I will tidy and save the datasets
+
+```{r tidy datasets}
+
+# regional_ensemble datasets
+xy_regional_ensemble_1995_unweighted <- xy_regional_ensemble_1995_unweighted %>%
+  # rename the column for future joining
+  dplyr::rename("xy_regional_ensemble_1995_unweighted" = "mean") %>%
+  dplyr::filter(!is.na(xy_regional_ensemble_1995_unweighted)) %>%
+  dplyr::relocate(x, y) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
+
+xy_regional_ensemble_2055_unweighted <- xy_regional_ensemble_2055_unweighted %>%
+  # rename the column for future joining
+  dplyr::rename("xy_regional_ensemble_2055_unweighted" = "mean") %>%
+  dplyr::filter(!is.na(xy_regional_ensemble_2055_unweighted)) %>%
+  dplyr::relocate(x, y) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
+
+# we lost 1 record because of the NA removal, but that is OK
+
+```
+
+### plot untransformed suitability
+
+```{r join datasets}
+
+# join datasets for plotting
+xy_joined_unweighted <- dplyr::full_join(xy_global_1995, xy_regional_ensemble_1995_unweighted, by = c("join_col_x", "join_col_y")) %>%
+  # join CC datasets
+  dplyr::full_join(., xy_global_2055, by = c("join_col_x", "join_col_y")) %>%
+  dplyr::full_join(., xy_regional_ensemble_2055_unweighted, by = c("join_col_x", "join_col_y")) %>%
+  # order
+  dplyr::relocate(join_col_x, join_col_y, xy_global_1995, xy_global_2055) %>%
+  dplyr::select(-c(ID.x, ID.y))
+
+```
+
+```{r plot SLF suitability values, fig.asp = 1}
+
+# figure annotation title
+# "suitability for Lycorma delicatula establishment in globally important viticultural areas, projected for climate change"
+
+# plot
+xy_joined_unweighted_plot <- ggplot(data = xy_joined_unweighted) +
+   # threshold lines
+   # MTSS thresholds
+   geom_vline(xintercept = as.numeric(summary_global[42, ncol(summary_global)]), linetype = "dashed", linewidth = 0.7) + # global
+   geom_hline(yintercept = as.numeric(summary_regional_ensemble_unweighted[2, 2]), linetype = "dashed", linewidth = 0.7) + # regional_ensemble- there are two MTSS thresholds for this model, but the difference is so small that you will never see it on the plot
+   # historical data
+   geom_point(
+     aes(x = xy_global_1995, y = xy_regional_ensemble_1995_unweighted, shape = "Present"), 
+     size = 2, stroke = 0.7, color = "black", fill = "orchid1"
+     ) +
+   # GFDL ssp370 data
+   geom_point(
+     aes(x = xy_global_2055, y = xy_regional_ensemble_2055_unweighted, shape = "Future | GFDL-ESM4\nmean of ssp126/370/585"), 
+     size = 2, stroke = 0.7, color = "black", fill = "purple3"
+     ) +
+   # axes scaling
+   scale_x_continuous(name =  "'global' model cloglog suitability", limits = c(0, 1), breaks = breaks) + 
+   scale_y_continuous(name =  "'regional_ensemble' model cloglog suitability", limits = c(0, 1), breaks = breaks) +
+   # aesthetics
+   scale_shape_manual(name = "Time period", values = c(21, 21)) +
+   guides(shape = guide_legend(nrow = 1, override.aes = list(size = 2.5), reverse = TRUE)) +
+   theme_bw() +
+   theme(legend.position = "bottom", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+   coord_fixed(ratio = 1) 
+
+```
+
+```{r save scatterplot}
+
+ggsave(
+  xy_joined_unweighted_plot, 
+  filename = file.path(
+    here::here(), "vignette-outputs", "figures", "IVR_xy_suitability_IVR_regions_global_regional_ensemble_unweighted.jpg"
+    ),
+  height = 8, 
+  width = 8,
+  device = "jpeg",
+  dpi = "retina"
+  )
+
+```
+
+-->

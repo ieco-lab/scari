@@ -45,7 +45,7 @@ Here is the index of articles which outlines the steps in our analysis. Start at
 1. [Create suitability maps per model scale](120_create_suitability_maps.html)
 2. [Create suitability xy plots for viticultural areas](130_create_suitability_xy_plots_viticultural.html)
 3. [Create suitability xy plots for SLF occurrences](131_create_suitability_xy_plots_SLF.html)
-4. [Generate and format figures of results](160_generate_format_figures.html)
+4. [Create viticultural risk tables](160_generate_format_figures.html)
 
 ## Step 6: Validate model fit
 

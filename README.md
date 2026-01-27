@@ -49,16 +49,18 @@ install.packages("blockCV")
 
 ### Sitemap
 
-This GitHub project is organized into general sections of our modeling pipeline. Each article can be found in [vignettes](https://github.com/ieco-lab/scari/tree/master/vignettes). Please see this sitemap for navigating both the GitHub repo and our site:
+This GitHub project is organized into two groups: vignettes which generate reports for SLF risk to viticulture based on our analysis, and our full modeling pipeline used to create these reports.
+
+Reports can be generated using vignettes 150-152, which contain example usage of our function [create_risk_report()](vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
+
+Please see this sitemap for a guide to our full modeling pipeline:
 
 * vignette 010: Initialize `scari` and usage of `renv` package for dependencies
-* 020-030: 1. Retrieve and tidy input data for MaxEnt
-* 040-090: 2. SDM modeling pipeline: train global and 3 regional-scale models
-* 100-110: 3. Ensemble Regional-scale SDMs
-* 120-130: 4. Quantify SLF risk
-* 140-142: 5. Quantify Model fit
-* 150-152: Example usage of our function [create_risk_report()](vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152)
-* 160: Generation of figures for the companion paper
+* 020-030:      1. Retrieve and tidy input data for MaxEnt
+* 040-090:      2. SDM modeling pipeline: train global and 3 regional-scale models
+* 100-110:      3. Ensemble Regional-scale SDMs
+* 120-130, 160: 4. Quantify SLF risk
+* 140-142:      5. Quantify Model fit
 
 ## How to Use this Project
 
@@ -70,6 +72,8 @@ Before diving into this project and our modeling workflow, an end user should:
 4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
 5. See "Get Started" for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest
   
+Once these steps are completed, the end user can get started either generating SLF reports, or following and editing the full modeling pipeline. 
+
 ### Notes about using this package's code
 
 I use some of the following conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
