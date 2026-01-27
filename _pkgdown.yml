@@ -13,25 +13,29 @@ home:
   - text: Temple University Biology
     href: https://cst.temple.edu/department-biology
 navbar:
-  structure:
+  structure: # the structure is used as a placeholder
     left:
+    - home
     - intro
     - examples
     - articles
-    - text: "Create Reports"
-      href: articles/reports_index.html
+    - create_reports # this is a custom component
     right:
     - reference
     - news
     - search
     - github
-  components:
+  components: # the components are used to define details about each structural member
     home:
       icon: fa-home fa-lg
       href: index.html
+      aria-label: Home
     articles:
       text: Analyses
       href: articles/articles_index.html
+    create_reports:
+      text: Create Reports
+      href: articles/reports_index.html
     reference:
       text: Reference
       href: reference/index.html
