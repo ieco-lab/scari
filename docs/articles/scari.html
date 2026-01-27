@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco_lab/scari"><span class="fa fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco-lab/scari" aria-label="GitHub"><span class="fa fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -58,7 +58,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get started using scari</h1>
                         <h4 data-toc-skip class="author">Samuel M.
-Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University &lt;a href="http://www.biodiversitycenter.org/" class="external-link"&gt;Center for Biodiversity&lt;/a&gt; &lt;a href="https://www.iecolab.org/" class="external-link"&gt;iEco Lab&lt;/a&gt; &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
+Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
             <h4 data-toc-skip class="date">2025-08-10</h4>
@@ -124,9 +124,12 @@ this, you will need the alpha-3 iso country code.</p>
 <span>  save.report <span class="op">=</span> <span class="cn">FALSE</span> <span class="co"># should the report be saved?</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>You should first note the three most important outputs of this
-function: 1. the risk maps 2. the accompanying viticultural risk
-quadrant plot 3. tabled list of viticultural regions in this
-locality</p>
+function:</p>
+<ol style="list-style-type: decimal">
+<li>the risk maps</li>
+<li>the accompanying viticultural risk quadrant plot</li>
+<li>tabled list of viticultural regions in this locality</li>
+</ol>
 <p>First, we observe the risk map, which depicts the risk of SLF
 establishment using the agreement between our regional-scale model
 ensemble and our global-scale model. More agreement on suitability mean
@@ -134,8 +137,8 @@ higher risk.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">USA_current</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"present_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
 <span>  <span class="co"># you may need to crop the map due to outlying territories, as we have done here</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
+<span>  <span class="fu">xlim</span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">USA_current</span></span></code></pre></div>
 <p><img src="scari_files/figure-html/retrieve%20current%20risk%20map%20for%20USA-1.png" width="700"></p>
@@ -144,8 +147,8 @@ delicatula</em> establishment | USA</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">USA_future</span> <span class="op">&lt;-</span> <span class="va">usa_slf_risk_report</span><span class="op">[[</span><span class="st">"risk_maps"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"future_risk_map"</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span></span>
 <span>  <span class="co"># you may need to crop the map due to outlying territories, as we have done here</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
+<span>  <span class="fu">xlim</span><span class="op">(</span><span class="op">-</span><span class="fl">12060785.03</span>, <span class="op">-</span><span class="fl">6271608.22</span><span class="op">)</span> <span class="op">+</span> <span class="co"># the boundaries in UTM</span></span>
+<span>  <span class="fu">ylim</span><span class="op">(</span><span class="fl">3091555.56</span>, <span class="fl">5614050.10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">USA_future</span></span></code></pre></div>
 <p><img src="scari_files/figure-html/retrieve%20projected%20future%20risk%20map%20for%20USA-1.png" width="700"></p>
@@ -517,9 +520,9 @@ species occurrence records using GBIF.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="fu">rgbif</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/occ_search.html" class="external-link">occ_search</a></span><span class="op">(</span>scientificName <span class="op">=</span> <span class="st">"Lycorma delicatula"</span><span class="op">)</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="va">slf_id</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">taxonKey</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">slf_id</span> <span class="op">&lt;-</span> <span class="va">slf_id</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">taxonKey</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -529,10 +532,10 @@ species occurrence records using GBIF.</p>
 <span>  type <span class="op">=</span> <span class="st">"and"</span>,</span>
 <span>  format <span class="op">=</span> <span class="st">"SIMPLE_CSV"</span>,</span>
 <span>  <span class="co"># inclusion rules</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://docs.ropensci.org/rgbif/reference/download_predicate_dsl.html" class="external-link">pred</a></span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"taxonKey"</span>, <span class="va">slf_id</span><span class="op">)</span>, <span class="co"># search by GBIF ID, not species name</span></span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasCoordinate"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"hasGeospatialIssue"</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="fu">pred</span><span class="op">(</span><span class="st">"occurrenceStatus"</span>, <span class="st">"PRESENT"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The input covariates would also need to change based on what is
 biologically relevant for the particular species. I outline the process
@@ -556,11 +559,11 @@ this analysis:</p>
 <span><span class="va">kmz_lon</span> <span class="op">&lt;-</span> <span class="fu">kgc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kgc/man/genCoords.html" class="external-link">genCoords</a></span><span class="op">(</span>latlon <span class="op">=</span> <span class="st">"lon"</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># join data and coordinates</span></span>
-<span><span class="va">kmz_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">kmz_lat</span>, <span class="va">kmz_lon</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">kmz_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">kmz_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">kmz_lat</span>, <span class="va">kmz_lon</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">kmz_data</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="co"># relocate column</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">kmz_lon</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">kmz_lon</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># convert to raster</span></span>
 <span><span class="va">KG_zones_rast</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span></span>

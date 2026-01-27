@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco_lab/scari"><span class="fa fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ieco-lab/scari" aria-label="GitHub"><span class="fa fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -58,7 +58,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create risk reports for global countries and provinces</h1>
                         <h4 data-toc-skip class="author">Samuel M.
-Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University &lt;a href="http://www.biodiversitycenter.org/" class="external-link"&gt;Center for Biodiversity&lt;/a&gt; &lt;a href="https://www.iecolab.org/" class="external-link"&gt;iEco Lab&lt;/a&gt; &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
+Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
             <h4 data-toc-skip class="date">2025-08-07</h4>
@@ -124,7 +124,6 @@ countries.</p>
 <span>  save.report <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffer.dist <span class="op">=</span> <span class="fl">20000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> proceeding without creating report output subdirectory folder</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_0_countries' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_countries\ne_10m_admin_0_countries.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -133,7 +132,6 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Importing shapefiles from: C:/Users/tun83449/OneDrive - Temple University/Shared drives/slfClimate/projects/scari/scari/data-raw</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_1_states_provinces' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_states_provinces\ne_10m_admin_1_states_provinces.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -142,18 +140,7 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Data exist for locality</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Suitability prediction type for IVR regions: buffer of 20000m around points</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk maps plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift map plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk plot created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural regions list created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk map proportional areas table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift area table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report NOT saved to file</span></span></code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this report should have 2 IVR points</span></span>
 <span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_risk_report.html">create_risk_report</a></span><span class="op">(</span></span>
 <span>  locality.iso <span class="op">=</span> <span class="st">"chn"</span>,</span>
@@ -164,7 +151,6 @@ countries.</p>
 <span>  save.report <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffer.dist <span class="op">=</span> <span class="fl">20000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> proceeding without creating report output subdirectory folder</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_0_countries' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_countries\ne_10m_admin_0_countries.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -173,7 +159,6 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Importing shapefiles from: C:/Users/tun83449/OneDrive - Temple University/Shared drives/slfClimate/projects/scari/scari/data-raw</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_1_states_provinces' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_states_provinces\ne_10m_admin_1_states_provinces.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -182,18 +167,7 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Data exist for locality</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Suitability prediction type for IVR regions: buffer of 20000m around points</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk maps plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift map plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk plot created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural regions list created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk map proportional areas table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift area table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report NOT saved to file</span></span></code></pre>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this report should have no IVR records</span></span>
 <span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_risk_report.html">create_risk_report</a></span><span class="op">(</span></span>
 <span>  locality.iso <span class="op">=</span> <span class="st">"chn"</span>,</span>
@@ -204,7 +178,6 @@ countries.</p>
 <span>  save.report <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffer.dist <span class="op">=</span> <span class="fl">20000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> proceeding without creating report output subdirectory folder</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_0_countries' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_countries\ne_10m_admin_0_countries.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -213,7 +186,6 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Importing shapefiles from: C:/Users/tun83449/OneDrive - Temple University/Shared drives/slfClimate/projects/scari/scari/data-raw</span></span></code></pre>
 <pre><code><span><span class="co">## Reading layer `ne_10m_admin_1_states_provinces' from data source </span></span>
 <span><span class="co">##   `C:\Users\tun83449\OneDrive - Temple University\Shared drives\slfClimate\projects\scari\scari\data-raw\ne_states_provinces\ne_10m_admin_1_states_provinces.shp' </span></span>
 <span><span class="co">##   using driver `ESRI Shapefile'</span></span>
@@ -222,19 +194,7 @@ countries.</p>
 <span><span class="co">## Dimension:     XY</span></span>
 <span><span class="co">## Bounding box:  xmin: -180 ymin: -90 xmax: 180 ymax: 83.6341</span></span>
 <span><span class="co">## Geodetic CRS:  WGS 84</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Data exist for locality</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Suitability prediction type for IVR regions: buffer of 20000m around points</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: [buffer] empty SpatVector</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk maps plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift map plotted</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk plot created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural regions list created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Risk map proportional areas table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Range shift area table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Viticultural risk table created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report created</span></span></code></pre>
-<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Report NOT saved to file</span></span></code></pre>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># it worked still so thats good</span></span>
 <span></span>
 <span><span class="co"># save report for other uses</span></span>

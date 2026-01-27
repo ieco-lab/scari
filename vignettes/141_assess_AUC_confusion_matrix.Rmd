@@ -2,7 +2,7 @@
 title: "Assess model goodness of fit via AUC, TSS and confusion matrices"
 output: rmarkdown::html_document
 author: 
-    - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
+    - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
 date: "2025-08-05"
 ---
 

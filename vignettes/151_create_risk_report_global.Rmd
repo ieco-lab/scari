@@ -2,7 +2,7 @@
 title: "Create risk reports for global countries and provinces"
 output: rmarkdown::html_document
 author: 
-    - "Samuel M. Owens^[Temple University\n[Center for Biodiversity](http://www.biodiversitycenter.org/)\n[iEco Lab](https://www.iecolab.org/)\nsam.owens@temple.edu]"
+    - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
 date: "2025-08-07"
 ---
 
@@ -54,7 +54,7 @@ Alternatively, I will create individualized reports and maps for key viticultura
 
 ## China
 
-```{r china, eval = TRUE}
+```{r china, eval = TRUE, warning = FALSE, message = FALSE}
 
 scari::create_risk_report(
   locality.iso = "chn", 

@@ -17,24 +17,16 @@ library(scari)
 
 ```
 
-Here is the index of articles for our package analyses. Start at "Initialize scari" and work through the subsequent steps to follow the package workflow.
+Here is the index of articles which outlines the steps in our analysis. Start at "Initialize scari" and work through the subsequent steps to follow the package workflow.
 
-# Quantify risk to specific viticultural regions
+## Step 1: [Initialize scari and dependencies](010_initialize_pkg.html)
 
-This section explains how to quantify the risk to specific viticultural regions using `scari`.
-
-1. [Example usage of create_risk_report(), applied to create reports for French Viticultural areas](150_create_risk_report_example_usage.html)
-2. [Create risk reports for global countries and provinces](151_create_risk_report_global.html)
-3. [Create risk reports for the USA nationally and per state](152_create_risk_report_USA.html)
-
-# Step 1: [Initialize scari and dependencies](010_initialize_pkg.html)
-
-# Step 2: Retrieve and tidy input data for MaxEnt
+## Step 2: Retrieve and tidy input data for MaxEnt
 
 1. [Retrieve climatic rasters](020_retrieve_bioclim_variables.html)
 2. [Retrieve occurrence data](030_retrieve_occurrence_records.html)
 
-# Step 3: Execute SDM modeling pipeline
+## Step 3: Execute SDM modeling pipeline
 
 1. [Setup and run global-scale MaxEnt model](040_setup_and_run_global_MaxEnt_model.html)
 2. [Run global-scale MaxEnt model](050_run_global_MaxEnt_model.html)
@@ -43,24 +35,24 @@ This section explains how to quantify the risk to specific viticultural regions 
 5. [Run regional-scale MaxEnt model- invaded range in Asia](080_run_regional_invaded_asian_MaxEnt_model.html)
 6. [Run regional-scale MaxEnt model- native range](090_run_regional_native_MaxEnt_model.html)
 
-# Step 4: Ensemble regional-scale SDMs
+## Step 4: Ensemble regional-scale SDMs
 
 1. [Analyze extrapolation using ExDet and MIC analyses](100_run_ExDet_MIC.html)
 2. [Ensemble regional-scale models using measures of extrapolation and best fit](110_ensemble_regional_models.html)
 
-# Step 5: Quantify SLF risk
+## Step 5: Quantify SLF risk
 
 1. [Create suitability maps per model scale](120_create_suitability_maps.html)
 2. [Create suitability xy plots for viticultural areas](130_create_suitability_xy_plots_viticultural.html)
 3. [Create suitability xy plots for SLF occurrences](131_create_suitability_xy_plots_SLF.html)
 4. [Generate and format figures of results](160_generate_format_figures.html)
 
-# Step 6: Validate model fit
+## Step 6: Validate model fit
 
 1. [Assess biological realism of variable response curves](140_assess_response_curves.html)
 2. [Assess goodness of fit via AUC, TSS and confusion matrices](141_assess_AUC_confusion_matrix.html)
 3. [Assess variable importance](142_assess_var_imp.html)
 
-# Function Workflows
+### Function Workflows
 
 - Function: [compute_MaxEnt_summary_statistics()](051_compute_MaxEnt_summary_statistics_workflow.html)

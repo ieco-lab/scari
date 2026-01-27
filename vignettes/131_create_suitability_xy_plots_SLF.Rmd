@@ -2,7 +2,7 @@
 title: "Infer stability of known SLF populations due climate change effects"
 output: rmarkdown::html_document
 author: 
-    - "Samuel M. Owens^[Temple University, sam.owens@temple.edu]"
+    - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
 date: "2025-08-05"
 ---
 
@@ -10,7 +10,7 @@ date: "2025-08-05"
 
 In the last vignette, I created figures to analyze the suitability for SLF establishment at key viticultural regions globally. I will now apply this same framework to analyze the risk of establishment for currently known SLF populations. We will use this to infer the stability of these populations under climate change. We will use the same quadrant plot framework as in the last vignette.
 
-```{r example quadrant plot, echo = FALSE}
+```{r example quadrant plot, echo = FALSE, message = FALSE}
 
 library(tidyverse)
 
