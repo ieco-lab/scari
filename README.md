@@ -3,7 +3,7 @@
 
 `scari` is an R package and research compendium that documents a multiscale species distribution modeling (SDM) workflow to forecast establishment and impact risk of a species invasion as it shifts with climate change.
 
-We developed this workflow to quantify the shifting risk of future establishment of the invasive species *Lycorma delicatula* (spotted lanternfly or SLF) in important viticulture regions worldwide. The `R` function [create_risk_report](https://github.com/ieco-lab/scari/blob/master/R/create_risk_report.R) produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units.
+We developed this workflow to quantify the shifting risk of future establishment of the invasive species *Lycorma delicatula* (spotted lanternfly or SLF) in important viticulture regions worldwide. The `R` function [create_risk_report](R/create_risk_report.R) produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units. For example usage of this function in different contexts, see articles under [Create Reports](articles/reports_index.html).
 
 ### Citation
 
@@ -43,7 +43,6 @@ remotes::install_version("ggnewscale", version = "0.4.10") # due to issue with c
 remotes::install_version("GeoThinneR", version = "1.1.0") # due to issue with thin_points
 remotes::install_version("tidygeocoder", version = "1.0.5") # due to issue with reverse_geocode()
 
-
 # we also suggest installing the following packages if using the appendix in vignette 050:
 install.packages("blockCV")
 ```
@@ -57,22 +56,23 @@ This GitHub project is organized into general sections of our modeling pipeline.
 * 040-090: 2. SDM modeling pipeline: train global and 3 regional-scale models
 * 100-110: 3. Ensemble Regional-scale SDMs
 * 120-130: 4. Quantify SLF risk
-* 140-142: 5. Quantify Model fitmodel fit
-* 150-152: Example usage of our function [create_risk_report()](https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
+* 140-142: 5. Quantify Model fit
+* 150-152: Example usage of our function [create_risk_report()](vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152)
+* 160: Generation of figures for the companion paper
 
 ## How to Use this Project
 
 Before diving into this project and our modeling workflow, an end user should:
 
-1. Read the [companion paper](), which outlines the conceptual underpinnings for this project
-2. Download, build and install this package locally
+1. Read the [companion paper](https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527), which outlines the conceptual underpinnings for this project.
+2. Download, build and install this package locally.
 3. Install the package `renv`, and run `renv::restore()` inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).
-4. Run the first vignette, [010_initialize_renv](https://github.com/ieco-lab/scari/blob/master/vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
+4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
 5. See "Get Started" for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest
   
 ### Notes about using this package's code
 
-I use some of the followin conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
+I use some of the following conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
 
 * I have added a number of `if()` statements throughout my vignettes, usually to prevent data from being downloaded again unnecessarily. Simply change the `FALSE` within the `if()` statement to `TRUE` to run a chunk.
 * I have a chunk near the beginning of every vignette that sets the global chunk options: `knitr::opts_chunk$set(eval = FALSE)`. This prevents the code from running automatically when the vignette is rendered. You can change this to `TRUE` if you want to run the code in that chunk.
@@ -91,7 +91,6 @@ This package was developed and its vignettes were rendered on a Dell Precision d
 ### Other software:
 
 Be sure to download and install Java to use this package: https://www.oracle.com/java/technologies/downloads/#java24. Be sure to install the correct bit version for your OS.
-
 
 ## References
 

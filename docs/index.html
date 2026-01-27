@@ -67,7 +67,7 @@
 <a class="anchor" aria-label="anchor" href="#scari-r-package-overview-"></a>
 </h2>
 <p><code>scari</code> is an R package and research compendium that documents a multiscale species distribution modeling (SDM) workflow to forecast establishment and impact risk of a species invasion as it shifts with climate change.</p>
-<p>We developed this workflow to quantify the shifting risk of future establishment of the invasive species <em>Lycorma delicatula</em> (spotted lanternfly or SLF) in important viticulture regions worldwide. The <code>R</code> function <a href="https://github.com/ieco-lab/scari/blob/master/R/create_risk_report.R" class="external-link">create_risk_report</a> produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units.</p>
+<p>We developed this workflow to quantify the shifting risk of future establishment of the invasive species <em>Lycorma delicatula</em> (spotted lanternfly or SLF) in important viticulture regions worldwide. The <code>R</code> function <a href="R/create_risk_report.R">create_risk_report</a> produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units. For example usage of this function in different contexts, see articles under <a href="articles/reports_index.html">Create Reports</a>.</p>
 <div class="section level3">
 <h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h3>
@@ -98,7 +98,6 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_version.html" class="external-link">install_version</a></span><span class="op">(</span><span class="st">"GeoThinneR"</span>, version <span class="op">=</span> <span class="st">"1.1.0"</span><span class="op">)</span> <span class="co"># due to issue with thin_points</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_version.html" class="external-link">install_version</a></span><span class="op">(</span><span class="st">"tidygeocoder"</span>, version <span class="op">=</span> <span class="st">"1.0.5"</span><span class="op">)</span> <span class="co"># due to issue with reverse_geocode()</span></span>
 <span></span>
-<span></span>
 <span><span class="co"># we also suggest installing the following packages if using the appendix in vignette 050:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"blockCV"</span><span class="op">)</span></span></code></pre>
 </div>
@@ -112,8 +111,9 @@
 <li>040-090: 2. SDM modeling pipeline: train global and 3 regional-scale models</li>
 <li>100-110: 3. Ensemble Regional-scale SDMs</li>
 <li>120-130: 4. Quantify SLF risk</li>
-<li>140-142: 5. Quantify Model fitmodel fit</li>
-<li>150-152: Example usage of our function <a href="https://github.com/ieco-lab/scari/blob/master/vignettes/150_create_risk_report.Rmd" class="external-link">create_risk_report()</a> (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).</li>
+<li>140-142: 5. Quantify Model fit</li>
+<li>150-152: Example usage of our function <a href="vignettes/150_create_risk_report.Rmd">create_risk_report()</a> (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152)</li>
+<li>160: Generation of figures for the companion paper</li>
 </ul>
 </div>
 </div>
@@ -122,16 +122,16 @@
 </h2>
 <p>Before diving into this project and our modeling workflow, an end user should:</p>
 <ol style="list-style-type: decimal">
-<li>Read the <a href="">companion paper</a>, which outlines the conceptual underpinnings for this project</li>
-<li>Download, build and install this package locally</li>
+<li>Read the <a href="https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527" class="external-link">companion paper</a>, which outlines the conceptual underpinnings for this project.</li>
+<li>Download, build and install this package locally.</li>
 <li>Install the package <code>renv</code>, and run <code><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">renv::restore()</a></code> inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).</li>
-<li>Run the first vignette, <a href="https://github.com/ieco-lab/scari/blob/master/vignettes/010_initialize_pkg.Rmd" class="external-link">010_initialize_renv</a>, which initializes <code>renv</code> and lists our package’s dependencies.</li>
+<li>Run the first vignette, <a href="vignettes/010_initialize_pkg.Rmd">010_initialize_renv</a>, which initializes <code>renv</code> and lists our package’s dependencies.</li>
 <li>See “Get Started” for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest</li>
 </ol>
 <div class="section level3">
 <h3 id="notes-about-using-this-packages-code">Notes about using this package’s code<a class="anchor" aria-label="anchor" href="#notes-about-using-this-packages-code"></a>
 </h3>
-<p>I use some of the followin conventions to ensure that the package’s .html files render correctly, the code is not overly cumbersome to run, and that data aren’t re-downloaded unnecessarily:</p>
+<p>I use some of the following conventions to ensure that the package’s .html files render correctly, the code is not overly cumbersome to run, and that data aren’t re-downloaded unnecessarily:</p>
 <ul>
 <li>I have added a number of <code>if()</code> statements throughout my vignettes, usually to prevent data from being downloaded again unnecessarily. Simply change the <code>FALSE</code> within the <code>if()</code> statement to <code>TRUE</code> to run a chunk.</li>
 <li>I have a chunk near the beginning of every vignette that sets the global chunk options: <code>knitr::opts_chunk$set(eval = FALSE)</code>. This prevents the code from running automatically when the vignette is rendered. You can change this to <code>TRUE</code> if you want to run the code in that chunk.</li>

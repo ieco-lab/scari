@@ -18,7 +18,7 @@ I use some of the followin conventions to ensure that the package's .html files 
 
 # Setup
 
-```{r library packages}
+```{r library packages, message = FALSE}
 
 library(tidyverse)
 library(renv)
@@ -39,7 +39,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 I will create the folders where the outputs of this package will be saved. Note that a set of these folders will be 1 level above the root folder for the package (so it will go on your file system in the same folder as this package).
 
-```{r necessary folders}
+```{r necessary folders, message = FALSE, warning = FALSE}
 
 # data folder
 dir.create(file.path(here::here(), "data"))
