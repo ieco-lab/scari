@@ -34,8 +34,10 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../index.html" aria-label="Home"><span class="fa fa-home fa-lg"></span></a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/scari.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/articles_index.html">Analyses</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/reports_index.html">Create Reports</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -2312,7 +2314,7 @@ The weighted mean ensemble is more rigorous because it considers climatic extrap
 
 ``` r
 # historical
-pred_hist_mean <- terra::app(
+pred_hist_mean_unweighted <- terra::app(
   x = pred_hist_stack,
   fun = "mean",
   filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_1981-2010.asc"),
@@ -2322,7 +2324,7 @@ pred_hist_mean <- terra::app(
 
 # CMIP6
 # ssp126
-pred_126_mean <- terra::app(
+pred_126_mean_unweighted <- terra::app(
   x = pred_126_stack,
   fun = "mean",
   filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp126.asc"),
@@ -2330,7 +2332,7 @@ pred_126_mean <- terra::app(
   overwrite = FALSE
 )
 # ssp126
-pred_370_mean <- terra::app(
+pred_370_mean_unweighted <- terra::app(
   x = pred_370_stack,
   fun = "mean",
   filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp370.asc"),
@@ -2339,10 +2341,27 @@ pred_370_mean <- terra::app(
 )
 
 # ssp585
-pred_585_mean <- terra::app(
+pred_585_mean_unweighted <- terra::app(
   x = pred_585_stack,
   fun = "mean",
   filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp585.asc"),
+  filetype = "AAIGrid",
+  overwrite = FALSE
+)
+```
+
+Now I will take an unweighted mean of the above three rasters.
+
+
+``` r
+# stack rasters
+pred_CMIP6_mean_stack_unweighted <- c(pred_126_mean_unweighted, pred_370_mean_unweighted, pred_585_mean_unweighted)
+
+# apply mean between layers
+pred_CMIP6_mean_final_unweighted <- terra::app(
+  x = pred_CMIP6_mean_stack_unweighted,
+  fun = "mean",
+  filename = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc"),
   filetype = "AAIGrid",
   overwrite = FALSE
 )

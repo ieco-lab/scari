@@ -34,8 +34,10 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../index.html" aria-label="Home"><span class="fa fa-home fa-lg"></span></a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/scari.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/articles_index.html">Analyses</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/reports_index.html">Create Reports</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -61,7 +63,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-08-04</h4>
+            <h4 data-toc-skip class="date">2026-01-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/130_create_suitability_xy_plots_viticultural.Rmd" class="external-link"><code>vignettes/130_create_suitability_xy_plots_viticultural.Rmd</code></a></small>
       <div class="d-none name"><code>130_create_suitability_xy_plots_viticultural.Rmd</code></div>
@@ -94,16 +96,6 @@ completely agree on the suitability for a particular location, so
 agreement between the modeled scales can give us more confidence in that
 prediction. Where the modeled scales disagree, we might make different
 interpretations of the biological mechanism at play.</p>
-<pre><code><span><span class="co">## ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.5</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.1</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.5.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.3.0</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.1</span></span>
-<span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.4     </span></span>
-<span><span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
-<span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span></code></pre>
 <p><img src="130_create_suitability_xy_plots_viticultural_files/figure-html/example%20quadrant%20plot-1.png" width="700"><strong>Fig. 1</strong> Example quadrant plot for assessing SLF risk
 across two different scales of SDM.</p>
 <p>We rate risk from low to extreme, based on the agreement between the
@@ -134,7 +126,7 @@ locations of 1,086 globally important viticultural regions.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># general tools</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>  <span class="co">#data manipulation</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span> <span class="co">#making directory pathways easier on different instances</span></span>
@@ -160,12 +152,12 @@ document so that only certain code chunks are rendered in the final
 .html file. I will set the <code>eval = FALSE</code> so that none of the
 code is re-run (preventing files from being overwritten during knitting)
 and will simply overwrite this in chunks with plots.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                     <span class="st">"maxent/models"</span><span class="op">)</span></span></code></pre></div>
 <p>I will load in some aesthetic objects for plotting.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0</span>, <span class="fl">0.2</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">1.0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">8</span>, <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
@@ -174,7 +166,7 @@ and will simply overwrite this in chunks with plots.</p>
 </h3>
 <p>Load in summary files for the global and regional ensemble models,
 which contain the thresholds.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># summary file to extract thresholds from</span></span>
 <span></span>
 <span><span class="co"># global</span></span>
@@ -184,7 +176,7 @@ which contain the thresholds.</p>
 <p>I will load in the global and regional ensemble suitability maps.
 These will be used both for extracting the new xy suitability values and
 for plotting.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="va">global_1995</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -222,10 +214,10 @@ viticultural regions. I will also de-duplicate the records because there
 were “many-to-many” joining matches downstream. De-duplicating removed
 about 17 records. I also remove the species column, which is
 automatically created by <code>SDMtune::predict()</code> upstream.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load in OG (not transformed) wineries dataset- transformed is wineries_esri54017.rds</span></span>
 <span><span class="co"># coordinatecleaner requires latlon</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data-raw"</span>, <span class="st">"wineries.rda"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rstudio.github.io/renv/reference/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data-raw"</span>, <span class="st">"wineries.rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="va">wineries</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># tidy</span></span>
@@ -264,7 +256,7 @@ this action.</p>
 <p>I will load in the global model datasets and create the
 regional_ensemble datasets. I will also do some tidying of my datasets
 for the plots I will create.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># historical</span></span>
 <span><span class="va">xy_global_1995</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_wineries_1981-2010_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv"</span><span class="op">)</span></span>
@@ -291,7 +283,7 @@ correctly downstream without rounding.</p>
 <p>Additionally, I need to rename each coordinate column to reflect its
 column of origin. This way, I will not lose track of which column is
 from which data frame among a veritable mess of joins.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add join columns to all datasets</span></span>
 <span><span class="va">xy_global_1995</span> <span class="op">&lt;-</span> <span class="va">xy_global_1995</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -342,7 +334,7 @@ EPSG4326 CRS because coordinate cleaner does not work with ESRI:54017. I
 will also de-duplicate these datasets to ensure that there are no
 duplicate coordinates, which would cause problems with the
 <code><a href="https://rspatial.github.io/terra/reference/extract.html" class="external-link">terra::extract()</a></code> function.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 1995 historical dataset</span></span>
 <span><span class="co"># I need to transform this dataset to the correct crs</span></span>
 <span><span class="va">xy_global_1995_sv</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">xy_global_1995</span>, geom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x_global_1995"</span>, <span class="st">"y_global_1995"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"ESRI:54017"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -385,7 +377,7 @@ should now contain the same records as the global suitability values
 do.</p>
 <p>First, I need to transform the coordinates to the
 <code>ESRI:54017</code> CRS</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># I need to transform this dataset to the correct crs</span></span>
 <span><span class="va">IVR_locations_sv</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span><span class="va">IVR_locations</span>, geom <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:4326"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html" class="external-link">project</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"ESRI:54017"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="co"># convert to UTM 33N</span></span>
@@ -401,7 +393,7 @@ do.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"x"</span> <span class="op">=</span> <span class="st">"x_utm"</span>, <span class="st">"y"</span> <span class="op">=</span> <span class="st">"y_utm"</span><span class="op">)</span> </span></code></pre></div>
 <p>Now, perform a filtering join and save</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edits to IVR dataset for rounding- create a join column</span></span>
 <span><span class="va">IVR_locations_join</span> <span class="op">&lt;-</span> <span class="va">IVR_locations_UTM</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -430,7 +422,7 @@ do.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">IVR_locations_sv</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">IVR_locations_UTM</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">IVR_locations_join</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#read it back in</span></span>
 <span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_esri54017_tidied.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -443,7 +435,7 @@ a 20km buffer around each viticultural area point to account for the
 potentially large size of these viticultural areas. We will keep the max
 values from those buffers. I will mean these values across ssp
 scenarios.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first join datasets</span></span>
 <span><span class="va">xy_global_2055_ssp_mean</span> <span class="op">&lt;-</span> <span class="va">xy_global_2055_126</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">xy_global_2055_370</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"join_col_x"</span>, <span class="st">"join_col_y"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -457,7 +449,7 @@ scenarios.</p>
 <span>    x <span class="op">=</span> <span class="va">x_global_2055_126</span>,</span>
 <span>    y <span class="op">=</span> <span class="va">y_global_2055_126</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">xy_global_2055_ssp_mean</span>,</span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv"</span><span class="op">)</span></span>
@@ -477,7 +469,7 @@ coordinates from the original IVR_locations dataset so that the
 coordinates are exact for joining with other datasets. I will first
 convert this dataset to an sv object and create a buffer region around
 each point for extraction from each of the raster</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first, convert to a vector sv in terra</span></span>
 <span><span class="va">IVR_locations_sv</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">vect</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="va">IVR_locations</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>,</span>
@@ -494,7 +486,7 @@ each point for extraction from each of the raster</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">IVR_locations_sv</span><span class="op">)</span></span></code></pre></div>
 <p>Now, I will retrieve the max suitability value within that buffer for
 each of the IVRs in each of the predicted rasters.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># rasters to retrieve suitability from</span></span>
 <span><span class="va">rasters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">regional_ensemble_1995</span>, <span class="va">regional_ensemble_2055_126</span>, <span class="va">regional_ensemble_2055_370</span>, <span class="va">regional_ensemble_2055_585</span><span class="op">)</span></span>
 <span></span>
@@ -554,7 +546,7 @@ each of the IVRs in each of the predicted rasters.</p>
 <h4 id="take-mean-of-ssps">take mean of ssps<a class="anchor" aria-label="anchor" href="#take-mean-of-ssps"></a>
 </h4>
 <p>Now I will re-load the data files I just created</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># historical</span></span>
 <span><span class="va">xy_regional_ensemble_1995</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_ensemble_v2"</span>, <span class="st">"regional_ensemble_v2_wineries_1981-2010_xy_pred_suit.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># CMIP6</span></span>
@@ -565,7 +557,7 @@ each of the IVRs in each of the predicted rasters.</p>
 <span><span class="co">## ssp 585</span></span>
 <span><span class="va">xy_regional_ensemble_2055_585</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_ensemble_v2"</span>, <span class="st">"regional_ensemble_v2_wineries_2041-2070_GFDL_ssp585_xy_pred_suit.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Perform the same edits as above for the global model</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add join columns to all datasets</span></span>
 <span><span class="va">xy_regional_ensemble_1995</span> <span class="op">&lt;-</span> <span class="va">xy_regional_ensemble_1995</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -612,7 +604,7 @@ each of the IVRs in each of the predicted rasters.</p>
 <span>      <span class="st">"max_cloglog_suit_ssp585"</span> <span class="op">=</span> <span class="st">"max_cloglog_suit_ssp585_20000m"</span></span>
 <span>    <span class="op">)</span> </span></code></pre></div>
 <p>Now join and take the mean</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># first join datasets</span></span>
 <span><span class="va">xy_regional_ensemble_2055_ssp_mean</span> <span class="op">&lt;-</span> <span class="va">xy_regional_ensemble_2055_126</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">xy_regional_ensemble_2055_370</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"join_col_x"</span>, <span class="st">"join_col_y"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -626,13 +618,13 @@ each of the IVRs in each of the predicted rasters.</p>
 <span>    x <span class="op">=</span> <span class="va">x_regional_ensemble_2055_126</span>,</span>
 <span>    y <span class="op">=</span> <span class="va">y_regional_ensemble_2055_126</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">xy_regional_ensemble_2055_ssp_mean</span>,</span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>Now, I will tidy and save the data sets to .rds for our analysis.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global model historical datasets</span></span>
 <span><span class="va">xy_global_1995</span> <span class="op">&lt;-</span> <span class="va">xy_global_1995</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># add ID column</span></span>
@@ -679,7 +671,7 @@ each of the IVRs in each of the predicted rasters.</p>
 <span><span class="va">xy_regional_ensemble_2055_ssp_mean</span> <span class="op">&lt;-</span> <span class="va">xy_regional_ensemble_2055_ssp_mean</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># rename the column for future joining</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="st">"xy_regional_ensemble_2055"</span> <span class="op">=</span> <span class="st">"max_suit_ssp_averaged"</span><span class="op">)</span> </span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># regional_ensemble</span></span>
 <span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span></span>
 <span>  <span class="va">xy_regional_ensemble_1995</span>,  </span>
@@ -730,9 +722,9 @@ c3 are the maximum and its inverse, and c2 is the interpolated value of
 the input <code>thresh</code>. The transformed suitability vector is
 re-scaled so that <code>thresh</code> is the median (0.5) on a 0-1 scale
 and all other values are transformed to fit this scale.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_esri54017_tidied.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="va">xy_global_1995</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_wineries_1981-2010_xy_pred_suit.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">xy_global_2055</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.rds"</span><span class="op">)</span><span class="op">)</span></span>
@@ -743,7 +735,7 @@ and all other values are transformed to fit this scale.</p>
 <p>I will use the internal function
 <code><a href="../reference/rescale_cloglog_suitability.html">scari::rescale_cloglog_suitability()</a></code> to re-scale these
 suitability values.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_global_1995_rescaled</span> <span class="op">&lt;-</span> <span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/rescale_cloglog_suitability.html">rescale_cloglog_suitability</a></span><span class="op">(</span></span>
 <span>  xy.predicted <span class="op">=</span> <span class="va">xy_global_1995</span>,</span>
 <span>  thresh <span class="op">=</span> <span class="st">"MTSS"</span>,</span>
@@ -769,7 +761,7 @@ suitability values.</p>
 <span></span>
 <span><span class="va">xy_global_2055_rescaled_thresholds</span> <span class="op">&lt;-</span> <span class="va">xy_global_2055_rescaled</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">xy_global_2055_rescaled</span> <span class="op">&lt;-</span> <span class="va">xy_global_2055_rescaled</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_regional_ensemble_1995_rescaled</span> <span class="op">&lt;-</span> <span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/rescale_cloglog_suitability.html">rescale_cloglog_suitability</a></span><span class="op">(</span></span>
 <span>  xy.predicted <span class="op">=</span> <span class="va">xy_regional_ensemble_1995</span>,</span>
 <span>  thresh <span class="op">=</span> <span class="st">"MTSS"</span>,</span>
@@ -795,7 +787,7 @@ suitability values.</p>
 <span></span>
 <span><span class="va">xy_regional_ensemble_2055_rescaled_thresholds</span> <span class="op">&lt;-</span> <span class="va">xy_regional_ensemble_2055_rescaled</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">xy_regional_ensemble_2055_rescaled</span> <span class="op">&lt;-</span> <span class="va">xy_regional_ensemble_2055_rescaled</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span></span>
 <span>  <span class="va">xy_global_1995_rescaled</span>, </span>
@@ -815,7 +807,7 @@ suitability values.</p>
 <span>  <span class="va">xy_regional_ensemble_2055_rescaled</span>, </span>
 <span>  file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span></span>
 <span>  <span class="va">xy_global_1995_rescaled_thresholds</span>, </span>
@@ -841,7 +833,7 @@ suitability values.</p>
 </h2>
 <p>We need a baseline for visualizing the trends in these scatter plots,
 so I will first plot the un-transformed datasets.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add join columns to all datasets</span></span>
 <span><span class="va">xy_global_1995</span> <span class="op">&lt;-</span> <span class="va">xy_global_1995</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -881,7 +873,7 @@ so I will first plot the un-transformed datasets.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">full_join</a></span><span class="op">(</span><span class="va">.</span>, <span class="va">xy_regional_ensemble_2055</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ID"</span>, <span class="st">"join_col_x"</span>, <span class="st">"join_col_y"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># order</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">join_col_x</span>, <span class="va">join_col_y</span>, <span class="va">xy_global_1995</span>, <span class="va">xy_global_2055</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># figure annotation title</span></span>
 <span><span class="co"># "suitability for Lycorma delicatula establishment in globally important viticultural areas, projected for climate change"</span></span>
 <span></span>
@@ -912,7 +904,7 @@ so I will first plot the un-transformed datasets.</p>
 <span>   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="130_create_suitability_xy_plots_viticultural_files/figure-html/plot%20SLF%20suitability%20values-%20untransformed-1.png" width="700"></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
 <span>  <span class="va">xy_joined_plot</span>, </span>
 <span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
@@ -930,7 +922,7 @@ so I will first plot the un-transformed datasets.</p>
 <p>I will manually change the scale of these values to a 1-10 scale so
 that this plot of risk is not confused for a measure of suitability from
 the model.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="va">xy_global_1995_rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_wineries_1981-2010_xy_pred_suit_rescaled.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -940,7 +932,7 @@ the model.</p>
 <span><span class="va">xy_regional_ensemble_1995_rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"regional_ensemble_wineries_1981-2010_xy_pred_suit_rescaled.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xy_regional_ensemble_2055_rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="va">xy_global_1995_rescaled_thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_wineries_1981-2010_xy_pred_suit_rescaled_thresholds.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -950,7 +942,7 @@ the model.</p>
 <span><span class="va">xy_regional_ensemble_1995_rescaled_thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"regional_ensemble_wineries_1981-2010_xy_pred_suit_rescaled_thresholds.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">xy_regional_ensemble_2055_rescaled_thresholds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_rescaled_thresholds.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add join columns to all datasets</span></span>
 <span><span class="va">xy_global_1995_rescaled</span> <span class="op">&lt;-</span> <span class="va">xy_global_1995_rescaled</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -994,7 +986,7 @@ the model.</p>
 indicating change. I will filter out only the segments that cross either
 threshold and then plot these arrows.</p>
 <p>First, I need to isolate the MTSS threshold values.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
 <span><span class="va">global_MTSS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">xy_global_1995_rescaled_thresholds</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co"># regional ensemble</span></span>
@@ -1003,7 +995,7 @@ threshold and then plot these arrows.</p>
 <p>Next, I will use <code><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when()</a></code> (a vectorized ifelse) to
 calculate when a point shifts across a suitability threshold due to
 climate change.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xy_joined_rescaled_intersects</span> <span class="op">&lt;-</span> <span class="va">xy_joined_rescaled</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    crosses_threshold <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
@@ -1025,7 +1017,7 @@ climate change.</p>
 <span>  <span class="va">crosses_threshold</span> <span class="op">==</span> <span class="st">"crosses"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now lets plot the data.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># figure annotation title</span></span>
 <span><span class="co"># "Risk of Lycorma delicatula establishment in globally important viticultural areas, projected for climate change"</span></span>
 <span></span>
@@ -1088,7 +1080,7 @@ climate change.</p>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span></span>
 <span><span class="co">##   a single row.</span></span></code></pre>
 <p><img src="130_create_suitability_xy_plots_viticultural_files/figure-html/plot%20SLF%20suitability%20values-%20rescaled-1.png" width="700"></p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
 <span>  <span class="va">xy_joined_rescaled_plot</span>, </span>
 <span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span></span>
@@ -1122,7 +1114,7 @@ will apply the internal function
 <p>I will create a summary table of the quadrant placement (and thus the
 level of risk) for each point in the IVR_locations dataset. I will use
 <code><a href="../reference/calculate_risk_quadrant.html">calculate_risk_quadrant()</a></code> to accomplish this.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># edit IVR_locations first</span></span>
 <span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="va">IVR_locations</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -1153,13 +1145,13 @@ level of risk) for each point in the IVR_locations dataset. I will use
 <span>    <span class="op">)</span>,</span>
 <span>    risk_shift <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html" class="external-link">str_c</a></span><span class="op">(</span><span class="va">risk_1995</span>, <span class="va">risk_2055</span>, sep <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># factor levels</span></span>
 <span><span class="va">risk_levels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"extreme"</span>, <span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># number of rows in table</span></span>
 <span><span class="va">n_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">IVR_locations_risk</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">IVR_risk_table</span> <span class="op">&lt;-</span> <span class="va">IVR_locations_risk</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># create counts and make into acrostic table</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">risk_1995</span>, <span class="va">risk_2055</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -1169,7 +1161,7 @@ level of risk) for each point in the IVR_locations dataset. I will use
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## `summarise()` has grouped output by 'risk_1995'. You can override using the</span></span>
 <span><span class="co">## `.groups` argument.</span></span></code></pre>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="co"># add columns that do not exist</span></span>
 <span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">'extreme'</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">IVR_risk_table</span><span class="op">)</span><span class="op">)</span> <span class="va">IVR_risk_table</span> <span class="op">&lt;-</span> <span class="va">IVR_risk_table</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html" class="external-link">add_column</a></span><span class="op">(</span>extreme <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="st">'high'</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">IVR_risk_table</span><span class="op">)</span><span class="op">)</span> <span class="va">IVR_risk_table</span> <span class="op">&lt;-</span> <span class="va">IVR_risk_table</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_column.html" class="external-link">add_column</a></span><span class="op">(</span>high <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -1197,7 +1189,7 @@ level of risk) for each point in the IVR_locations dataset. I will use
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/add_row.html" class="external-link">add_row</a></span><span class="op">(</span>rows_1995_cols_2055 <span class="op">=</span> <span class="st">"total_2055"</span>, extreme <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rowSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>, high <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rowSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>, moderate <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rowSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, low <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rowSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">.</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, total_present <span class="op">=</span> <span class="va">n_records</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># convert to df</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span><span class="va">IVR_risk_table</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"IVR_risk_table.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We now have a table calculating the number of regions per quadrant,
 before and after climate change!</p>
@@ -1211,7 +1203,7 @@ to our calculation of risk. I will sum the number of points that are
 suitable in the global model only, unsuitable in the global model only,
 and unsuitable in the global model / suitable in the regional model. I
 will repeat this operation for both time periods.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_regional_risk_shift</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  time_period <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1995</span>, <span class="fl">1995</span>, <span class="fl">1995</span>, <span class="fl">2055</span>, <span class="fl">2055</span>, <span class="fl">2055</span><span class="op">)</span>,</span>
 <span>  quadrants <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quad4_quad2"</span>, <span class="st">"quad3_quad1"</span>, <span class="st">"quad3"</span>, <span class="st">"quad4_quad2"</span>, <span class="st">"quad3_quad1"</span>, <span class="st">"quad3"</span><span class="op">)</span>,</span>
@@ -1232,7 +1224,7 @@ will repeat this operation for both time periods.</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">IVR_locations_joined</span><span class="op">$</span><span class="va">xy_global_2055_rescaled</span> <span class="op">&lt;</span> <span class="va">global_MTSS</span> <span class="op">&amp;</span> <span class="va">IVR_locations_joined</span><span class="op">$</span><span class="va">xy_regional_ensemble_2055_rescaled</span> <span class="op">&gt;=</span> <span class="va">regional_ensemble_MTSS_2055</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># total # IVRs</span></span>
 <span><span class="va">total_IVR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">global_regional_risk_shift</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
@@ -1284,7 +1276,7 @@ thus would be missed by an analysis of risk using only a global-scale
 model.</p>
 <p>This means that our regional-scale ensemble is adding resolution and
 nuance to our estimation of risk for SLF establishment.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add %</span></span>
 <span><span class="va">global_regional_risk_shift</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">global_regional_risk_shift</span>, IVR_region_prop <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html" class="external-link">label_percent</a></span><span class="op">(</span>accuracy <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">(</span><span class="va">IVR_region_prop</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -1324,7 +1316,7 @@ will code extreme risk = 4, high = 3, moderate = 2, and low = 1. Then, I
 will subtract the risk level in 1995 from the risk level in 2055 to
 quantify the change in risk level over time and calculate summary
 stats.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add risk level counts</span></span>
 <span><span class="va">wineries_tidied_suit</span> <span class="op">&lt;-</span> <span class="va">IVR_locations_risk</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
@@ -1361,7 +1353,7 @@ stats.</p>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">risk_count_hist</span>, .after <span class="op">=</span> <span class="va">risk_level_hist</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">`risk_count_2041-2070`</span>, .after <span class="op">=</span> <span class="va">`risk_level_2041-2070`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">risk_shift_count</span>, .after <span class="op">=</span> <span class="va">risk_shift</span><span class="op">)</span> </span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save </span></span>
 <span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">wineries_tidied_suit</span>,</span>
@@ -1386,6 +1378,169 @@ Ecology and Biogeography, 21(11), 1126–1136. <a href="https://doi.org/10.1111/
 <li><p>Smith, T. 2021, August 11. Evaluating Invasion Stage with SDMs -
 plantarum.ca. <a href="https://plantarum.ca/2021/08/11/invasion-stage/" class="external-link uri">https://plantarum.ca/2021/08/11/invasion-stage/</a>.</p></li>
 </ol>
+<!--
+
+# Appendix
+
+## plot unweighted mean versions of suitability plots
+
+This workflow follows steps 1-3, except that it plots based on the unweighted mean of the calculated regional ensemble (rather than an ensemble created based on AUC and ExDet weights).
+
+
+``` r
+# summary file to extract thresholds from
+
+summary_regional_ensemble_unweighted <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values_unweighted.csv"))
+```
+
+Finally, I will load in the global and regional ensemble suitability maps. These will be used both for extracting the new xy suitability values and for plotting.
+
+
+``` r
+# regional_ensemble
+regional_ensemble_1995_unweighted <- terra::rast(
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_1981-2010.asc")
+  )
+
+regional_ensemble_2055_unweighted <- terra::rast(
+  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  )
+```
+
+### Retrieve/Import xy suitability
+
+These scatter plots will be based on the suitability for the IVR points in both the global and regional_ensemble models. I have already calculated the xy suitability for the global model based on these points, using the function `slfSpread::predict_xy_suitability()`. This function will not work for the regional_ensemble because it calls for a model object, which we did not use to predict the ensemble suitability. So, I will use `terra::extract()` to perform this action.
+
+I will retrieve the suitability values for the regional_ensemble. Instead of returning the coordinates from the map, I will join the coordinates from the original IVR_locations dataset so that the coordinates are exact for joining with other datasets.
+
+
+``` r
+# 1995
+xy_regional_ensemble_1995_unweighted <- terra::extract(
+  x = regional_ensemble_1995_unweighted,
+  y = dplyr::select(IVR_locations, x, y), # points
+  method = "simple",
+  xy = FALSE, # dont return coordinates
+  ID = TRUE,
+  raw = FALSE # return as df
+)
+
+
+# 2055
+xy_regional_ensemble_2055_unweighted <- terra::extract(
+  x = regional_ensemble_2055_unweighted,
+  y = dplyr::select(IVR_locations, x, y), # points
+  method = "simple",
+  xy = FALSE, # dont return coordinates 
+  ID = TRUE,
+  raw = FALSE # return as df
+) 
+```
+
+
+``` r
+# joining object
+IVR_coordinates <- dplyr::select(IVR_locations, ID, x, y)
+
+# perform join
+xy_regional_ensemble_1995_unweighted <- dplyr::left_join(xy_regional_ensemble_1995_unweighted, IVR_coordinates, by = "ID") %>%
+  dplyr::select(-ID)
+
+xy_regional_ensemble_2055_unweighted <- dplyr::left_join(xy_regional_ensemble_2055_unweighted, IVR_coordinates, by = "ID") %>%
+  dplyr::select(-ID)
+```
+
+Now, I will tidy and save the datasets
+
+
+``` r
+# regional_ensemble datasets
+xy_regional_ensemble_1995_unweighted <- xy_regional_ensemble_1995_unweighted %>%
+  # rename the column for future joining
+  dplyr::rename("xy_regional_ensemble_1995_unweighted" = "mean") %>%
+  dplyr::filter(!is.na(xy_regional_ensemble_1995_unweighted)) %>%
+  dplyr::relocate(x, y) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
+
+xy_regional_ensemble_2055_unweighted <- xy_regional_ensemble_2055_unweighted %>%
+  # rename the column for future joining
+  dplyr::rename("xy_regional_ensemble_2055_unweighted" = "mean") %>%
+  dplyr::filter(!is.na(xy_regional_ensemble_2055_unweighted)) %>%
+  dplyr::relocate(x, y) %>%
+  dplyr::mutate(
+      join_col_x = round(x, 5),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    ) %>%
+  dplyr::select(-c(x, y))
+
+# we lost 1 record because of the NA removal, but that is OK
+```
+
+### plot untransformed suitability
+
+
+``` r
+# join datasets for plotting
+xy_joined_unweighted <- dplyr::full_join(xy_global_1995, xy_regional_ensemble_1995_unweighted, by = c("join_col_x", "join_col_y")) %>%
+  # join CC datasets
+  dplyr::full_join(., xy_global_2055, by = c("join_col_x", "join_col_y")) %>%
+  dplyr::full_join(., xy_regional_ensemble_2055_unweighted, by = c("join_col_x", "join_col_y")) %>%
+  # order
+  dplyr::relocate(join_col_x, join_col_y, xy_global_1995, xy_global_2055) %>%
+  dplyr::select(-c(ID.x, ID.y))
+```
+
+
+``` r
+# figure annotation title
+# "suitability for Lycorma delicatula establishment in globally important viticultural areas, projected for climate change"
+
+# plot
+xy_joined_unweighted_plot <- ggplot(data = xy_joined_unweighted) +
+   # threshold lines
+   # MTSS thresholds
+   geom_vline(xintercept = as.numeric(summary_global[42, ncol(summary_global)]), linetype = "dashed", linewidth = 0.7) + # global
+   geom_hline(yintercept = as.numeric(summary_regional_ensemble_unweighted[2, 2]), linetype = "dashed", linewidth = 0.7) + # regional_ensemble- there are two MTSS thresholds for this model, but the difference is so small that you will never see it on the plot
+   # historical data
+   geom_point(
+     aes(x = xy_global_1995, y = xy_regional_ensemble_1995_unweighted, shape = "Present"), 
+     size = 2, stroke = 0.7, color = "black", fill = "orchid1"
+     ) +
+   # GFDL ssp370 data
+   geom_point(
+     aes(x = xy_global_2055, y = xy_regional_ensemble_2055_unweighted, shape = "Future | GFDL-ESM4\nmean of ssp126/370/585"), 
+     size = 2, stroke = 0.7, color = "black", fill = "purple3"
+     ) +
+   # axes scaling
+   scale_x_continuous(name =  "'global' model cloglog suitability", limits = c(0, 1), breaks = breaks) + 
+   scale_y_continuous(name =  "'regional_ensemble' model cloglog suitability", limits = c(0, 1), breaks = breaks) +
+   # aesthetics
+   scale_shape_manual(name = "Time period", values = c(21, 21)) +
+   guides(shape = guide_legend(nrow = 1, override.aes = list(size = 2.5), reverse = TRUE)) +
+   theme_bw() +
+   theme(legend.position = "bottom", panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+   coord_fixed(ratio = 1) 
+```
+
+
+``` r
+ggsave(
+  xy_joined_unweighted_plot, 
+  filename = file.path(
+    here::here(), "vignette-outputs", "figures", "IVR_xy_suitability_IVR_regions_global_regional_ensemble_unweighted.jpg"
+    ),
+  height = 8, 
+  width = 8,
+  device = "jpeg",
+  dpi = "retina"
+  )
+```
+
+-->
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

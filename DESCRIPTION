@@ -1,6 +1,6 @@
 Package: scari
 Type: Package
-Title: "Research Compendium: Multi-scale modeling of the spotted lanternfly Lycorma delicatula (Hemiptera: Fulgoridae) reveals displaced risk to viticulture and regional range expansion due to climate change"
+Title: "Shifting Climate Assessment of Risk from Invasives"
 Version: 0.3.0
 Authors@R: c(
     person(given = "Samuel M. Owens", email = "sam.owens@temple.edu", role = c("aut", "cre"), comment = c(ORCID = "0009-0001-2338-7928")),

@@ -12,7 +12,6 @@ The package `scari` is a research compendium for:
 Owens, S. M. (2024). Multi-scale Modeling of the Spotted Lanternfly Lycorma delicatula (Hemiptera: Fulgoridae) Reveals Displaced Risk to Viticulture and Regional Range Expansion Due to Climate Change [M.S., Temple University]. In ProQuest Dissertations and Theses (3099643448). https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527
 ![image](https://github.com/user-attachments/assets/c840b94d-0c42-40bb-9134-cae1c31bb7e3)
 
-
 ### Installation
 
 This package should be first be downloaded and installed from GitHub by running the following code:
@@ -49,11 +48,11 @@ install.packages("blockCV")
 
 ### Sitemap
 
-This GitHub project is organized into two groups: vignettes which generate reports for SLF risk to viticulture based on our analysis, and our full modeling pipeline used to create these reports.
+This GitHub project is organized into two groups of vignettes: those which generate reports for SLF risk to viticulture based on our analysis, and those outlining our modeling pipeline used to create these reports.
 
 Reports can be generated using vignettes 150-152, which contain example usage of our function [create_risk_report()](vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
 
-Please see this sitemap for a guide to our full modeling pipeline:
+For a guide to our full modeling pipeline, please see this sitemap:
 
 * vignette 010: Initialize `scari` and usage of `renv` package for dependencies
 * 020-030:      1. Retrieve and tidy input data for MaxEnt
@@ -70,11 +69,11 @@ Before diving into this project and our modeling workflow, an end user should:
 2. Download, build and install this package locally.
 3. Install the package `renv`, and run `renv::restore()` inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).
 4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
-5. See "Get Started" for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest
+5. See the [Get Started](articles/scari.html) tab for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest
   
 Once these steps are completed, the end user can get started either generating SLF reports, or following and editing the full modeling pipeline. 
 
-### Notes about using this package's code
+#### Notes about using this package's code
 
 I use some of the following conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
 
@@ -82,7 +81,7 @@ I use some of the following conventions to ensure that the package's .html files
 * I have a chunk near the beginning of every vignette that sets the global chunk options: `knitr::opts_chunk$set(eval = FALSE)`. This prevents the code from running automatically when the vignette is rendered. You can change this to `TRUE` if you want to run the code in that chunk.
 * I have added html comment tags (`<!--` and `-->`) to the code chunks that I do not want to run automatically as the website is rendered. Much of the code that is commented out is redundant, but I have left it in the code for reference so as not to disrupt the true workflow. You can remove these comments if you want to run the code in those chunks.
 
-### Computing Information
+#### Computing and Software Information
 
 This package was developed and its vignettes were rendered on a Dell Precision desktop PC with the following characteristics:
 
@@ -92,9 +91,7 @@ This package was developed and its vignettes were rendered on a Dell Precision d
 * R version: 4.5.1
 * Rstudio version: 2025.05.1+513
 
-### Other software:
-
-Be sure to download and install Java to use this package: https://www.oracle.com/java/technologies/downloads/#java24. Be sure to install the correct bit version for your OS.
+Be sure to download and install the correct bit version of [Java](https://www.oracle.com/java/technologies/downloads/#java24) for your operating system to use this package.
 
 ## References
 

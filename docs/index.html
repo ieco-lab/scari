@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>"Research Compendium: Multi-scale modeling of the spotted lanternfly Lycorma delicatula (Hemiptera: Fulgoridae) reveals displaced risk to viticulture and regional range expansion due to climate change" • scari</title>
+<title>"Shifting Climate Assessment of Risk from Invasives" • scari</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="" research compendium: multi-scale modeling of the spotted lanternfly lycorma delicatula fulgoridae reveals displaced risk to viticulture and regional range expansion due climate change>
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="" shifting climate assessment of risk from invasives>
 <meta name="description" content="The scari (Shifting Climate Assessment of Risk from Invasives) framework outlines a workflow for Species Distribution Modeling (SDM) to address the compounding effect of climate change on species invasions worldwide. We apply this framework to quantify the risk of establishment for the destructive invasive species Lycorma delicatula (Spotted Lanternfly or SLF) under climate change. We primarily provide tools and resources for viticulturalists to assess and respond to the risk SLF for viticulture at their locality. Viticulturalists should apply our function create_risk_report to create risk maps, range shift maps, risk plots and other outputs at the scale of countries or states/provinces. We also apply a novel multi-scale approach to model this invasive pest that modelers should adapt and apply to model the risk for establishment of other potential global invaders under climate change. We find that our multi-scale approach of ensembling MaxEnt models at the regional-scale provides more refined predictions than our global-scale model and highlights important biological limitations on the spread of SLF.">
 <meta property="og:description" content="The scari (Shifting Climate Assessment of Risk from Invasives) framework outlines a workflow for Species Distribution Modeling (SDM) to address the compounding effect of climate change on species invasions worldwide. We apply this framework to quantify the risk of establishment for the destructive invasive species Lycorma delicatula (Spotted Lanternfly or SLF) under climate change. We primarily provide tools and resources for viticulturalists to assess and respond to the risk SLF for viticulture at their locality. Viticulturalists should apply our function create_risk_report to create risk maps, range shift maps, risk plots and other outputs at the scale of countries or states/provinces. We also apply a novel multi-scale approach to model this invasive pest that modelers should adapt and apply to model the risk for establishment of other potential global invaders under climate change. We find that our multi-scale approach of ensembling MaxEnt models at the regional-scale provides more refined predictions than our global-scale model and highlights important biological limitations on the spread of SLF.">
 <meta property="og:image" content="https://ieco-lab.github.io/scari/logo.png">
@@ -104,16 +104,16 @@
 <div class="section level3">
 <h3 id="sitemap">Sitemap<a class="anchor" aria-label="anchor" href="#sitemap"></a>
 </h3>
-<p>This GitHub project is organized into general sections of our modeling pipeline. Each article can be found in <a href="https://github.com/ieco-lab/scari/tree/master/vignettes" class="external-link">vignettes</a>. Please see this sitemap for navigating both the GitHub repo and our site:</p>
+<p>This GitHub project is organized into two groups of vignettes: those which generate reports for SLF risk to viticulture based on our analysis, and those outlining our modeling pipeline used to create these reports.</p>
+<p>Reports can be generated using vignettes 150-152, which contain example usage of our function <a href="vignettes/150_create_risk_report.Rmd">create_risk_report()</a> (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).</p>
+<p>For a guide to our full modeling pipeline, please see this sitemap:</p>
 <ul>
 <li>vignette 010: Initialize <code>scari</code> and usage of <code>renv</code> package for dependencies</li>
 <li>020-030: 1. Retrieve and tidy input data for MaxEnt</li>
 <li>040-090: 2. SDM modeling pipeline: train global and 3 regional-scale models</li>
 <li>100-110: 3. Ensemble Regional-scale SDMs</li>
-<li>120-130: 4. Quantify SLF risk</li>
+<li>120-130, 160: 4. Quantify SLF risk</li>
 <li>140-142: 5. Quantify Model fit</li>
-<li>150-152: Example usage of our function <a href="vignettes/150_create_risk_report.Rmd">create_risk_report()</a> (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152)</li>
-<li>160: Generation of figures for the companion paper</li>
 </ul>
 </div>
 </div>
@@ -126,11 +126,12 @@
 <li>Download, build and install this package locally.</li>
 <li>Install the package <code>renv</code>, and run <code><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">renv::restore()</a></code> inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).</li>
 <li>Run the first vignette, <a href="vignettes/010_initialize_pkg.Rmd">010_initialize_renv</a>, which initializes <code>renv</code> and lists our package’s dependencies.</li>
-<li>See “Get Started” for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest</li>
+<li>See the <a href="articles/scari.html">Get Started</a> tab for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest</li>
 </ol>
-<div class="section level3">
-<h3 id="notes-about-using-this-packages-code">Notes about using this package’s code<a class="anchor" aria-label="anchor" href="#notes-about-using-this-packages-code"></a>
-</h3>
+<p>Once these steps are completed, the end user can get started either generating SLF reports, or following and editing the full modeling pipeline.</p>
+<div class="section level4">
+<h4 id="notes-about-using-this-packages-code">Notes about using this package’s code<a class="anchor" aria-label="anchor" href="#notes-about-using-this-packages-code"></a>
+</h4>
 <p>I use some of the following conventions to ensure that the package’s .html files render correctly, the code is not overly cumbersome to run, and that data aren’t re-downloaded unnecessarily:</p>
 <ul>
 <li>I have added a number of <code>if()</code> statements throughout my vignettes, usually to prevent data from being downloaded again unnecessarily. Simply change the <code>FALSE</code> within the <code>if()</code> statement to <code>TRUE</code> to run a chunk.</li>
@@ -138,9 +139,9 @@
 <li>I have added html comment tags (<code>&lt;!--</code> and <code>--&gt;</code>) to the code chunks that I do not want to run automatically as the website is rendered. Much of the code that is commented out is redundant, but I have left it in the code for reference so as not to disrupt the true workflow. You can remove these comments if you want to run the code in those chunks.</li>
 </ul>
 </div>
-<div class="section level3">
-<h3 id="computing-information">Computing Information<a class="anchor" aria-label="anchor" href="#computing-information"></a>
-</h3>
+<div class="section level4">
+<h4 id="computing-and-software-information">Computing and Software Information<a class="anchor" aria-label="anchor" href="#computing-and-software-information"></a>
+</h4>
 <p>This package was developed and its vignettes were rendered on a Dell Precision desktop PC with the following characteristics:</p>
 <ul>
 <li>Core: intel Xeon CPU, 3.60 GHz</li>
@@ -149,11 +150,7 @@
 <li>R version: 4.5.1</li>
 <li>Rstudio version: 2025.05.1+513</li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="other-software">Other software:<a class="anchor" aria-label="anchor" href="#other-software"></a>
-</h3>
-<p>Be sure to download and install Java to use this package: <a href="https://www.oracle.com/java/technologies/downloads/#java24" class="external-link uri">https://www.oracle.com/java/technologies/downloads/#java24</a>. Be sure to install the correct bit version for your OS.</p>
+<p>Be sure to download and install the correct bit version of <a href="https://www.oracle.com/java/technologies/downloads/#java24" class="external-link">Java</a> for your operating system to use this package.</p>
 </div>
 </div>
 <div class="section level2">

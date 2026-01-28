@@ -2752,7 +2752,7 @@ pred_585_mean_unweighted <- terra::app(
 
 Now I will take an unweighted mean of the above three rasters.
 
-```{r take unweighted mean of weighted pred rasters- CMIP6}
+```{r take unweighted mean of weighted pred rasters- CMIP6 2}
 
 # stack rasters
 pred_CMIP6_mean_stack_unweighted <- c(pred_126_mean_unweighted, pred_370_mean_unweighted, pred_585_mean_unweighted)
@@ -2770,7 +2770,7 @@ pred_CMIP6_mean_final_unweighted <- terra::app(
 
 I will also take the mean of the MTSS and MTP thresholds
 
-```{r unweighted mean of thresholds}
+```{r unweighted mean of thresholds 2}
 
 #take means
 MTSS_mean_unweighted <- mean(MTSS_all)
@@ -2784,7 +2784,7 @@ ensemble_thresh_values_unweighted <- tibble(
 
 ```
 
-```{r export table- unweighted}
+```{r export table- unweighted 2}
 
 write_csv(ensemble_thresh_values_unweighted, file = file.path(mypath, "models", "slf_regional_ensemble_v2", "ensemble_threshold_values_unweighted.csv"))
 
