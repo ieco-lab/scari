@@ -76,8 +76,8 @@ to run various types of models.
 Requires the following packages: "cli", "httr", "terra", "tidyverse", "utils"
 
 See (CHELSA v2.1 Technical Specifications)\link{https://chelsa-climate.org/wp-admin/download-page/CHELSA_tech_specification_V2.pdf} for more detail on specific climatologies, including their units, usage, and interpretation.
-}
-\section{var.subtype}{
+\subsection{var.subtype}{
+
 For the argument \code{var.subtype}, the following options are available, depending on the input for \code{var.type}:
 \code{var.type} == "daily":
 \itemize{
@@ -121,7 +121,8 @@ For the argument \code{var.subtype}, the following options are available, depend
 }
 }
 
-\section{var.period}{
+\subsection{var.period}{
+
 For the argument \code{var.period}, the date range should be formatted differently, depending on the input for \code{var.type}:
 
 \code{var.type} == "daily":
@@ -134,18 +135,17 @@ Date format should be "MM_YYYY" for a single date, or c("MM-YYYY", "MM-YYYY") fo
 Date format should be a range years. Choices are "1981-2010" (historical data), "2011-2040", "2041-2070", or "2071-2100" (projected data).
 }
 
-\section{bioclim.type}{
-
+\subsection{bioclim.type}{
 }
 
-\section{bioclim.number}{
-
+\subsection{bioclim.number}{
 }
 
-\section{bioclim.period}{
+\subsection{bioclim.period}{
+
 \emph{Note} Please include all quotation marks in above formats
 }
-
+}
 \examples{
 
 # download historical bioclimatic variables:

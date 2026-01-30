@@ -246,18 +246,18 @@ ggsave(
 
 # the canary islands also have a number of vineyards so I will create maps of just those
 canary_current <- spain_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(-19, -13) +
-  ylim(27, 30) +
+  xlim(-1833239.3247670338, -1254321.6432616548) +
+  ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
 
 canary_future <- spain_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(-19, -13) +
-  ylim(27, 30) +
+  xlim(-1833239.3247670338, -1254321.6432616548) +
+  ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
 
 canary_shift <- spain_slf_risk_report[["range_shift_map"]] +
-  xlim(-19, -13) +
-  ylim(27, 30) +
+  xlim(-1833239.3247670338, -1254321.6432616548) +
+  ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
 
 
@@ -299,16 +299,16 @@ ggsave(
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
 portugal_current <- portugal_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(-18, -6) +
-  ylim(32, 42)
+  xlim(-1100000, -600000) +
+  ylim(4400000, 4900750.206464033)
 
 portugal_future <- portugal_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(-18, -6) +
-  ylim(32, 42)
+  xlim(-1100000, -600000) +
+  ylim(4400000, 4900750.206464033)
 
 portugal_shift <- portugal_slf_risk_report[["range_shift_map"]] +
-  xlim(-18, -6) +
-  ylim(32, 42)
+  xlim(-1100000, -600000) +
+  ylim(4400000, 4900750.206464033)
 
 
 #save
@@ -345,16 +345,16 @@ ggsave(
 
 
 south_africa_current <- south_africa_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(15, 35) +
-  ylim(-35, -22)
+  xlim(1447294.2037634475, 3377019.808781378) +
+  ylim(-4198673.820940021, -2739869.8684837967)
 
 south_africa_future <- south_africa_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(15, 35) +
-  ylim(-35, -22)
+  xlim(1447294.2037634475, 3377019.808781378) +
+  ylim(-4198673.820940021, -2739869.8684837967)
 
 south_africa_shift <- south_africa_slf_risk_report[["range_shift_map"]] +
-  xlim(15, 35) +
-  ylim(-35, -22)
+  xlim(1447294.2037634475, 3377019.808781378) +
+  ylim(-4198673.820940021, -2739869.8684837967)
 
 
 #save
@@ -397,7 +397,7 @@ scari::create_risk_report(
   locality.name = "united kingdom",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "United Kingdom"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -408,7 +408,7 @@ scari::create_risk_report(
   locality.name = "Ireland",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Ireland"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -444,16 +444,16 @@ scari::create_risk_report(
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
 new_zealand_current <- new_zealand_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(165, 180) +
-  ylim(-48, -34)
+  xlim(15920236.241397923, 17367530.445161372) +
+  ylim(-5445383.869156103, -4093085.6280890987)
 
 new_zealand_future <- new_zealand_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(165, 180) +
-  ylim(-48, -34)
+  xlim(15920236.241397923, 17367530.445161372) +
+  ylim(-5445383.869156103, -4093085.6280890987)
 
 new_zealand_shift <- new_zealand_slf_risk_report[["range_shift_map"]] +
-  xlim(165, 180) +
-  ylim(-48, -34)
+  xlim(15920236.241397923, 17367530.445161372) +
+  ylim(-5445383.869156103, -4093085.6280890987)
 
 
 #save
@@ -563,7 +563,7 @@ scari::create_risk_report(
   locality.name = "russia",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Russia"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -575,16 +575,18 @@ scari::create_risk_report(
 ```{r edit australia maps}
 
 australia_current <- australia_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(110, 155) +
-  ylim(-44, -10)
+  xlim(10613490.827598616, 14955373.438888958) +
+  ylim(5088510.348060536, 1269436.7435378374)
 
 australia_future <- australia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(110, 155) +
-  ylim(-44, -10)
+  xlim(10613490.827598616, 14955373.438888958) +
+  ylim(5088510.348060536, 1269436.7435378374)
 
 australia_shift <- australia_slf_risk_report[["range_shift_map"]] +
-  xlim(110, 155) +
-  ylim(-44, -10)
+  xlim(10613490.827598616, 14955373.438888958) +
+  ylim(5088510.348060536, 1269436.7435378374)
+
+# australia is not showing background when edited, for some reason
 
 
 #save
@@ -620,13 +622,16 @@ ggsave(
 ```{r edit russia maps}
 
 russia_current <- russia_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(20, 180) 
+  xlim(3029725.60501793, 17367530.445161372) +
+  ylim(4000000, 8000000)
 
 russia_future <- russia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(20, 180) 
+  xlim(3029725.60501793, 17367530.445161372) +
+  ylim(4000000, 8000000) 
 
 russia_shift <- russia_slf_risk_report[["range_shift_map"]] +
-  xlim(20, 180) 
+  xlim(3029725.60501793, 17367530.445161372) +
+  ylim(4000000, 8000000)
 
 
 #save
@@ -662,13 +667,13 @@ ggsave(
 ```{r edit chile maps}
 
 chile_current <- chile_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(-78, -65) 
+  xlim(-7525929.859569928, -6271608.216308273) 
 
 chile_future <- chile_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(-78, -65) 
+  xlim(-7525929.859569928, -6271608.216308273) 
 
 chile_shift <- chile_slf_risk_report[["range_shift_map"]] +
-  xlim(-78, -65) 
+  xlim(-7525929.859569928, -6271608.216308273) 
 
 
 #save
@@ -714,12 +719,10 @@ scari::create_risk_report(
   locality.name = "finland",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "finland"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
-
-
 
 ```
 
@@ -764,16 +767,16 @@ scari::create_risk_report(
 ```{r edit france maps}
 
 france_current <- france_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
-  xlim(-5, 10) +
-  ylim(41, 51)
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4800000, 5695846.383707797)
 
 france_future <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
-  xlim(-5, 10) +
-  ylim(41, 51)
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4800000, 5695846.383707797)
 
 france_shift <- france_slf_risk_report[["range_shift_map"]] +
-  xlim(-5, 10) +
-  ylim(41, 51)
+  xlim(-482431.4012544825, 964862.802508965) +
+  ylim(4800000, 5695846.383707797)
 
 
 #save
@@ -873,7 +876,7 @@ scari::create_risk_report(
   locality.name = "lativa",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Lativa"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -884,7 +887,7 @@ scari::create_risk_report(
   locality.name = "lithuania",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Lithuania"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -895,7 +898,7 @@ scari::create_risk_report(
   locality.name = "denmark",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Denmark"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -961,7 +964,7 @@ scari::create_risk_report(
   locality.name = "turkey",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Turkey"),
-  create.dir = TRUE,
+  create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
 )
@@ -1381,7 +1384,7 @@ new_zealand_risk_map <- new_zealand_future +
   labs(tag = "B") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0, 0.9),
+    plot.tag.position = c(-0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1396,7 +1399,7 @@ new_zealand_risk_map <- ggplot_gtable(new_zealand_risk_map) %>%
 
 
 # australia
-australia_risk_map <- australia_future +
+australia_risk_map <- australia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1408,7 +1411,7 @@ australia_risk_map <- australia_future +
   labs(tag = "D") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(-0.05, 0.9),
+    plot.tag.position = c(-0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1434,7 +1437,7 @@ tasmania_risk_map <- tasmania_slf_risk_report[["risk_maps"]][["future_risk_map"]
   labs(tag = "F") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0, 0.9),
+    plot.tag.position = c(-0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
@@ -1582,7 +1585,7 @@ argentina_risk_map <- argentina_slf_risk_report[["risk_maps"]][["future_risk_map
   labs(tag = "D") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.15, 0.9),
+    plot.tag.position = c(0.05, 0.9),
     plot.tag = element_text(face = "bold")
     )
   
@@ -1642,7 +1645,7 @@ portugal_risk_plot <- portugal_slf_risk_report[["viticultural_risk_plot"]] +
   theme(
     legend.position = "none", 
     panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
-    plot.tag.position = c(0.2, 0.9),
+    plot.tag.position = c(0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1693,6 +1696,7 @@ france_risk_plot <- ggplot_gtable(france_risk_plot) %>%
 
 # germany
 germany_risk_plot <- germany_slf_risk_report[["viticultural_risk_plot"]] +
+  
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1752,8 +1756,6 @@ italy_risk_plot <- ggplot_gtable(italy_risk_plot) %>%
 # edit maps
 # portugal
 portugal_risk_map <- portugal_future +
-  xlim(-10, -6) +
-  ylim(37, 42) +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1765,7 +1767,7 @@ portugal_risk_map <- portugal_future +
   labs(tag = "B") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1780,7 +1782,9 @@ portugal_risk_map <- ggplot_gtable(portugal_risk_map) %>%
 
 
 # france
-france_risk_map <- france_future +
+france_risk_map <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  xlim(-642431.4012544825, 964862.802508965) +
+  ylim(4800000, 5695846.383707797) +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1806,6 +1810,8 @@ france_risk_map <- ggplot_gtable(france_risk_map) %>%
 
 # germany map
 germany_risk_map <- germany_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+  xlim(550000, 1450000) + # the boundaries in UTM
+  ylim(5300000, 6000000) +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1817,7 +1823,7 @@ germany_risk_map <- germany_slf_risk_report[["risk_maps"]][["future_risk_map"]] 
   labs(tag = "F") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.05, 0.9),
+    plot.tag.position = c(0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
@@ -1841,7 +1847,7 @@ italy_risk_map <- italy_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(tag = "H") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.05, 0.9),
+    plot.tag.position = c(0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
@@ -2374,7 +2380,7 @@ canada_risk_map <- canada_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(tag = "B") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(-0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -2400,7 +2406,7 @@ mexico_risk_map <- mexico_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(tag = "D") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(-0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -2805,8 +2811,4 @@ ggsave(
 
 ```
 
-
-
 -->
-
-

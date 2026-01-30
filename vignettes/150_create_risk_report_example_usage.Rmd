@@ -299,11 +299,59 @@ france_shift
 
 ```
 
-Finally, we havea table which calculates the total area for each of the categories in the above map.
+Finally, we have a table which calculates the total area for each of the categories in the above map.
 
 ```{r analyze France report 8}
 
 france_slf_risk_report[["range_shift_table"]]
+
+```
+
+## Example of subsetting reports- Bordeaux region of France
+
+Looking back at the list of important viticultural regions we retrieved above, we can see that France has 70 total results for which we produced a report. It can be helpful to see the overall shift in risk due to climate change at the scale of the country, but you might find it difficult to discern particular regions of interest at this scale. One option you have is to refine the results at the state/provincial scale. To do this, simply set `locality.type = "state_province"` and enter the name of your province of interest into the `locality.name` argument. We will test this for the Bordeaux region of France.
+
+```{r generate a report for France, message = FALSE, results = "hide"}
+
+scari::create_risk_report(
+  locality.iso = "fra", # A3-iso
+  locality.name = "bordeaux", #name
+  locality.type = "state_province", # record type
+  # saving output
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
+  create.dir = FALSE, # not saving so not necessary
+  save.report = FALSE, # dont save, this is an example
+  raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters
+  # aesthetics- dont necessarily need to be specified
+  buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
+  period.present = "1981-2010",
+  period.projected = "2041-2070",
+  model.projected = "GFDL-ESM4",
+  ssp.projected = "ssp_126_370_585",
+  crs = "ESRI:54017"
+)
+
+```
+
+Let's take a look at the number of results now:
+
+```{r analyze Bordeaux report 1}
+
+bordeaux_slf_risk_report[["viticultural_regions_list"]]
+
+```
+
+Now analyze risk plot and table:
+
+```{r analyze Bordeaux report 2}
+
+bordeaux_slf_risk_report[["viticultural_risk_plot"]]
+
+```
+
+```{r analyze Bordeaux report 3}
+
+bordeaux_slf_risk_report[["viticultural_risk_table"]]
 
 ```
 
