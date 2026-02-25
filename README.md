@@ -52,14 +52,14 @@ This GitHub project is organized into two groups of vignettes: those which gener
 
 Reports can be generated using vignettes 150-152, which contain example usage of our function [create_risk_report()](vignettes/150_create_risk_report.Rmd) (150) to create reports for global countries and states/provinces (151), and for the USA specifically (152).
 
-For a guide to our full modeling pipeline, please see this sitemap:
+For a guide to using our full modeling pipeline, please see this sitemap and the [Analyses](docs/articles/articles_index.html) tab:
 
-* vignette 010: Initialize `scari` and usage of `renv` package for dependencies
-* 020-030:      1. Retrieve and tidy input data for MaxEnt
-* 040-090:      2. SDM modeling pipeline: train global and 3 regional-scale models
-* 100-110:      3. Ensemble Regional-scale SDMs
-* 120-130, 160: 4. Quantify SLF risk
-* 140-142:      5. Quantify Model fit
+* Step 1: Initialize `scari` and dependencies      vignette 010
+* Step 2: Retrieve and tidy input data for MaxEnt  vignettes 020-030
+* Step 3: Execute SDM modeling pipeline            vignettes 040-090
+* Step 4: Ensemble regional-scale SDMs             vignettes 100-110
+* Step 5: Quantify SLF risk                        vignettes 120-130, 160
+* Step 6: Validate model fit                       vignettes 140-142
 
 ## How to Use this Project
 
