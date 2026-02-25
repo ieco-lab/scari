@@ -54,12 +54,12 @@ Reports can be generated using vignettes 150-152, which contain example usage of
 
 For a guide to using our full modeling pipeline, please see this sitemap and the [Analyses](docs/articles/articles_index.html) tab:
 
-* Step 1: Initialize `scari` and dependencies      vignette 010
-* Step 2: Retrieve and tidy input data for MaxEnt  vignettes 020-030
-* Step 3: Execute SDM modeling pipeline            vignettes 040-090
-* Step 4: Ensemble regional-scale SDMs             vignettes 100-110
-* Step 5: Quantify SLF risk                        vignettes 120-130, 160
-* Step 6: Validate model fit                       vignettes 140-142
+* Step 1: Initialize `scari` and dependencies       | vignette 010
+* Step 2: Retrieve and tidy input data for MaxEnt   | vignettes 020-030
+* Step 3: Execute SDM modeling pipeline             | vignettes 040-090
+* Step 4: Ensemble regional-scale SDMs              | vignettes 100-110
+* Step 5: Quantify SLF risk                         | vignettes 120-130, 160
+* Step 6: Validate model fit                        | vignettes 140-142
 
 ## How to Use this Project
 
