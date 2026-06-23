@@ -1,9 +1,9 @@
 ---
-title: "Initialization of renv package for dependencies"
+title: "Initialization of package and deoendencies"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-04"
+date: "2026-06-23"
 ---
 
 In this file, I will list the dependency packages for scari and initialize the `renv` package to keep my other package versions consistent. End users should only run sections 1 and 2. Section 3 is for troubleshooting common issues. Section 4 should only be used for the first-time initialization of the package.
@@ -35,11 +35,13 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ```
 
-# create necessary folders
+# Required Package Initialization
+
+## 1. create necessary folders
 
 I will create the folders where the outputs of this package will be saved. Note that a set of these folders will be 1 level above the root folder for the package (so it will go on your file system in the same folder as this package).
 
-```{r necessary folders, message = FALSE, warning = FALSE}
+```{r necessary folders, eval = TRUE, message = FALSE, warning = FALSE}
 
 # data folder
 dir.create(file.path(here::here(), "data"))
@@ -66,7 +68,7 @@ dir.create(file.path(here::here() %>% dirname(), "maxent", "future_climate_raste
 
 ```
 
-# Get package dependencies
+## 2. Get package dependencies
 
 Run this chunk to see the dependencies for the scari package.
 
@@ -80,12 +82,30 @@ packages <- renv::dependencies() %>%
 
 ```
 
-# one-time renv initialization
+## 3. Set GitHub Credentials
+
+Run this chunk to set a GitHub PAT (Personal Access Token) in your R session, allowing R to communicate with GitHub for downloads. You will need to manually generate your own PAT- see link for details: 
+
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens 
+
+```{r set gitcreds PAT, eval = TRUE}
+
+# you may need to enter your github credentials into the .Renviron or log into github for this to work:
+usethis::edit_r_environ()
+# then, create a github PAT on website. 
+usethis::create_github_token()
+# enter created PAT (personal access token) into the .Renviron
+## be sure to use defaults and allow download and upload of packages
+gitcreds::gitcreds_set()
+
+```
+
+## 4. one-time renv initialization
 
 I created this section to initialize the renv package for the first time ONLY.
 Prior to running this chunk, you should build and install the scari package internally.
 
-```{r one-time initialization}
+```{r one-time initialization, eval = TRUE}
 
 # ensure that developer packages are installed prior to activation
 remotes::install_github("ieco-lab/lydemapr", build_vignettes = FALSE)
@@ -103,10 +123,11 @@ renv::init(project = file.path(here::here()))
 # check status
 renv::status()
 
-# you may need to call this if the dependencies are used and installed, but not recorded
-renv::snapshot()
-
 ```
+
+# Troubleshooting
+
+## Ensure R can find Git
 
 If the above installation does not work, you may first need to have git installed, found here: https://git-scm.com/downloads. Then, open the windows command prompt and run the following code to ensure that R can find git. "git --version" should return the version of git installed on your computer. If it does not, you may need to adjust the system environmental variables by adding system environmental variables. Click on system variables > path and add the following paths:
 
@@ -123,12 +144,15 @@ Sys.setenv(PATH = paste("C:/Program Files/Git/cmd", Sys.getenv("PATH"), sep = ";
 
 ```
 
-# Retrieve correct dependencies for scari
+## Retrieve correct dependencies for scari
 
 ```{r check status}
 
 # first, check the status of your current package versions vs those in renv
 renv::status()
+
+# you may need to call this if the dependencies are used and installed, but not recorded
+renv::snapshot()
 
 ```
 
@@ -140,9 +164,6 @@ renv::restore()
 renv::restore(clean = TRUE)
 
 ```
-
-
-# Troubleshooting
 
 The first thing you should try is updating your R and Rtools versions. This messed up my renv for quite awhile.
 
@@ -164,14 +185,6 @@ renv::status()
 renv::hydrate()
 
 # install specific packages (usually needed for packages not on the CRAN)
-# you may need to enter your github credentials into the .Renviron or log into github for this to work:
-usethis::edit_r_environ()
-# then, create a github PAT on website. 
-usethis::create_github_token()
-# enter created PAT (personal access token) into the .Renviron
-## be sure to use defaults and allow download and upload of packages
-gitcreds::gitcreds_set()
-# now install packages not on the CRAN
 devtools::install_github("densitymodelling/dsmextra") # dsmextra
 devtools::install_github("ieco-lab/lydemapr") # lydemapr
 devtools::install_github("ropensci/rnaturalearthhires")# rnaturalearthhires
@@ -203,7 +216,7 @@ renv::snapshot()
 
 ```
 
-# remove renv
+## remove renv
 
 As needed, you may need to completely remove renv and restart from a fresh install.
 

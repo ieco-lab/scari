@@ -3,7 +3,7 @@ title: "SLF occurrence records: GBIF, lydemapR, literature"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-04"
+date: "2026-06-23"
 ---
 
 # Overview
@@ -215,8 +215,6 @@ I will also perform a few operations specific to rgbif. I will need to enter my 
 
 Save and close the document.
 
-I will also retrieve a list of country abbreviations to tailor the download. I will be excluding countries in North America (USA, Mexico, Canada) and Taiwan. Lin and Liao did a comprehensive survey for SLF in Taiwan to validate SLF presence records in online repositories and found that these records were likely false (Lin and Liao, 2024).
-
 ```{r other rgbif operations}
 
 # edit R environment for user credentials
@@ -240,8 +238,13 @@ Next, retrieve `GBIF` records using `occ_download()`. I will be editing the foll
 -   hasGeospatialIssue: exclude any records with an issue in the coordinate data
 -   country: the country of the record
 
+For the countries, we will reference the GBIF repo for SLF above, looking specifically at the available data tables and including  countries hosting known populations. I list the counties inclusively, but I will intentionally leave out countries in which no known populations exist. For example, Mexico and Canada were excluded on the basis of expert opinion on the location of the suspected locations in GBIF. Taiwan was also excluded based on a paper by Lin and Liao- this paper performed a comprehensive survey for SLF in Taiwan to validate SLF presence records in online repositories and found that these records were likely false (Lin and Liao, 2024). Finally, I also also compared the map of points available from both GBIF and iNaturalist. GBIF contains most iNaturalist points, excluding a few protected under certain licenses which are not publicly available. 
+
 ```{r retrieve SLF records from GBIF}
   
+ # countries: include China, Japan, South Korea, North Korea, India, Vietnam, Bangladesh, USA
+countries_iso <- c("CN", "JP", "KR", "KP", "IN", "VN", "BN", "US")
+
 # initiate download
 slf_gbif <- rgbif::occ_download(
   # general formatting
@@ -252,17 +255,16 @@ slf_gbif <- rgbif::occ_download(
   pred("hasCoordinate", TRUE),
   pred("hasGeospatialIssue", FALSE),
   pred("occurrenceStatus", "PRESENT"),
+  pred_in("country", countries_iso),
   pred_gte("year", 1981), # records from 1981 onwards
   # exclusion rules
-  pred_not(pred_in("basisOfRecord", "FOSSIL_SPECIMEN")), # exclude fossil records
-  pred_not(pred_in("country", c("US", "MX", "CA"))), # exclude USA, Canada and mexico
-  pred_not(pred_in("country", c("TW"))) # exclude Taiwan
+  pred_not(pred("basisOfRecord", "FOSSIL_SPECIMEN")) # exclude fossil records
 )
 
 # be sure to open slf_gbif and retrieve the download key
 
 # check on download status using key
-rgbif::occ_download_wait('0103080-250525065834625')
+rgbif::occ_download_wait('')
 
 ```
 
@@ -450,7 +452,7 @@ write_csv(x = slf_lyde,
 
 ```
 
-The next chunk is an import from an unpublished version of the lydemapr dataset. This version will be published on the package soon, but for now we will use this . This file was named "slf_lyde_raw_coords_2024-07-29.csv" for consistency with previous file naming. It contains about 900,000 published SLF records and includes the years 2022 and 2023.
+The next chunk was an import from an unpublished version of the lydemapr dataset. This chunk is not being used as of scari 1.0.0
 
 ```{r load in and tidy unpublished version of lydemapr dataset}
 

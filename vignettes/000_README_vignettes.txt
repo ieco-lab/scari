@@ -18,7 +18,7 @@ Old versions of these vignettes are stored in scari/scari_sandbox (scari in this
 
 ## About
 
-Initializes renv, saves data objects for internal use
+Initializes renv, saves data objects for internal use, creates file paths, includes troubleshooting notes.
 
 ## Changelog
 
@@ -26,6 +26,7 @@ v0- initial version
 v1- 2024-08-26
 v2- 2024-10-16- changed to .Rmd, fixed renv errors with project
 v3- 2025-07-04- added some descriptions to file
+v4- 2026-06-23- fixed some bugs, emphasized gitcreds set
 
 
 
@@ -60,6 +61,7 @@ v3- 2024-07-29- rework methods and data update- using new GBIF and lydeMapR data
 v4- 2024-08-05- swapped workflow from scrubr (deprecated) to coordinateCleaner R package, removed Taiwan records based on new paper pre-print
 v5- 2025-02-08- retired use of Humboldt and spThin packages. Replaced usage with GeoThinneR package. Changed spatial thinning method to thin using the bioclimatic grid cells rather than simple pairwise distances. Switched order in workflow to 030
 v6- 2025-07-04- reran file with new datasets, transformed final dataset into Behrmann projection
+v7- 2026-06-23- reran file with new datasets, used input directly from LydemapR package, rather than tinyslf csv upload (previous version from Joe Keller, July 7, 2025)
 
 
 
