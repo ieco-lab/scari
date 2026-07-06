@@ -3,7 +3,7 @@ title: "Setup for regional-scale MaxEnt models"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-14"
+date: "2026-07-07"
 ---
 
 # Overview
@@ -394,7 +394,7 @@ terra::writeVector(
 
 koeppen_zones_rast <- terra::rast(x = file.path(mypath, "models", "working_dir", "koeppen_climate_zones.asc")) 
 
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species) 
 
 ```
@@ -685,7 +685,7 @@ I need to find a way to clip the climate zones by native vs invaded region, beca
 
 koeppen_zones_rast <- terra::rast(x = file.path(mypath, "models", "working_dir", "koeppen_climate_zones.asc")) 
 
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species) 
 
 ```
@@ -953,7 +953,7 @@ I will import the SLF presences and KG shapefile first.
 ```{r import datasets- Rn}
 
 # slf presences
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species) 
 
 # load in KG shapefile 
@@ -1215,7 +1215,7 @@ global_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_global.asc
 regional_invaded_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_KG.asc")) 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1316,7 +1316,7 @@ Now, I will repeat this process for the next two models.
 invaded_asian_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_asian_KG.asc")) 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1402,7 +1402,7 @@ terra::ext(regional_native_bio2)
 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1497,7 +1497,7 @@ mypath <- file.path(here::here() %>%
 # background raster for plotting will be same as in last section
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) 
 
 ```

@@ -123,6 +123,7 @@ v5- added table indicating number of training points per model, added plot facet
 v6- 2024-08-02- rework- updated SLF presence data and inclusion of other SSP scenarios
 v7- 2024-10-09- cleaned and simplified workflow
 v8- 2025-07-14- rerun for new versions of models using Behrmann projection
+v9- 2026-07-06- rerun for new versions of models (v9 invaded, v4 invaded asian, v5 native) using new data for 2025-2026
 
 
 ----------070_run_regional_invaded_MaxEnt_model.Rmd----------

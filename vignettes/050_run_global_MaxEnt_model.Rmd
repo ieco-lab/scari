@@ -347,7 +347,7 @@ hypers <- list(
 
 ```{r tune based on test AUC}
   
-if (TRUE) {
+if (FALSE) {
 
   # Train a model with all possible combinations of hyperparameters
   global_model_tuned_auc <- SDMtune::gridSearch(
@@ -369,7 +369,7 @@ if (TRUE) {
 
 ```
 
-Based on the test AUC metric, the highest value was attributed to two models: model 11 with regularization multiplier of 1.5 and qpht features, and model 7 with a reg multiplier of 1 and only hinge features. Model 11 was chosen more frequently across previous model versions, so I will choose this model for the next step of tuning. I will also use this model as the base model for all future models performed for SLF at the regional scale. Lets also check the TSS to be sure.
+Based on the test AUC metric, the highest value was attributed to model 13, with a regularization multiplier of 1.5 and only hinge (h) features. Model 13 was chosen more frequently across previous model versions, so I will choose this model for the next step of tuning. I will also use this model as the base model for all future models performed for SLF at the regional scale. Lets also check the TSS to be sure.
 
 ```{r tune based on test TSS}
   
@@ -401,7 +401,7 @@ We will need to choose either model 11 or model 2. Since the difference in test 
 
 ```{r select optimal model}
 
-global_model <- global_model_tuned_auc@models[[11]]
+global_model <- global_model_tuned_auc@models[[13]]
 
 ```
 
