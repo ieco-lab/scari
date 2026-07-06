@@ -76,6 +76,7 @@ Preparations for running the global-scale model, including cropping rasters, cho
 v0- initial version
 v1- 2024-07-31- rework- updated SLF presence data and inclusion of other SSP scenarios- added cropping of other ssp scenario rasters
 v2- 2025-07-07- rerun for v4 of model, transformed final dataset into Behrmann projection
+v3- 2026-07-06- rerun for v5 of the model- contains new SLF data
 
 ----------050_run_global_MaxEnt_model.Rmd----------
 
@@ -90,6 +91,7 @@ v1- in sandbox/vignettes_old. creates v1 of the global model
 v2- creates v2 of the global model- changed procedure for global model cross-validation from k-fold random selection to k-fold blocked selection (multiple papers said this was more rigorous)- added blockCV package usage- LATER: reverted to k-fold random CV because blocked CV did not work- creates
 v3- 2024-07-31- rework- updated SLF presence data and inclusion of other SSP scenarios- creates v3 of the global model, fixed some methods for cross validation of model, added other SSP scenario predictions for model
 v4- 2025-07-07- rerun for v4 of model, transformed final dataset into Behrmann projection
+v5- 2026-07-06- rerun for v5 of the model- contains new SLF data
 
 
 ----------051_compute_MaxEnt_summary_statistics_workflow.Rmd----------

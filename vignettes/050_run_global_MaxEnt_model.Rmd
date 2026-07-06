@@ -3,7 +3,7 @@ title: "Run global-scale MaxEnt model"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-07"
+date: "2026-07-06"
 ---
 
 # Overview
@@ -16,7 +16,7 @@ This vignette has 3 subvignettes (051-053) that each outline and comment the bas
 
 # Setup
 
-*CURRENT MODEL VERSION: v4*
+*CURRENT MODEL VERSION: v5*
 
 ```{r load necesssary packages, message = FALSE}
 
@@ -86,11 +86,11 @@ First, I will load in the SLF presence dataset created in vignette 020 and the b
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+p_slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) 
 
 # entire eastern USA background point set
-a_global_background_points <- readr::read_rds(file = file.path(here::here(), "data", "global_background_points_v4.rds")) 
+a_global_background_points <- readr::read_rds(file = file.path(here::here(), "data", "global_background_points_v5.rds")) 
 
 ```
 
@@ -246,8 +246,8 @@ I usually look at how many records were dropped before I save it, because SDMtun
 ```{r save SWD file}
 
 SDMtune::swd2csv(swd = global_SWD, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "global_slf_presences_with_data_v4.csv"),
-  file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_with_data_v4.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "global_slf_presences_with_data_v5.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_with_data_v5.csv")
   ))
 
 ```
@@ -347,7 +347,7 @@ hypers <- list(
 
 ```{r tune based on test AUC}
   
-if (FALSE) {
+if (TRUE) {
 
   # Train a model with all possible combinations of hyperparameters
   global_model_tuned_auc <- SDMtune::gridSearch(
@@ -414,7 +414,7 @@ I will apply my function `compute_MaxEnt_summary_statistics_CV()` to produce all
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_global_v4")
+                     "maxent/models/slf_global_v5")
 
 scari::compute_MaxEnt_summary_statistics_CV(
   model.obj = global_model, 
@@ -453,7 +453,7 @@ readr::write_rds(global_model_tuned_tss, file = file.path(mypath, "global_model_
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_global_v4")
+                     "maxent/models/slf_global_v5")
 
 ```
 
@@ -555,10 +555,10 @@ Later in my analysis, I will use these point-wise suitability predictions to cre
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_global_v4")
+                     "maxent/models/slf_global_v5")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -634,7 +634,7 @@ I will perform the same action as above, but for the locations of over 1,000 imp
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_global_v4")
+                     "maxent/models/slf_global_v5")
 
 # load in all IVR points
 IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
@@ -718,7 +718,7 @@ In the next vignette, I will set up for training each of the 3 regional models.
 
 summary_global <- read_csv(file.path(mypath, "global_summary_all_iterations.csv"))
 
-readr::write_rds(summary_global, file = file.path(here::here(), "data", "global_summary_all_iterations_v4.rds"))
+readr::write_rds(summary_global, file = file.path(here::here(), "data", "global_summary_all_iterations_v5.rds"))
 
 ```
 
@@ -802,14 +802,14 @@ I attempted this method because of the body of literature that says blocked cros
 
 #presences
 global_presences_with_data <- read_csv(
-  file.path(here::here(), "vignette-outputs", "data-tables", "global_slf_presences_with_data_v4.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "global_slf_presences_with_data_v5.csv")
   ) %>%
   # add presence/absence column
   mutate(pa = 1)
 
 # background points
 global_background_with_data <-  read_csv(
-  file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_with_data_v4.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_with_data_v5.csv")
   ) %>%
   mutate(pa = 0)
 

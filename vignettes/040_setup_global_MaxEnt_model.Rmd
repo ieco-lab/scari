@@ -3,7 +3,7 @@ title: "Setup for global-scale MaxEnt model"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-07"
+date: "2026-07-06"
 ---
 
 # Overview
@@ -125,7 +125,7 @@ First, I will load in known SLF presences so that background sampling does not o
 ```{r load in SLF presence, eval = TRUE}
 
 # dismo requires the base function (not tidyverse)
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -168,9 +168,9 @@ global_points <- dismo::randomPoints(
   as.data.frame(.)
 
 # save as csv
-write_csv(x = global_points, file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v4.csv"))
+write_csv(x = global_points, file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v5.csv"))
 # save as rds file
-write_rds(global_points, file = file.path(here::here(), "data", "global_background_points_v4.rds"))
+write_rds(global_points, file = file.path(here::here(), "data", "global_background_points_v5.rds"))
   
   
 ```
@@ -187,7 +187,7 @@ mypath <- file.path(here::here() %>%
 global_bio2_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_global.asc")) %>%
   terra::as.data.frame(., xy = TRUE)
 # points
-global_points <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v4.csv"))
+global_points <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v5.csv"))
 
 ```
 
@@ -208,7 +208,7 @@ global_background_plot
 
 ggplot2::ggsave(
   global_background_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_background_points_v4.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_background_points_v5.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -238,7 +238,7 @@ global_slf_plot
 
 ggsave(
   global_slf_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_presence_points_v4.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_presence_points_v5.jpg"),
   height = 8, 
   width = 12,
   device = jpeg,
@@ -310,7 +310,7 @@ global_patchwork <- (global_slf_plot / global_background_plot) +
 
 ggsave(
   global_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_v4_summary.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_v5_summary.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
