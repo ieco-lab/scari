@@ -369,7 +369,7 @@ if (FALSE) {
 
 ```
 
-Based on the test AUC metric, the highest value was attributed to model 13, with a regularization multiplier of 1.5 and only hinge (h) features. Model 13 was chosen more frequently across previous model versions, so I will choose this model for the next step of tuning. I will also use this model as the base model for all future models performed for SLF at the regional scale. Lets also check the TSS to be sure.
+Based on the test AUC metric, the highest value was attributed to model 13, with a regularization multiplier of 2 and only hinge (h) features. Lets also check the TSS to be sure.
 
 ```{r tune based on test TSS}
   
@@ -395,13 +395,15 @@ if (FALSE) {
 
 ```
 
-We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 0.25 and qpht features (model 2).
+We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 2.0 and qpht features (model 14). The best fit models both have a regularization multiplier of 2.0 features, but we have to pick from qpht or only h features. Initially, I chose model 13; however, upon inspecting the output, there were no areas on the planet considered "unsuitable". All areas were over the MTP threshold, which is the most conservative threshold with respect to invasive species (see 3.1 below for more detail). This means that the model was underfit (too general), likely due to the regularization multiplier. When the regularization multiplier is too high, the result is an over generalized model, which fits with an overly broad predicted area of suitability.
 
-We will need to choose either model 11 or model 2. Since the difference in test and training TSS are incredibly small between both models (0.001), I will choose model 11 because this model has been consistently more fit across model versions. These tuned parameters will also be applied to all future models performed for SLF at the regional scale.
+Previous iterations of this model had a regularization multiplier of 1.5 and qpht features, which produced more reasonable predictions. I will reflex to that result and use model 11 (the previous iteration), with a reg multiplier of 1.5 and qpht features.
+
+I will also use these model settings for the three models performed for SLF at the regional scale.
 
 ```{r select optimal model}
 
-global_model <- global_model_tuned_auc@models[[13]]
+global_model <- global_model_tuned_auc@models[[11]] # reg multiplier = 1.5, qpht features
 
 ```
 
@@ -545,6 +547,8 @@ scari::create_MaxEnt_suitability_maps_CV(
 
 ```
 
+Upon inspecting the suitability maps, this model (11) still predicts MTP suitable area in the northern reaches (generally, nearly all of N America, Europe and Asia). This is not ideal, so I again lowered the regularization multiplier to 1; this made no noticeable changes in the suitable area. I will keep the regularization multiplier at 1.5 and qpht features for this model, despite the overly broad suitable area in the Northern continents, keeping in mind that MTP is the absolute minimum threshold, and that suitable areas based on MTSS (a much more rigorous threshold) did not change much between the two models. Our framework will base suitability on MTSS (not MTP), so this should not affect our end results.
+
 ## 3.2 Predict suitability for known SLF presences
 
 I will get projected suitability values, calculated on the cloglog scale (between 0 and 1) for each of the known SLF populations I used as input data for my models. These suitability values will be added back to the original data frame and saved. The workflow for this application will use my function `predict_xy_suitability_CV()`. This function extracts covariate data from each data point and then uses the model object to predict the suitability for SLF establishment at that location based on the climate variables. This function has two modes for predicting the suitability: simple and buffered. I will use simple (the suitability at that exact point) for the location of SLF populations.
@@ -626,7 +630,7 @@ scari::predict_xy_suitability_CV(
 
 ```
 
-## 3.3 Predict suibability for IVR regions
+## 3.3 Predict suitability for IVR regions
 
 I will perform the same action as above, but for the locations of over 1,000 important wineries around the world. I will use the buffered method of predicting suitability for this application. The buffered method creates a buffer zone around the point and considers all values within that buffer for predicting suitability. This is important because these points represent regions that are important to viticulture and are not exact geospatial coordinates, but are likely mapped to the centroid of areas with vast expanses of vineyards. So, using a buffer zone accounts for this lack of exact coordinates. I will take this maximum value from this buffer, but the mean, minimum and others can be used as well. I will use a buffer radial distance of 20,000m (the default, 20km) because the resolution of the predictions is at 10km, so this distance considers the two surrounding cells on any side.
 

@@ -14,18 +14,20 @@ The goal of this analysis is to train four models: a global model, a native rang
 
 In this vignette, I will set up to run the global model and project it for climate change. I will need to format the data in this vignette, will be trained and tested on all available climate data that is split into 10 random folds. In the next vignette I will run this model, and in the following vignette I will set up for the three regional models.
 
+*CURRENT MODEL VERSION: v5*
+
 ```{r model_info table, echo = FALSE}
 
 model_info <- data.frame(
   "train_test_method" = "10-fold random cross validation, 80% train / 20% test",
-  "train_presences" = "1026",
-  "test_presences" = "256",
+  "train_presences" = "1,513",
+  "test_presences" = "378",
   "background_points" = "20,000"
 )
 
 model_info_kable <- knitr::kable(x = model_info) |>
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE) |>
-  kableExtra::add_header_above(header = c("Global-scale model" = 4))
+  kableExtra::add_header_above(header = c("Global-scale model (version 5)" = 4))
 
 model_info_kable
   

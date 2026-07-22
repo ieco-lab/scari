@@ -28,9 +28,9 @@ Here is a table summarizing the model structures:
 
 model_info <- data.frame(
   "model" = c(
-    "Rn",
-    "Ri.NAmerica",
-    "Ri.Asia"
+    "Native (Rn)",
+    "Invaded N America (Ri.NAmerica)",
+    "Invaded Asian (Ri.Asia)"
     ),
   "train_region" = c(
     "east Asia native region",
@@ -64,6 +64,11 @@ model_info_kable <- knitr::kable(x = model_info) |>
   kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ```
+
+*CURRENT MODEL VERSIONS:* 
+* North American Invaded v9
+* Asian Invaded v4
+* Native v5
 
 # Setup
 
@@ -852,7 +857,7 @@ for(a in seq_along(env.files)){
     x = rast.hold, 
     filename = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km", output.files[a]), 
     filetype = "AAIGrid", 
-    overwrite = FALSE
+    overwrite = TRUE
     )
   
   # remove object once its done
@@ -901,7 +906,7 @@ rm(ext.obj.crop)
 
 ```
 
-Looks good!
+The coastal edges are a bit rough, but otherwise looks good!
 
 ## 2.3 Native region in Southeast Asia (Rn model)
 
@@ -1241,12 +1246,12 @@ regional_invaded_background <- dismo::randomPoints(
 # save as csv
 write_csv(
   x = regional_invaded_background, 
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv")
   )
 # save as rds file
 write_rds(
   regional_invaded_background, 
-  file = file.path(here::here(), "data", "regional_invaded_background_points_v8.rds")
+  file = file.path(here::here(), "data", "regional_invaded_background_points_v9.rds")
 )
 
 
@@ -1262,7 +1267,7 @@ regional_invaded_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_
   terra::as.data.frame(., xy = TRUE)
   
 # re-read background points 
-regional_invaded_background <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv")) 
+regional_invaded_background <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv")) 
 
 ```
 
@@ -1297,7 +1302,7 @@ We can see that the background points are isolated to the area selected using th
 
 ggsave(
   regional_invaded_background_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_background_points_v8.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_background_points_v9.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1338,9 +1343,9 @@ regional_invaded_asian_points <- dismo::randomPoints(
   as.data.frame(.)
 
 # save as csv
-write_csv(x = regional_invaded_asian_points, file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv"))
+write_csv(x = regional_invaded_asian_points, file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v4.csv"))
 # save as rds file
-write_rds(regional_invaded_asian_points, file = file.path(here::here(), "data", "regional_invaded_asian_background_points_v3.rds"))
+write_rds(regional_invaded_asian_points, file = file.path(here::here(), "data", "regional_invaded_asian_background_points_v4.rds"))
 
 
 ```
@@ -1354,7 +1359,7 @@ invaded_asian_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_reg
   terra::as.data.frame(., xy = TRUE)
 
 # bg points
-regional_invaded_asian_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv")) 
+regional_invaded_asian_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v4.csv")) 
 
 ```
 
@@ -1380,7 +1385,7 @@ regional_invaded_asian_points_plot
 
 ggsave(
   regional_invaded_asian_points_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_model_background_points_v3.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_model_background_points_v4.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1425,11 +1430,11 @@ regional_native_points <- dismo::randomPoints(
 
 # save as csv
 write_csv(x = regional_native_points, 
-          file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv")
+          file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v5.csv")
           )
 # save as rds file
 write_rds(regional_native_points, 
-          file = file.path(here::here(), "data", "regional_native_background_points_v4.rds")
+          file = file.path(here::here(), "data", "regional_native_background_points_v5.rds")
 )
   
   
@@ -1441,7 +1446,7 @@ regional_native_bio2_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_reg
   terra::as.data.frame(., xy = TRUE)
 
 
-regional_native_points <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv")) 
+regional_native_points <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v5.csv")) 
 
 ```
 
@@ -1471,7 +1476,7 @@ regional_native_points_plot
 
 ggsave(
   regional_native_points_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_model_background_points_v4.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_model_background_points_v5.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1504,7 +1509,7 @@ slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_fi
 
 ## 4.1 Invaded region of North America (Ri.NAmerica model)
 
-I will convert the SLF points dataset to a spatial vector object so that it can be filtered using a bounding box, then transform it back to a dataframe.
+I will convert the SLF points dataset to a spatial vector object so that it can be filtered using a bounding box, then transform it back to a data frame.
 
 ```{r filter presences from Ri.NAmerica range}
 
@@ -1531,7 +1536,7 @@ rm(slf_points_vect)
 
 write_csv(
   x = slf_points_invaded,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v8.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv")
 )
 
 ```
@@ -1545,7 +1550,7 @@ regional_invaded_df <- terra::rast(x = file.path(mypath, "historical_climate_ras
   terra::as.data.frame(., xy = TRUE)
 
 # re-import point data
-slf_points_invaded <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v8.csv")) 
+slf_points_invaded <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv")) 
 
 # plot
 regional_invaded_slf_plot <- ggplot() +
@@ -1572,7 +1577,7 @@ regional_invaded_slf_plot
 
 ggsave(
   regional_invaded_slf_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_train_slf_presences_v8.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_train_slf_presences_v9.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1609,7 +1614,7 @@ rm(slf_points_masked)
 
 write_csv(
   x = slf_points_invaded_asian,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v3.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v4.csv")
 )
 
 ```
@@ -1622,7 +1627,7 @@ invaded_asian_df <- terra::rast(
   terra::as.data.frame(., xy = TRUE)
 
 # re-import point data
-slf_points_invaded_asian <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v3.csv")) 
+slf_points_invaded_asian <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v4.csv")) 
 
 # plot
 regional_invaded_asian_slf_plot <- ggplot() +
@@ -1645,7 +1650,7 @@ regional_invaded_asian_slf_plot
 
 ggsave(
   regional_invaded_asian_slf_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_train_slf_presences_v3.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_train_slf_presences_v4.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1682,7 +1687,7 @@ rm(mask_layer)
 
 write_csv(
   x = slf_points_native,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v4.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v5.csv")
 )
 
 ```
@@ -1696,7 +1701,7 @@ regional_native_df <- terra::rast(
   terra::as.data.frame(., xy = TRUE)
 
 # re-import point data
-slf_points_native <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v4.csv"))
+slf_points_native <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v5.csv"))
 
 
 # plot
@@ -1724,7 +1729,7 @@ regional_native_slf_plot
 
 ggsave(
   regional_native_slf_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_train_slf_presences_v4.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_train_slf_presences_v5.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1742,19 +1747,25 @@ The training and test points should be geographically separated, but this create
 ```{r select test points for Ri.NAmerica model}
 
 # this model is trained on N American presences and tested on invaded asian presences
-# select 20% of training total (150 points) 
+# select 20% of training total using round(nrow(slf_points_invaded) * 0.2) 
 
 set.seed(8)
 
 # randomly select subset of rows for testing
-slf_points_invaded_test_rows <-  sample(nrow(slf_points_invaded_asian), size = 150, replace = FALSE) # no replacement
+# size is 20% the length of the training dataset
+
+# slf_points_invaded_test_rows <-  sample(nrow(slf_points_invaded_asian), size = round(nrow(slf_points_invaded) * 0.2), replace = FALSE) 
 # filter
-slf_points_invaded_test <- slf_points_invaded_asian[slf_points_invaded_test_rows, ]
+# slf_points_invaded_test <- slf_points_invaded_asian[slf_points_invaded_test_rows, ]
+
+# initially, I used the above code to select 20% of the training dataset, but 20% of the training dataset was more than the entire test dataset and replacements would have been needed. So, I will just select the entire test dataset instead.
+
+slf_points_invaded_test <- slf_points_invaded_asian
 
 # write to csv
 write_csv(
   x = slf_points_invaded_test,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v8.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv")
 )
 
 
@@ -1763,19 +1774,19 @@ write_csv(
 ```{r select test points for Ri.Asia model}
 
 # this model is trained on invaded asian presences and tested on invaded N American presences
-# select 20% of training total (43 points) 
+# select 20% of training total 
 
 set.seed(9)
 
-# randomly select subset of rows for testing
-slf_points_invaded_asian_test_rows <-  sample(nrow(slf_points_invaded), size = 43, replace = FALSE) # no replacement
+# randomly select subset of rows for testing, without replacement
+slf_points_invaded_asian_test_rows <-  sample(nrow(slf_points_invaded), size = round(nrow(slf_points_invaded_asian) * 0.2), replace = FALSE)
 # filter
 slf_points_invaded_asian_test <- slf_points_invaded[slf_points_invaded_asian_test_rows, ]
 
 # write to csv
 write_csv(
   x = slf_points_invaded_asian_test,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v4.csv")
 )
 
 
@@ -1784,19 +1795,19 @@ write_csv(
 ```{r select test points for Rn model}
 
 # this model is trained on Asian native presences and tested on invaded N. American presences
-# select 20% of training total (64 points) 
+# select 20% of training total
 
 set.seed(10)
 
-# randomly select subset of rows for testing
-slf_points_native_test_rows <-  sample(nrow(slf_points_invaded), size = 64, replace = FALSE) # no replacement
+# randomly select subset of rows for testing, without replacement
+slf_points_native_test_rows <-  sample(nrow(slf_points_invaded), size = round(nrow(slf_points_native) * 0.2), replace = FALSE) 
 # filter
 slf_points_native_test <- slf_points_invaded[slf_points_native_test_rows, ]
 
 # write to csv
 write_csv(
   x = slf_points_native_test,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v5.csv")
 )
 
 
@@ -1853,7 +1864,7 @@ These chunks will splice together the plots from above as summary plots.
 
 # validation dataset
 slf_points_invaded_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v8.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv")
   )
 # raster for the validation plot
 invaded_asian_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_regional_invaded_asian_KG.asc")) %>%
@@ -1977,7 +1988,7 @@ regional_invaded_patchwork <- (
 
 ggsave(
   regional_invaded_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_v8_summary.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_v9_summary.jpg"),
   height = 10, 
   width = 14,
   device = jpeg,
@@ -1992,7 +2003,7 @@ ggsave(
 
 # validation dataset
 slf_points_invaded_asian_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v4.csv")
   )
 
 # load in raster for validation plot
@@ -2123,7 +2134,7 @@ regional_invaded_asian_patchwork <- (
 
 ggsave(
   regional_invaded_asian_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_model_v3_summary.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_asian_model_v4_summary.jpg"),
   height = 10, 
   width = 12,
   device = jpeg,
@@ -2138,7 +2149,7 @@ ggsave(
 
 # validation dataset
 slf_points_native_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v5.csv")
   ) 
 
 # load in raster for validation plot
@@ -2267,7 +2278,7 @@ regional_native_patchwork <- (
 
 ggsave(
   regional_native_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_model_v4_summary.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_native_model_v5_summary.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
