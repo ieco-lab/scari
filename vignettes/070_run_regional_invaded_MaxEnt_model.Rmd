@@ -3,7 +3,7 @@ title: "Run 'Ri.NAmerica' model trained on SLF invaded region in North America"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-07"
+date: "2026-07-23"
 ---
 
 # Overview
@@ -14,7 +14,7 @@ Just to reiterate, I hypothesize that by creating models at multiple spatial sca
 
 # Setup
 
-*CURRENT MODEL VERSION: v8*
+*CURRENT MODEL VERSION: v9*
 
 ```{r load necesssary packages, message = FALSE}
 
@@ -23,6 +23,7 @@ library(tidyverse)  #data manipulation
 library(here) #making directory pathways easier on different instances
 # here() starts at the root folder of this package.
 library(devtools)
+library(knitr)
 
 # SDMtune and dependencies
 library(SDMtune) # main package used to run SDMs
@@ -227,11 +228,11 @@ I need to also load in the SLF presence and background points datasets created i
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 # background points
-a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv"))
+a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv"))
 
 ```
 
@@ -241,7 +242,7 @@ I will need to combine the above covariates, presence and background point datas
 
 ```{r import training points}
 
-p_slf_invaded_train <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v8.csv"))
+p_slf_invaded_train <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv"))
 
 ```
 
@@ -277,8 +278,8 @@ I usually look at how many records were dropped before I save it, because SDMtun
 ```{r save training SWD file}
 
 SDMtune::swd2csv(swd = regional_invaded_train, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_with_data_v8.csv"),
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_with_data_v8.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_with_data_v9.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_with_data_v9.csv")
   ))
 
 ```
@@ -289,7 +290,7 @@ The testing / validation SWD object will be created in the same fashion, except 
 
 ```{r import test points}
 
-p_slf_invaded_test <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v8.csv"))
+p_slf_invaded_test <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv"))
 
 ```
 
@@ -312,7 +313,7 @@ regional_invaded_test@data # extracted data from
 ```{r save testing SWD file}
 
 SDMtune::swd2csv(swd = regional_invaded_test, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_with_data_v8.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_with_data_v9.csv"),
   file.path(here::here(), "vignette-outputs", "data-tables", "NULL.csv")
   ))
 
@@ -323,7 +324,7 @@ file.remove(file.path(here::here(), "vignette-outputs", "data-tables", "NULL.csv
 
 # 2. Train Invaded Regional Model
 
-First, I will train a MaxEnt model. This and the other regional-scale models will NOT be cross-validated. Cross-validation randomly selects a percentage of the presence data for training and testing, without regard for spatial location. This process makes sense for the global model, which is fed ALL presence data. Due to the spatial scale of the regional models, it makes more sense to spatially separate the training and testing data if given the opportunity.
+First, I will train a MaxEnt model. This and the other regional-scale models will NOT be cross-validated. Cross-validation randomly selects a percentage of the presence data for training and testing, without regard for spatial location. This process makes sense for the global model, which is fed ALL presence data. Due to the spatial scale of the regional models, it makes more sense to spatially separate the training and testing data if given the opportunity (plus this is considered "best practice")
 
 I will use the following list of hyperparameters to train the initial model, which I selected via tuning for the global model.
 
@@ -353,18 +354,88 @@ This function produces all summary statistics for this model. For the complete a
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v8")
+                     "maxent/models/slf_regional_invaded_v9")
 
 scari::compute_MaxEnt_summary_statistics(
   model.obj = regional_invaded_model, 
   model.name = "regional_invaded", 
   mypath = mypath, 
-  create.dir = FALSE, # create subdirectory
+  create.dir = TRUE, # create subdirectory
   env.covar.obj = x_invaded_env_covariates, # env covariates raster stacked
   train.obj = regional_invaded_train, # training data used to create model
   test.obj = regional_invaded_test, # data you wish to use to test the model
   plot.type = c("cloglog", "logistic"), # types of univariate and marginal response curves to be created
   jk.test.type = c("train", "test") # types of jackknife curves to be created
+  )
+
+```
+
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in North America) is the seasonal precipitation seasonality (Bio 15). By itself, it can produce nearly the same AUC as the full model. However, when left out, Bio 11 (minimum winter temperature) has the most negative impact on the overall model (so it is the most explanatory). Meanwhile, for the testing data in the Asian invaded range, Bio 11 is overall the most impactful variable. It produces nearly the same model by itself, while affecting the model most heavily when left out. This aligns with the literature (Lee et al, 2011). The permutation importance plot validates these points.
+
+Here are the jackknife plots:
+```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_jackknife_training.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_jackknife_testing.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around -5°C. The activity of Bio 15 suggests a threshold that trails off from its max at 30% precipitation seasonality. Bio 12 is a narrow peak at around 1500mm precipitation, and Bio 2 generally has activity between 4 and 10.5°C.
+
+Here are the response curves:
+```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# bio 2
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_bio2_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 11
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_bio11_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 12
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_bio12_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 15
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_bio15_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The model itself had a training AUC of 0.976 and a test AUC of 0.455. The test AUC is less than desired (at least 0.5), but we will be averaging this model with the other two regional models downstream. 
+
+Here is the ROC curve:
+```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ROC
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_ROC.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
   )
 
 ```
@@ -381,7 +452,7 @@ I will retrieve the specific value for the MTSS threshold for this model and use
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v8")
+                     "maxent/models/slf_regional_invaded_v9")
 
 ```
 
@@ -401,7 +472,7 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_hist_env_covariates, 
   describe.proj = "globe_1981-2010", # name of area or time period describe.proj to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("MTP", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "MTP",
   summary.file = file.path(mypath, "regional_invaded_summary.csv")
@@ -423,7 +494,7 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_126_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp126", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("MTP", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "MTP",
   summary.file = file.path(mypath, "regional_invaded_summary.csv")
@@ -441,7 +512,7 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_370_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp370", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("MTP", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "MTP",
   summary.file = file.path(mypath, "regional_invaded_summary.csv")
@@ -459,7 +530,7 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_585_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp585", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("MTP", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "MTP",
   summary.file = file.path(mypath, "regional_invaded_summary.csv")
@@ -469,16 +540,70 @@ scari::create_MaxEnt_suitability_maps(
 
 -->
 
+The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. Here are the maps for:
+
+The historical data (1981-2010):
+```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# historical data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_1981-2010.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp126 climate change scenario:
+```{r load suitability maps ssp126, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp126.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp370 climate change scenario:
+```{r load suitability maps ssp370, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp370.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp585 climate change scenario:
+```{r load suitability maps hssp585ist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp585.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
 ## 3.2 Predict suitability for known SLF presences
 
 ```{r data import- slf populations}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v8")
+                     "maxent/models/slf_regional_invaded_v9")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -545,7 +670,7 @@ scari::predict_xy_suitability(
 
 -->
 
-## 3.3 Predict suibability for IVR regions
+## 3.3 Predict suitability for IVR regions
 
 I will perform the same action as above, but for the locations of important wineries around the world.
 
@@ -553,7 +678,7 @@ I will perform the same action as above, but for the locations of important wine
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v8")
+                     "maxent/models/slf_regional_invaded_v9")
 
 # load in all IVR points
 IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))

@@ -3,7 +3,7 @@ title: "Run 'Rn' model trained on SLF native range in east Asia"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-07"
+date: "2026-07-23"
 ---
 
 # Overview
@@ -12,7 +12,7 @@ This vignette trains the last regional-scale model, the Rn model, which is based
 
 # Setup
 
-*CURRENT MODEL VERSION: v4*
+*CURRENT MODEL VERSION: v5*
 
 ```{r load necesssary packages, message = FALSE}
 
@@ -223,21 +223,21 @@ I need to also load in the SLF presence dataset created in vignette 030 and the 
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 # training presences
 p_slf_points_native_train <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v4.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_v5.csv")
   )
 # test presences
 p_slf_points_native_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v5.csv")
   )
 
 # background points
 a_regional_native_background_points <- read.csv(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v5.csv")
   )
 
 ```
@@ -266,8 +266,8 @@ regional_native_train@data # extracted data from
 ```{r save training SWD file}
 
 SDMtune::swd2csv(swd = regional_native_train, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_with_data_v4.csv"),
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_with_data_v4.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_train_slf_presences_with_data_v5.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_with_data_v5.csv")
   ))
 
 ```
@@ -295,7 +295,7 @@ regional_native_test@data # extracted data from
 ```{r save testing SWD file}
 
 SDMtune::swd2csv(swd = regional_native_test, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_with_data_v4.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_with_data_v5.csv"),
   file.path(here::here(), "vignette-outputs", "data-tables", "NULL.csv")
   ))
 
@@ -336,7 +336,7 @@ This function produces all summary statistics for this model. For the complete a
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_native_v4")
+                     "maxent/models/slf_regional_native_v5")
 
 scari::compute_MaxEnt_summary_statistics(
   model.obj = regional_native_model, 
@@ -348,6 +348,78 @@ scari::compute_MaxEnt_summary_statistics(
   test.obj = regional_native_test, # data you wish to use to test the model
   plot.type = c("cloglog", "logistic"), # types of univariate and marginal response curves to be created
   jk.test.type = c("train", "test") # types of jackknife curves to be created
+  )
+
+```
+
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in the naive range) is the minimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model and when it is left out, it has the most impact on the overall model (so it is the most explanatory). The result was the same for the testing data within the North American invaded range, making Bio 11 the most impactful variable overall. This aligns with the literature (Lee et al, 2011). The permutation importance plot validates the importance of Bio 11. Curiously, Bio 11 actually produces a better model on its own than with the other variables.
+
+Here are the jackknife plots:
+```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_jackknife_training.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_jackknife_testing.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around 0°C (a bit higher than the -5°C of the invaded North American range). Bio 12 is a narrow peak at around 800mm precipitation which trails off into a positive tail until about 3000mm, which mostly agreed with the other two models. Bio 2 generally has activity below 12°C.
+
+Here are the response curves:
+```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# bio 2
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_bio2_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 11
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_bio11_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 12
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_bio12_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 15
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_bio15_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+Bio 15 is a bit strange in that it is bimodal, with peak activity from 40-60% and then some at 110%. This suggests that most SLF populations are present at either high or low levels of precipitation seasonality (the quality of being variable in precipitation over the course of a year). This could have to do with the monsoonal effects of the rainy/dry seasons in parts of China. This contrasts the N American invaded model, which has populations exclusively below 30%. This was similar to the invaded east Asian range in Korea/Japan, but the effect was not as strong.
+
+The model itself had a training AUC of 0.91 and a test AUC of 0.988. The test AUC is higher than the training AUC, but this is not surprising, as the test points within the invaded range are much more geographically constrained than within the native range.
+
+Here is the ROC curve:
+```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ROC
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_ROC.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
   )
 
 ```
@@ -364,7 +436,7 @@ I will retrieve the specific value for the MTSS threshold for this model and use
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_native_v4")
+                     "maxent/models/slf_regional_native_v5")
 
 ```
 
@@ -394,7 +466,7 @@ scari::create_MaxEnt_suitability_maps(
 
 I will also create suitability maps for the projected 2041-2070 climate data.
 
-
+<!--
 
 ```{r predict suitability maps for ssp126 data}
 
@@ -450,7 +522,61 @@ scari::create_MaxEnt_suitability_maps(
 
 ```
 
+-->
 
+The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. Here are the maps for:
+
+The historical data (1981-2010):
+```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# historical data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_1981-2010.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp126 climate change scenario:
+```{r load suitability maps ssp126, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp126.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp370 climate change scenario:
+```{r load suitability maps ssp370, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp370.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp585 climate change scenario:
+```{r load suitability maps hssp585ist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp585.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
 
 ## 3.2 Predict suitability for all SLF presences
 
@@ -458,10 +584,10 @@ scari::create_MaxEnt_suitability_maps(
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_native_v4")
+                     "maxent/models/slf_regional_native_v5")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -480,7 +606,7 @@ scari::predict_xy_suitability(
 
 ```
 
-
+<!--
 
 I will repeat the same process for the CMIP6 data.
 
@@ -526,7 +652,7 @@ scari::predict_xy_suitability(
 
 ```
 
-
+-->
 
 ## 3.3 Predict suibability for IVR regions
 
@@ -536,7 +662,7 @@ I will perform the same action as above, but for the locations of important wine
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_native_v4")
+                     "maxent/models/slf_regional_native_v5")
 
 ```
 
@@ -565,7 +691,7 @@ scari::predict_xy_suitability(
 
 ```
 
-
+<!--
 
 Do the same for the SSP scenarios
 
@@ -614,7 +740,7 @@ scari::predict_xy_suitability(
 
 ```
 
-
+-->
 
 Now that all of my models have been trained, I can move on to make check for the level of extrapolation (exdet) and the most important covariate (MIC) for each model's predictions. This is an important step when applying models to climate change and invasive species, due to the non-equilibrium nature of these applications.
 

@@ -3,7 +3,7 @@ title: "Run 'Ri.Asia' model trained on SLF invaded range in Japan and South Kore
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-14"
+date: "2026-07-23"
 ---
 
 # Overview
@@ -12,7 +12,7 @@ This vignette trains the second regional-scale model, the Ri.Asia model, which i
 
 # Setup
 
-*CURRENT MODEL VERSION: v3*
+*CURRENT MODEL VERSION: v4*
 
 ```{r load necesssary packages, message = FALSE}
 
@@ -21,6 +21,7 @@ library(tidyverse)  #data manipulation
 library(here) #making directory pathways easier on different instances
 # here::here() starts at the root folder of this package.
 library(devtools)
+library(knitr)
 
 # SDMtune and dependencies
 library(SDMtune) # main package used to run SDMs
@@ -222,21 +223,21 @@ I need to also load in the SLF presence and background points datasets created i
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 # training presences
 p_slf_points_invaded_asian_train <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v3.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_v4.csv")
   )
 # test presences
 p_slf_points_invaded_asian_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv")
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v4.csv")
   )
 
 # background points
 a_regional_invaded_asian_background_points <- read.csv(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v4.csv")
   )
 
 ```
@@ -268,8 +269,8 @@ I usually look at how many records were dropped before I save it, because SDMtun
 ```{r save training SWD file}
 
 SDMtune::swd2csv(swd = regional_invaded_asian_train, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_with_data_v3.csv"),
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_with_data_v3.csv")
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_train_slf_presences_with_data_v4.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_with_data_v4.csv")
   ))
 
 ```
@@ -297,7 +298,7 @@ regional_invaded_asian_test@data # extracted data from
 ```{r save testing SWD file}
 
 SDMtune::swd2csv(swd = regional_invaded_asian_test, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_with_data_v3.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_with_data_v4.csv"),
   file.path(here::here(), "vignette-outputs", "data-tables", "NULL.csv")
   ))
 
@@ -338,7 +339,7 @@ This function produces all summary statistics for this model. For the complete a
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_asian_v3")
+                     "maxent/models/slf_regional_invaded_asian_v4")
 
 scari::compute_MaxEnt_summary_statistics(
   model.obj = regional_invaded_asian_model, 
@@ -350,6 +351,78 @@ scari::compute_MaxEnt_summary_statistics(
   test.obj = regional_invaded_asian_test, # data you wish to use to test the model
   plot.type = c("cloglog", "logistic"), # types of univariate and marginal response curves to be created
   jk.test.type = c("train", "test") # types of jackknife curves to be created
+  )
+
+```
+
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in Korea and Japan) is the mimimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model. When left out, Bio 11 is also the most explanatory. Meanwhile, for the testing data in the North American invaded range, Bio 11 is overall the most impactful variable when producing a model on its own. Meanwhile all variables except Bio 15 have a negative effect when left out individually from the model (basically, a model excluding any variable except Bio 15 is substantially inhibited in its predictive power). The permutation importance plot validates that bio 11 and 15 are the most important.
+
+Here are the jackknife plots:
+```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_jackknife_training.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_jackknife_testing.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around 0°C. Bio 12 is a narrow peak at around 1500mm precipitation which trails off in the positive direction, and Bio 2 generally has activity between 5 and 10°C, with a sharp peak at around 9°C. These three variables roughly agree with the N. American invaded model in their minima and maxima (our main concern), but differ some in shape.
+
+Here are the response curves:
+```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# bio 2
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_bio2_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 11
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_bio11_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 12
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_bio12_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 15
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_bio15_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+Bio 15 is a bit strange in that it is bimodal, with peak activity below 30% and then between 70-100%. This suggests that most SLF populations are present at either high or low levels of precipitation seasonality (the quality of being variable in precipitation over the course of a year). This could have to do with the monsoonal effects of the rainy/dry seasons in Korea. This partially contrasts the N American invaded model, which has populations exclusively below 30%. The models agree on activity in this area, but Korea has most populations in the 70-100% range (see the rug plots).
+
+The model itself had a training AUC of 0.955 and a test AUC of 0.812. 
+
+Here is the ROC curve:
+```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ROC
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_ROC.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
   )
 
 ```
@@ -366,7 +439,7 @@ I will retrieve the specific value for the MTSS threshold for this model and use
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_asian_v3")
+                     "maxent/models/slf_regional_invaded_asian_v4")
 
 ```
 
@@ -455,6 +528,60 @@ scari::create_MaxEnt_suitability_maps(
 
 -->
 
+The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. Here are the maps for:
+
+The historical data (1981-2010):
+```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# historical data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_1981-2010.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp126 climate change scenario:
+```{r load suitability maps ssp126, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp126.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp370 climate change scenario:
+```{r load suitability maps ssp370, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp370.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp585 climate change scenario:
+```{r load suitability maps hssp585ist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "regional_invaded_asian_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp585.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
 ## 3.2 Predict suitability for all SLF presences
 
 I will get projected suitability values, calculated on the cloglog scale (between 0 and 1) for each of the SLF presence points. These suitability values will be added back to the original data frame and saved. First, I will use `SDMtune::prepareSWD()` to extract raster values from each layer used to build the model. I will save this output.
@@ -465,10 +592,10 @@ During data analysis, I will create a scatter plot of these suitability values i
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_asian_v3")
+                     "maxent/models/slf_regional_invaded_asian_v4")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2025-07-07.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -543,7 +670,7 @@ I will perform the same action as above, but for the locations of important wine
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_asian_v3")
+                     "maxent/models/slf_regional_invaded_asian_v4")
 
 # load in all IVR points
 IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))

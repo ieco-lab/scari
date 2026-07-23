@@ -28,9 +28,9 @@ Here is a table summarizing the model structures:
 
 model_info <- data.frame(
   "model" = c(
-    "Native (Rn)",
-    "Invaded N America (Ri.NAmerica)",
-    "Invaded Asian (Ri.Asia)"
+    "Native (Rn) v5",
+    "Invaded N America (Ri.NAmerica) v9",
+    "Invaded Asian (Ri.Asia) v4"
     ),
   "train_region" = c(
     "east Asia native region",
@@ -38,9 +38,9 @@ model_info <- data.frame(
     "east Asia invaded region (Koreas & Japan)"
   ),
   "train_presences" = c(
-    319,
-    750,
-    214
+    437,
+    1217,
+    237
   ),
   "test_region" = c(
     "N. America invaded region",
@@ -48,9 +48,9 @@ model_info <- data.frame(
     "N. America invaded region"
   ),
   "test_presences" = c(
-    750,
-    214,
-    750
+    87,
+    237,
+    47
   ),
   "background_points" = c(
     "10,000",

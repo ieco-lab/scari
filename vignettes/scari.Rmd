@@ -3,7 +3,7 @@ title: "Get started using scari"
 output: rmarkdown::html_document
 author:
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-10"
+date: "2026-06-23"
 ---
 
 ```{r library packages, echo = FALSE, message = FALSE}
@@ -238,6 +238,8 @@ Users should explore the other localities and data types available with this fun
 
 ## 2. Recreate the analysis for another invasive species of interest
 
+### 2.1 Gather Import Data
+
 For modelers who wish to apply this pipeline for other invasive species, this pipeline can easily be adapted to model the risk of establishment by simply changing the input datasets and modeled scales.
 
 First, a modeler would need to change the input datasets, outlined in vignettes 020-040. In vignette 020, I retrieved input data from GBIF, which hosts datasets for thousands of other species. I recommend including extra data from other databases and the literature as I did in my analysis, but GBIF is a great starting point for data retrieval. Here is an example using the package `rgbif`. Before I perform this operation, I will need to enter my user credentials for gbif; to keep these private, I will edit the .Renviron and call them from there. Once this chunk is run and the .Renviron pops up, enter your username, password and email credentials in the following format on lines 1-3:
@@ -281,12 +283,12 @@ records_gbif <- rgbif::occ_download(
 
 The input covariates would also need to change based on what is biologically relevant for the particular species. I outline the process of choosing input covariates in vignette 030.
 
-Once the input data have been adapted to the user's needs, the regional-scale models will need to be applied per region of interest. Each regional-scale model depends on a spcecific background area selection for MaxEnt that will need to change. I outline the process for choosing this area in vignette 060, in which I subset the presence data by region and intersect these subsets with the Köppen-Geiger climate zones to select the appropriate background area. This resulting polygon would need to be cropped to the region of interest. I use the `kgc`, `terra`, and `sf` packages for this analysis:
+Once the input data have been adapted to the user's needs, the regional-scale models will need to be applied per region of interest. Each regional-scale model depends on a specific background area selection for MaxEnt that will need to change. I outline the process for choosing this area in vignette 060, in which I subset the presence data by region and intersect these subsets with the Köeppen-Geiger climate zones to select the appropriate background area. This resulting polygon would need to be cropped to the region of interest. I use the `kgc`, `terra`, and `sf` packages for this analysis:
 
 ```{r import SLF presence data, echo = FALSE}
 
 # note these data have been tidied between the download and here- see vig 020 for details
-presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
   dplyr::select(-species) %>%
   sf::st_as_sf(coords = c("x", "y"), crs = "ESRI:54017")
 
@@ -337,7 +339,97 @@ regional_poly <- sf::st_filter(x = KG_zones_poly, y = presence_data)
 
 ```
 
-Once the presence data, covariate data and background points have been chosen, the user might apply this framework for any invasive species and ensemble models for any region of interest.
+### 2.2 Create MaxEnt Models using specialized internal functions.
+
+Once the presence data, covariate data and background points have been chosen, the user might apply this framework for any invasive species to create MaxEnt models for any region of interest. Here is an example using some of our built-in functions. We utilize the [SDMtune package framework](https://consbiol-unibern.github.io/SDMtune/) to prepare data for the models and train the initial models (see articles [Prepare data for the analysis](https://consbiol-unibern.github.io/SDMtune/articles/prepare-data.html) and [Train a model](https://consbiol-unibern.github.io/SDMtune/articles/train-model.html)). 
+
+Once the models have been created, we use our functions `compute_MaxEnt_summary_statistics()`, `create_MaxEnt_suitability_maps()`, and `predict_xy_suitability()` to create various outputs. Thes functions are essentially wrappers around a group of functions from the SDMtune package, but that modifies these outputs and organizes them into an output folder. There are versions of each of these functions for Cross-validated models specifically, which end in `_CV()` (for example, `compute_MaxEnt_summary_statistics_CV()`).
+
+Here I will show some example code for usage of our internal datasets to produce various outputs of a MaxEnt model.
+
+```{r library packages needed for SDMtune, eval = FALSE, message = FALSE}
+
+# SDMtune and dependencies
+library(SDMtune) # main package used to run SDMs
+library(dismo) # package underneath SDMtune
+library(rJava) # for running MaxEnt
+library(plotROC) # plots ROCs
+library(viridis)
+
+```
+
+This first function, [compute_MaxEnt_summary_statistics()](R/compute_MaxEnt_summary_statistics.R), calculates summary statistics for the model and outputs them to a folder. This function calculates the following outputs:
+* AUC and TSS goodness of fit metrics
+* the ROC curve
+* a confusion matrix of threshold values
+* univariate and marginal response curves for each covariate
+* variable permutation importance for all covariates
+* jackknife leave-one-out and isolation tests for variable importance
+* all generally important summary statistics for a MaxEnt Model (gain, iterations, etc)
+
+This example was for our model of the area of east Asia invaded by SLF:
+```{r compute summary statistics using custom function, eval = FALSE}
+
+# output directory
+mypath <- file.path(here::here() %>% 
+                       dirname(),
+                     "maxent/models/slf_regional_invaded_asian_v4")
+
+scari::compute_MaxEnt_summary_statistics(
+  model.obj = regional_invaded_asian_model, # the model object, made by SDMtune
+  model.name = "regional_invaded_asian", # gives the outputs a name
+  mypath = mypath, # path to the directory where it will save
+  create.dir = TRUE, # create directory if needed
+  env.covar.obj = x_invaded_asian_env_covariates, # env covariate rasters used to train the model
+  train.obj = regional_invaded_asian_train, # training data used to create model
+  test.obj = regional_invaded_asian_test, # data you wish to use to test the model
+  plot.type = c("cloglog", "logistic"), # types of univariate and marginal response curves to be created
+  jk.test.type = c("train", "test") # types of jackknife curves to be created
+  )
+
+```
+
+This next function, [create_MaxEnt_suitability_maps()](R/create_MaxEnt_suitability_maps.R), will create suitability maps of the area of interest. It takes a set of rasters as an area to create an output for. It can create a raw output threshold that output by many of the common MaxEnt thresholds (MTP, MTSS, 10th percentile), and can even layer thresholded maps.
+
+```{r predict mean and thresholded suitability maps for historical data, eval = FALSE}
+
+scari::create_MaxEnt_suitability_maps(
+  model.obj = regional_invaded_asian_model,
+  model.name = "regional_invaded_asian", 
+  mypath = mypath, 
+  create.dir = FALSE, 
+  env.covar.obj = x_global_hist_env_covariates, 
+  describe.proj = "globe_1981-2010", # name of area or time period describe.proj to
+  clamp.pred = TRUE, # whether or not to clamp the predictions to the range of the training data, generally a good idea
+  map.thresh = TRUE, # whether thresholded versions of these maps should be created
+  thresh = c("MTP", "10_percentile", "MTSS"), # the thresholds used to create thresholded maps, as desired
+  map.thresh.extra = "MTP", # put an extra threshold under the main threshold in thresh
+  summary.file = file.path(mypath, "regional_invaded_asian_summary.csv") # confusion matrix created by the previous function to be used in thresh
+)
+
+```
+
+Finally, we can use the function [predict_xy_suitability()](R/predict_xy_suitability.R) to predict the suitability for a set of points based on the model. It can also output a table of the predicted suitability values for each point. It will output a .csv file of the xy coordinates with the suitability values attached. It can calculate these suitability values using either a simple or buffer method. See [terra::buffer()](https://rspatial.github.io/terra/reference/buffer.html?q=buffer#null) and [SDMtune::predict()](https://rdrr.io/r/stats/predict.html) for more details.
+
+This chunk uses the buffer method to create predictions for a set of wineries, based on this model:
+```{r predictions for IVR coordinate data- historical, eval = FALSE}
+
+scari::predict_xy_suitability(
+  xy.obj = IVR_regions,
+  xy.type = "IVR regions", # descriptive name
+  env.covar.obj = x_global_hist_env_covariates,
+  model.obj = regional_invaded_asian_model, # the model object, made by SDMtune
+  mypath = mypath,
+  predict.type = c("cloglog", "logistic"), 
+  clamp.pred = TRUE,
+  output.name = "regional_invaded_asian_wineries_1981-2010",
+  buffer.pred = TRUE,
+  buffer.fun = "mean", # the function used to calculate the suitability value for the buffer area
+  buffer.dist = 20000, # distance in meters
+  crs = "ESRI:54017" # should be the CRS of the raster fed into the model initially
+)
+
+```
 
 # References
 

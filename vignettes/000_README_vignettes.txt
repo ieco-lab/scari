@@ -14,6 +14,15 @@ Old versions of these vignettes are stored in scari/scari_sandbox (scari in this
 ########## FILES ##########
 ###########################
 
+----------scari.Rmd----------
+
+## About
+
+Example usage file. Contains examples of using create_risk_report() for the country of France. Updated version contains example usage of MaxEnt model outputs using create_MaxEnt_suitability_maps() and compute_MaxEnt_summar_statistics().
+
+v0- initial version
+v1- updates to section 3 to add example calculation of maxent models for other pests of interest.
+
 ----------010_initialize_pkg.Rmd----------
 
 ## About
@@ -142,6 +151,7 @@ v4- creates the v4 of the regional_invaded model in maxent/models. reverted to r
 v5
 v6- 2024-08-02- rework- updated SLF presence data and inclusion of other SSP scenarios- changed validation (testing) region to Ri.Asia training region (see citation)- creates v7 of the regional_invaded model
 v7- 2025-07-14- v8 of model-transformed final dataset into Behrmann projection
+v8- 2026-07-23- v9 of model, added sections to load in suitability maps for display
 
 
 ----------080_run_regional_invaded_asian_MaxEnt_model.Rmd----------
@@ -156,7 +166,7 @@ v0- initial version
 v1-
 v2- 2024-08-08- rework- updated SLF presence data and inclusion of other SSP scenarios, creates v2 of the regional_invaded_asian model
 v3- 2025-07-14- rework- v3 of model-transformed final dataset into Behrmann projection
-
+v4- 2026-07-23- v4 of model, added sections to load in suitability maps for display
 
 
 ----------090_run_regional_native_MaxEnt_model.Rmd----------
@@ -173,6 +183,7 @@ v2- creates the v1 of the regional_native_model in maxent/models. Removed gridSe
 v3
 v4- 2024-08-08- rework- updated SLF presence data and inclusion of other SSP scenarios, creates v3 of the regional_native model
 v5- 2025-07-14- rework- v4 of model-transformed final dataset into Behrmann projection
+v6- 2026-06-23- creates v5 of model based on newer data
 
 
 
