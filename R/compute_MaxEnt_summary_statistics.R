@@ -24,9 +24,8 @@
 #'"plots" folder within the model output sub directory will be created.
 #'
 #'@param env.covar.obj A stack of rasters of environmental covariates. These
-#'covariates are used to train and test the MaxEnt model, as well as to make
-#'predictions. These should be the same covariates that you used to train the
-#'model. This must a `SpatRaster` object created using [terra::rast()].
+#'should be the same covariates that you used to train the model. This must a
+#'`SpatRaster` object created using [terra::rast()].
 #'
 #'@param train.obj The main group of presence and background points used to
 #'train the model. Should be a SWD object, created using the
@@ -64,7 +63,7 @@
 #'* confusion matrix
 #'* jackknife tests for both training and testing data
 #'* jackknife plots
-#'* AUC / TSS
+#'* Evaluation metrics (AICc, AUC, and TSS)
 #'* ROC plots
 #'* marginal and univariate response curves
 #'
@@ -174,14 +173,16 @@ compute_MaxEnt_summary_statistics <- function(model.obj, model.name = "MODEL", m
 
 
 
-    ## Get AUC, TSS, and variable contributions---------------------------------
+    ## Get AUC, TSS, AICc and variable contributions---------------------------------
 
     # vector of AUC values
     AUC <- c(
       # get training AUC value
       SDMtune::auc(model.obj),
       # get test AUC value
-      SDMtune::auc(model.obj, test = test.obj)
+      SDMtune::auc(model.obj, test = test.obj),
+      # final entry empty
+      NA
     )
 
     # vector of TSS values
@@ -189,17 +190,26 @@ compute_MaxEnt_summary_statistics <- function(model.obj, model.name = "MODEL", m
       # get training TSS value
       SDMtune::tss(model.obj),
       # get test TSS value
-      SDMtune::tss(model.obj, test = test.obj)
+      SDMtune::tss(model.obj, test = test.obj),
+      NA
+    )
+
+    # vector of AICc metrics
+    aic_c <- c(
+      NA,
+      NA,
+      SDMtune::aicc(model = model.obj, env = env.covar.obj)
     )
 
     # compile to data frame
-    auc_tss <- data.frame(AUC, TSS, row.names = c("Training", "Test"))
+    eval_metrics <- data.frame(AUC, TSS, aic_c, row.names = c("Training", "Test", "AICc")) %>%
+      dplyr::rename("AICc" = "aic_c")
 
     # write to .csv
     # path to directory
 
     # write csv
-    write.csv(auc_tss, file = file.path(mypath, paste0(model.name, "_auc_tss.csv")), row.names = TRUE)
+    write.csv(eval_metrics, file = file.path(mypath, paste0(model.name, "_model_eval_metrics.csv")), row.names = TRUE)
 
 
 

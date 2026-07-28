@@ -25,6 +25,7 @@ library(tidyverse)  #data manipulation
 library(here) #making directory pathways easier on different instances
 # here::here() starts at the root folder of this package.
 library(devtools)
+library(knitr)
 
 # SDMtune and dependencies
 library(SDMtune) # main package used to run SDMs
@@ -309,7 +310,7 @@ global_model <- SDMtune::train(
   method = "Maxent",
   data = global_train,
   folds = global_trainFolds, # 10 folds for dataset
-  fc = "lqpht", # feature classes set to ALL
+  fc = "1qpht", # feature classes set to ALL
   iter = 5000, # number of iterations
   progress = TRUE
 )
@@ -342,6 +343,26 @@ hypers <- list(
   reg = c(0.25, 0.5, 1, 1.5, 2), # regularization multiplier
   fc = c("h", "qpht", "lqpht") # feature classes
   )
+
+```
+
+```{r grid search tunable args- for testing, echo = FALSE}
+
+# an extra chunk for testing other tunable arguments
+if (FALSE) {
+
+  # the arguments that can be tuned later
+  getTunableArgs(global_model)
+  
+  # list of hyperparameters
+  hypers <- list(
+    reg = c(0, 0.25, 0.5, 1, 1.5, 2, 3), # regularization multiplier
+    #fc = c("h", "qpht", "lqpht") # feature classes
+    iter = 10000,
+    fc = "qpht"
+    )
+  
+}
 
 ```
 
@@ -395,7 +416,7 @@ if (FALSE) {
 
 ```
 
-We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 2.0 and qpht features (model 14). The best fit models both have a regularization multiplier of 2.0 features, but we have to pick from qpht or only h features. Initially, I chose model 13; however, upon inspecting the output, there were no areas on the planet considered "unsuitable". All areas were over the MTP threshold, which is the most conservative threshold with respect to invasive species (see 3.1 below for more detail). This means that the model was underfit (too general), likely due to the regularization multiplier. When the regularization multiplier is too high, the result is an over generalized model, which fits with an overly broad predicted area of suitability.
+We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 2.0 and qpht features (model 14). The best fit models both have a regularization multiplier of 2.0 features, but we have to pick from qpht or only h features. Initially, I chose model 13; however, upon inspecting the output, there were no areas on the planet considered "unsuitable". All areas were over the fixed_1 threshold, which is the most conservative threshold with respect to invasive species (see 3.1 below for more detail). This means that the model was underfit (too general), likely due to the regularization multiplier. When the regularization multiplier is too high, the result is an over generalized model, which fits with an overly broad predicted area of suitability.
 
 Previous iterations of this model had a regularization multiplier of 1.5 and qpht features, which produced more reasonable predictions. I will reflex to that result and use model 11 (the previous iteration), with a reg multiplier of 1.5 and qpht features.
 
@@ -422,7 +443,7 @@ scari::compute_MaxEnt_summary_statistics_CV(
   model.obj = global_model, 
   model.name = "global", 
   mypath = mypath, 
-  create.dir = FALSE, # create subdirectory
+  create.dir = TRUE, # create subdirectory
   env.covar.obj = x_global_hist_env_covariates, # env covariates raster stacked
   train.obj = global_train, # training data used to create model
   trainFolds.obj = global_trainFolds,  # k-folds of training data
@@ -449,6 +470,76 @@ readr::write_rds(global_model_tuned_tss, file = file.path(mypath, "global_model_
 
 ```
 
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test for the training data, which was 80% withheld on a randomized basis) is the minimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model; when left out, it has the most negative impact on the overall model. So, this is the most impactful variable in the training data, which is most explanatory of SLF distributions. The randomly withheld 20% of the testing data, gave the same results. This aligns with the literature (Lee et al, 2011). The permutation importance plot validates these points.
+
+Here are the jackknife plots:
+```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_jackknife_all_iterations_training.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# training
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_jackknife_iteration1_testing.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable) for the variables based on temperature (Bio 2, mean monthly temperature seasonality and Bio 11, minimum winter temperature) both resemble a bell-shaped curve, with a peak around 8.5°C variability for Bio 2 and around -2°C minimum temp for Bio 11. Meanwhile, for the precipitation-based variables (Bio 12, annual precipitation amounts and Bio 15, precipitation seasonality), both curves suggest a threshold that trails off from its max near the beginning of the range. For Bio 12, max activity begins low and creates a skewed curve at ~1200mm precipitation, which trails off slowly, nearing 0 at about 5000mm precipitation (based on the rug plot). For Bio 15, activity below 25% precipitation seasonality is very high, with activity dropping and then rising again between 75-115%. There are no presences beyond ~115%.
+
+Here are the response curves:
+```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# bio 2
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_bio2_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 11
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_bio11_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 12
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_bio12_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+# bio 15
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_bio15_univar_resp_curve_cloglog.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The model itself had a training AUC of 0.987 and a test AUC of 0.984, performing well.
+
+Here is the ROC curve:
+```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# ROC
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_iteration1_ROC.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
 # 3. Create Outputs for Analysis
 
 ```{r set wd}
@@ -467,11 +558,23 @@ global_model <- read_rds(file = file.path(mypath, "global_model.rds"))
 
 ## 3.1 Create suitability maps- mean and thresholded
 
-I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `MTP`, `MTSS` and `10_percentile` thresholds. The workflow for this application will use my function `create_MaxEnt_suitability_maps_CV()`.
+I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `fixed_1`, `MTSS` and `10_percentile` thresholds. The workflow for this application will use my function `create_MaxEnt_suitability_maps_CV()`.
 
-I will take the above map and reclassify it so that areas that aren't suitable are more obvious. I will use the `MTSS` (maximum training sensitivity plus specificity threshold), as this threshold is one of the most rigorous available. It maximizes the TSS, a threshold dependent goodness of fit metric and has been shown to perform well and produce consistent predictions for presence-only methods (Liu et al, 2013; Liu et al, 2016). I will also use the `MTP` (minimum training presence) and `10_percentile` (10 percentile training threshold) thresholds. These thresholds represent a continuum of training data exclusion. The `MTP` threshold does not exclude any data and assumes confidence in the validity of the training data, making the most conservative predictions (the largest suitable range for invasive species) The `10_percentile` threshold excludes the top 10% of suitable training samples, which would be more appropriate if I have less confidence in my training data. Finally, the `MTSS` threshold maximizes the sensitivity (the likelihood of detecting a true positive) (Maryam Bordkhani (n.d.)).
+I will take the above map and reclassify it so that areas that aren't suitable are more obvious. I will use the `MTSS` (maximum training sensitivity plus specificity threshold), as this threshold is one of the most rigorous available. It maximizes the TSS, a threshold dependent goodness of fit metric and has been shown to perform well and produce consistent predictions for presence-only methods (Liu et al, 2013; Liu et al, 2016). I will also use the `fixed_1` (Fixed cumulative value 1%) and `10_percentile` (10 percentile training threshold) thresholds to bookend the MTSS; these thresholds represent a continuum of training data exclusion. The `fixed_1` threshold excludes the bottom 1% of the training data and assumes more confidence in the validity of the training data, making the most conservative predictions (the largest suitable range for invasive species). The `10_percentile` threshold excludes the top 10% of suitable training samples, which would be more appropriate if I have less confidence in my training data. Finally, the `MTSS` threshold maximizes the sensitivity (the likelihood of detecting a true positive). (Damus, M. (2014, May 23). Threshold rule [Online post]. Google Groups: Maxent.) It should be noted that the MTP threshold excludes none of the training data, but we chose not to use this threshold because it causes artifacts in the prediction maps, such as a 0 value threshold which caused the entire study area to be considered suitable (Phillips et al, 2006).
 
-I will retrieve the specific value for the MTSS threshold for this model and use it to define a what is considered unsuitable in this raster. Then, I will reclassify the mean raster so that anything below this threshold is now "unsuitable". I will use the mean cloglog threshold for all iterations. I will create a binary version of the mean raster, with unsuitable regions (below the MTSS training threshold) as 0, and those above the threshold as 1. Then, I can reclassify averaged raster of MaxEnt predictions. I will load in the averaged prediction for this model and reclassify the raster using a temporary raster layer that I will create. This raster will only have values where the model predicts the climate to be unsuitable, so that it can be plotted overtop the averaged raster to mask unsuitable areas.
+Here is an explanation of all available threshold options for our function:
+
+* `BTO` = Balance training omission predicted area and threshold value. This threshold is the value which best balances the predicted area and the training omission rate. It is a compromise between sensitivity and specificity.
+* `EE` = Equate entropy of thresholded and original distributions. This threshold is the value which best equates the entropy between the original and thresholded value. Entropy is a measure of the "uniformness" of a distribution and is the situation that constrains the internal features the least (Phillips et al, 2006).
+* `ETSS` = Equal training sensitivity and specificity. Equalizes the chances of missing areas of suitable distribution and assigning unsuitable distribution (Damus, 2014).
+* `fixed_1` = Fixed cumulative value 1. Omits a fixed value of the bottom 1% of suitability from the training data points.
+* `fixed_5` = Fixed cumulative value 5. Omits a fixed value of the bottom 5% of suitability from the training data points.
+* `fixed_10` = Fixed cumulative value 10. Omits a fixed value of the bottom 10% of suitability from the training data points.
+* `MTP` or `LPT` = Minimum Training Presence. This threshold is the lowest predicted suitability value in the training presence point set.
+* `MTSS` = Maximum training sensitivity plus specificity. This threshold maximizes the sum of sensitivity and specificity for the training data. We use this threshold for our main analyses.
+* `ten_percentile` or `10_percentile` = Ten percentile training presence. This excludes the lowest 10% of predicted suitability values in the training presence point set.
+
+In future vignettes, I will retrieve the specific value for the MTSS threshold for this model and use it to define a what is considered unsuitable in this raster. Then, I will reclassify the mean raster so that anything below this threshold is now "unsuitable", and anything above is considered suitable. I will use the mean cloglog threshold for all iterations. I will create a binary version of the mean raster, with unsuitable regions (below the MTSS training threshold) as 0, and those above the threshold as 1. Then, I can reclassify averaged raster of MaxEnt predictions. I will load in the averaged prediction for this model and reclassify the raster using a temporary raster layer that I will create. This raster will only have values where the model predicts the climate to be unsuitable, so that it can be plotted overtop the averaged raster to mask unsuitable areas.
 
 ```{r predict suitability maps for historical data}
 
@@ -483,9 +586,9 @@ scari::create_MaxEnt_suitability_maps_CV(
   env.covar.obj = x_global_hist_env_covariates, 
   describe.proj = "globe_1981-2010", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("fixed_1", "MTSS", "10_percentile"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP", # whether an added underlayer threshold should be plotted (MTP plotted under MTSS)
+  map.thresh.extra = "fixed_1", # whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)
   summary.file = file.path(mypath, "global_summary_all_iterations.csv")
 )
 
@@ -503,9 +606,9 @@ scari::create_MaxEnt_suitability_maps_CV(
   env.covar.obj = x_global_126_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp126", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("fixed_1", "MTSS", "10_percentile"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1", # whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)
   summary.file = file.path(mypath, "global_summary_all_iterations.csv")
 )
 
@@ -521,9 +624,9 @@ scari::create_MaxEnt_suitability_maps_CV(
   env.covar.obj = x_global_370_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp370", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("fixed_1", "MTSS", "10_percentile"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1", # whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)
   summary.file = file.path(mypath, "global_summary_all_iterations.csv")
 )
 
@@ -539,21 +642,76 @@ scari::create_MaxEnt_suitability_maps_CV(
   env.covar.obj = x_global_585_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp585", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "MTSS"),
+  thresh = c("fixed_1", "MTSS", "10_percentile"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1", # whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)
   summary.file = file.path(mypath, "global_summary_all_iterations.csv")
 )
 
 ```
 
-Upon inspecting the suitability maps, this model (11) still predicts MTP suitable area in the northern reaches (generally, nearly all of N America, Europe and Asia). This is not ideal, so I again lowered the regularization multiplier to 1; this made no noticeable changes in the suitable area. I will keep the regularization multiplier at 1.5 and qpht features for this model, despite the overly broad suitable area in the Northern continents, keeping in mind that MTP is the absolute minimum threshold, and that suitable areas based on MTSS (a much more rigorous threshold) did not change much between the two models. Our framework will base suitability on MTSS (not MTP), so this should not affect our end results.
+Upon inspecting the suitability maps, this model (11) initially predicted that 100% of global area was considered suitable above the MTP threshold (what we consider "minimally suitable"). This was highly unrealistic because we know that SLF has biological limitations, so I lowered the regularization to 1.5, which produced a more reasonable result, but still predicted that nearly all areas of the northern hemisphere (generally, nearly all of N America, Europe and Asia) are suitable. This is not ideal, so I again lowered the regularization multiplier to 1 (the default); this made no noticeable changes in the suitable area. I will keep the regularization multiplier at 1.5 and qpht features for this model, despite the overly broad suitable area in the Northern continents. Keep in mind that the issue with with the absolute minimum threshold of suitability, and that suitable areas based on MTSS (a much more rigorous threshold) did not change much between the two model iterations. Our framework will predict suitability based on MTSS (not MTP), so this will not affect our end results. 
+
+The most prominent suitable areas above the MTSS (the colored areas) were predicted in North America, China, Japan, Korea, and Europe. These areas are notably where SLF is already extant, but Europe is novel in these predictions. There are also notable suitable areas in New Zealand and southern Argentina within the southern hemisphere. Here are the predicted suitability maps. Notably, as the ssp scenario becomes more severe (ssp126 -> ssp585), the predicted suitable area of each map slowly shifts towards higher latitudes.
+
+
+The historical data (1981-2010):
+```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# historical data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_1981-2010.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp126 climate change scenario:
+```{r load suitability maps ssp126, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp126.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp370 climate change scenario:
+```{r load suitability maps ssp370, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp370.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
+
+The predicted future data (2041-2070) under the ssp585 climate change scenario:
+```{r load suitability maps hssp585ist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+
+# load in maps
+# ssp126 for 2041-2070 data
+knitr::include_graphics(
+  path = file.path(mypath, "plots", "global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp585.jpg"),
+  rel_path = FALSE, # already done
+  error = TRUE
+  )
+
+```
 
 ## 3.2 Predict suitability for known SLF presences
 
 I will get projected suitability values, calculated on the cloglog scale (between 0 and 1) for each of the known SLF populations I used as input data for my models. These suitability values will be added back to the original data frame and saved. The workflow for this application will use my function `predict_xy_suitability_CV()`. This function extracts covariate data from each data point and then uses the model object to predict the suitability for SLF establishment at that location based on the climate variables. This function has two modes for predicting the suitability: simple and buffered. I will use simple (the suitability at that exact point) for the location of SLF populations.
 
-Later in my analysis, I will use these point-wise suitability predictions to create a scatter plot in the global vs regional models.
+Later in my analysis, I will use these point-wise suitability predictions to create a scatter plot as an index of suitability between the two scales of models (the global and an ensemble of the upcoming regional-scale models).
 
 ```{r data import- slf presences}
 
@@ -768,17 +926,17 @@ pred_global_2055_mean <- terra::app(
 
 # References
 
-1. Elith, J., Phillips, S. J., Hastie, T., Dudík, M., Chee, Y. E., & Yates, C. J. (2011). A statistical explanation of MaxEnt for ecologists: Statistical explanation of MaxEnt. Diversity and Distributions, 17(1), 43–57. https://doi.org/10.1111/j.1472-4642.2010.00725.x
+1. Damus, M. (2014, May 23). Threshold rule [Online post]. Google Groups: Maxent. https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1
 
-2. Feng, X. (2022). Shandongfx/nimbios_enm [HTML]. https://github.com/shandongfx/nimbios_enm (Original work published 2018).
+2. Elith, J., Phillips, S. J., Hastie, T., Dudík, M., Chee, Y. E., & Yates, C. J. (2011). A statistical explanation of MaxEnt for ecologists: Statistical explanation of MaxEnt. Diversity and Distributions, 17(1), 43–57. https://doi.org/10.1111/j.1472-4642.2010.00725.x
 
-3. Gallien, L., Douzet, R., Pratte, S., Zimmermann, N. E., & Thuiller, W. (2012). Invasive species distribution models – how violating the equilibrium assumption can create new insights. Global Ecology and Biogeography, 21(11), 1126–1136. https://doi.org/10.1111/j.1466-8238.2012.00768.x
+3. Feng, X. (2022). Shandongfx/nimbios_enm [HTML]. https://github.com/shandongfx/nimbios_enm (Original work published 2018).
 
-4. Liu, C., Newell, G., & White, M. (2016). On the selection of thresholds for predicting species occurrence with presence-only data. Ecology and Evolution, 6(1), 337–348. https://doi.org/10.1002/ece3.1878
+4. Gallien, L., Douzet, R., Pratte, S., Zimmermann, N. E., & Thuiller, W. (2012). Invasive species distribution models – how violating the equilibrium assumption can create new insights. Global Ecology and Biogeography, 21(11), 1126–1136. https://doi.org/10.1111/j.1466-8238.2012.00768.x
 
-5. Liu, C., White, M., & Newell, G. (2013). Selecting thresholds for the prediction of species occurrence with presence-only data. Journal of Biogeography, 40(4), 778–789. https://doi.org/10.1111/jbi.12058
+5. Liu, C., Newell, G., & White, M. (2016). On the selection of thresholds for predicting species occurrence with presence-only data. Ecology and Evolution, 6(1), 337–348. https://doi.org/10.1002/ece3.1878
 
-6. Maryam Bordkhani. (n.d.). Threshold rule [Online post].
+6. Liu, C., White, M., & Newell, G. (2013). Selecting thresholds for the prediction of species occurrence with presence-only data. Journal of Biogeography, 40(4), 778–789. https://doi.org/10.1111/jbi.12058
 
 7. Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: Complexity, overfitting and evaluation. Journal of Biogeography, 41(4), 629–643. https://doi.org/10.1111/jbi.12227
 

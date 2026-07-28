@@ -182,17 +182,17 @@ Next, I will load in the AUC value from each model, which will be used to weight
 
 ```{r test AUC values}
 
-AUC_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_AUC_TSS.csv")) %>%
+AUC_regional_native <- read_csv(file = file.path(mypath, "models", "slf_regional_native_v4", "regional_native_model_eval_metrics.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()
 
-AUC_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_AUC_TSS.csv")) %>%
+AUC_regional_invaded <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_v8", "regional_invaded_model_eval_metrics.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()
 
-AUC_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_AUC_TSS.csv")) %>%
+AUC_regional_invaded_asian <- read_csv(file = file.path(mypath, "models", "slf_regional_invaded_asian_v3", "regional_invaded_asian_model_eval_metrics.csv")) %>%
   dplyr::select(AUC) %>%
   dplyr::slice(2) %>%
   as.numeric()

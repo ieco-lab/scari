@@ -42,6 +42,7 @@ First used in vignette 050
 v0-
 v1- 2024-02-13- name changed and version without _CV created
 v2- 2025-07-11- bug fixes
+v3- 2026-07-27- adds functionality to compute TSS, AICc
 
 
 
@@ -61,6 +62,7 @@ First used in vignette 070
 v0-
 v1- 2024-02-13- this version created to deal with maxent models without cross validation (no _CV)
 v2- 2025-07-11- bug fixes
+v3- 2026-07-27- adds functionality to compute TSS, AICc
 
 
 
@@ -79,12 +81,8 @@ First used in vignette 050
 v0-
 v1- 2024-02-13- name changed and version without _CV created
 v2-
-v3-
-v4-
-v5- 2025-08-07- added scale bars and N arrow functionality
-
-
-
+v3- 2025-08-07- added scale bars and N arrow functionality
+v4- 2026-07-27- fixed issues with threshold selection. Previously, MTP assumed as a baseline for maps with stacked threshold- added a warning that MTP may cause issues, changed baseline threshold of suitabiliy to fixed 1% training
 
 ----------create_MaxEnt_suitability_maps.R----------
 
@@ -100,8 +98,9 @@ First used in vignette 070
 
 v0-
 v1- 2024-02-13- this version created to deal with maxent models without cross validation (no _CV)
-
-
+v2-
+v3-
+v4- 2026-07-27- fixed issues with threshold selection. Previously, MTP assumed as a baseline for maps with stacked threshold- added a warning that MTP may cause issues, changed baseline threshold of suitabiliy to fixed 1% training
 
 ----------create_risk_report.R----------
 
@@ -137,10 +136,6 @@ First used in vignette 130
 ## Changelog
 
 v0- initial version
-
-
-
-
 
 
 ----------predict_xy_suitability_CV.R----------

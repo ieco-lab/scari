@@ -37,9 +37,8 @@ the model output. If FALSE (ie, the sub directory already exists), only the
 "plots" folder within the model output sub directory will be created.}
 
 \item{env.covar.obj}{A stack of rasters of environmental covariates. These
-covariates are used to train and test the MaxEnt model, as well as to make
-predictions. These should be the same covariates that you used to train the
-model. This must a \code{SpatRaster} object created using \code{\link[terra:rast]{terra::rast()}}.}
+should be the same covariates that you used to train the model. This must a
+\code{SpatRaster} object created using \code{\link[terra:rast]{terra::rast()}}.}
 
 \item{train.obj}{The main group of presence and background points used to
 train the model. Should be a SWD object, created using the
@@ -78,7 +77,7 @@ The output of this function includes the following:
 \item confusion matrices per iteration
 \item jackknife tests for both training and testing data, per iteration
 \item jackknife plots
-\item AUC / TSS
+\item Evaluation metrics (AUC and TSS)
 \item ROC plots
 \item marginal and univariate response curves
 }

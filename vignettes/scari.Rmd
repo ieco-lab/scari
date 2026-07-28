@@ -402,8 +402,8 @@ scari::create_MaxEnt_suitability_maps(
   describe.proj = "globe_1981-2010", # name of area or time period describe.proj to
   clamp.pred = TRUE, # whether or not to clamp the predictions to the range of the training data, generally a good idea
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  thresh = c("MTP", "10_percentile", "MTSS"), # the thresholds used to create thresholded maps, as desired
-  map.thresh.extra = "MTP", # put an extra threshold under the main threshold in thresh
+  thresh = c("fixed_1", "10_percentile", "MTSS"), # the thresholds used to create thresholded maps, as desired
+  map.thresh.extra = "fixed_1", # put an extra threshold under the main threshold in thresh
   summary.file = file.path(mypath, "regional_invaded_asian_summary.csv") # confusion matrix created by the previous function to be used in thresh
 )
 

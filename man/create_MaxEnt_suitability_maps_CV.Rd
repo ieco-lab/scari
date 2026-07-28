@@ -67,7 +67,7 @@ to be created from the trained model. Can be either \code{cloglog} or
 \code{map.thresh = FALSE} This may be imported manually (numeric), or may be
 selected from one of the thresholds for the model (character). If a preset,
 the specified mean threshold value for all iterations of the model is chosen.
-See details for a list of preset options and other usages.}
+See details for a list of preset options, explanations, and other usages.}
 
 \item{map.thresh}{Logical, TRUE by default. This function determines if a
 thresholded suitability map will be created. If not, output will only consist
@@ -79,10 +79,13 @@ a threshold map based on the cloglog output}
 \item{map.thresh.extra}{Character, default is NA. This argument will plot an
 extra threshold underneath the main threshold layer. It must be one of the
 thresholds specified in \code{thresh} and must be less than or equal to the value
-of the other values of thresh. For example, I use this to plot the MTP
-threshold under the other thresholds being plotted (because MTP is usually the
-smallest thresh value). However, plotting the 10_percentile thresh under the
-MTP threshold would not function properly and the map would not render.}
+of the other values of thresh. For example, I use this to plot the Fixed 1 cumulative
+threshold under the other thresholds being plotted because it is usually the
+one of the smallest thresh values. The user should be careful to plot thresh
+values that are larger as the primary, and smaller values as the secondary layer.
+If this is not the case, the extra threshold will not be visible. See confusion
+matrix output from \code{compute_MaxEnt_summary_statistics()} to determine threshold
+values.}
 
 \item{map.style}{List, default is NA. This is used to apply
 ggplot aesthetics to the plot outputs. If specified, the given value should be
@@ -105,6 +108,13 @@ also include a binary raster of suitability and a .jpg image of unsuitable
 areas layered on top of suitability raster. This threshold of suitability is
 determined by the value of \code{thresh}.
 
+Outputs can be classified by their naming:
+\itemize{
+\item rasters containing "\emph{pred_suit}" are the predicted suitability rasters
+\item rasters containing "\emph{thresholded}" are the same suitability rasters, but with an added threshold. The name of the threshold should directly follow this phrase. If more than one threshold is used (map.thresh.extra is defined), then the name of the lower layer will additionally follow this.
+\item rasters containing "\emph{mask_layer}" are the binary rasters of suitability based on the threshold, which are used as masking layers in the plotting
+}
+
 Use caution: will overwrite previous files by default.
 }
 \description{
@@ -126,22 +136,35 @@ has a lower limit determined by the algorithm.)
 output using the SD function, but this map would not be meaningful because
 it does not illustrate cloglog suitability (while thresholds are created
 using the cloglog suitability metrics).
-\subsection{thresh:}{
+\subsection{thresh and map_thresh_extra:}{
 
 This can be a single numeric or preset character value. It may also be a
 concatenated set of numerics or presets, as in  \code{c(0.2, 0.3)} or
 \code{c("MTSS", "BTO")}. Note that this function only uses the cloglog version of
 these thresholds.
 
-Thresh presets list:
+Each threshold represents a preset value and a different assumption about what
+is considered suitable. The user should consider the implications of using each
+threshold and how that informs the underlying assumption of your model.
 \itemize{
-\item \code{BTO} = Balance training omission predicted area and threshold value
-\item \code{EE} = Equate entropy of thresholded and original distributions
-\item \code{ETSS} = Equal training sensitivity and specificity
-\item \code{MTP} = Minimum Training Presence
-\item \code{MTSS} = Maximum training sensitivity plus specificity
-\item \code{ten_percentile} or \verb{10_percentile} = Ten percentile training presence
+\item \code{BTO} = Balance training omission predicted area and threshold value. This threshold is the value which best balances the predicted area and the training omission rate. It is a compromise between sensitivity and specificity.
+\item \code{EE} = Equate entropy of thresholded and original distributions. This threshold is the value which best equates the entropy between the original and thresholded value. Entropy is a measure of the "uniformness" of a distribution and is the situation that constrains the internal features the least.
+\item \code{ETSS} = Equal training sensitivity and specificity. Equalizes the chances of missing areas of suitable distribution and assigning unsuitable distribution.
+\item \code{fixed_1} = Fixed cumulative value 1. Omits a fixed value of the bottom 1\% of suitability from the training data points.
+\item \code{fixed_5} = Fixed cumulative value 5. Omits a fixed value of the bottom 5\% of suitability from the training data points.
+\item \code{fixed_10} = Fixed cumulative value 10. Omits a fixed value of the bottom 10\% of suitability from the training data points.
+\item \code{MTP} or \code{LPT} = Minimum Training Presence. This threshold is the lowest predicted suitability value in the training presence point set.
+\item \code{MTSS} = Maximum training sensitivity plus specificity. This threshold maximizes the sum of sensitivity and specificity for the training data. We use this threshold for our main analyses.
+\item \code{ten_percentile} or \verb{10_percentile} = Ten percentile training presence. This excludes the lowest 10\% of predicted suitability values in the training presence point set.
 }
+
+\strong{NOTE} We do not recommend using the MTP threshold unless for a specific purpose.
+This threshold is that which has a 0\% omission rate of training data, but can
+often have an artifact (as we found in our study and as Phillips 2006 found)
+of defining the entire study area as suitable. This renders this threshold
+useless for defining suitable area.
+
+citations: Radosavljevic, A., & Anderson, R. P. (2014), Phillips et al, (2006), Liu et al, (2016), (Damus, M. (2014, May 23). Threshold rule \link{Online post}. Google Groups: Maxent.)
 }
 
 \subsection{env.covar.obj:}{
@@ -176,7 +199,7 @@ Map style default options:
 ```R
 mypath <- file.path(here::here() \%>\%
                     dirname(),
-                     "maxent/models/slf_global_v3")
+                     "maxent/models/slf_global_v5")
 
 map_style <- list(
 xlab("UTM Easting"),
@@ -186,17 +209,17 @@ theme_classic()
 
 # EXAMPLE USAGE:
 scari::create_MaxEnt_suitability_maps_CV(
-model.obj = global_model,
-model.name = "global",
-mypath = mypath,
-create.dir = FALSE,
-env.covar.obj = x_global_126_env_covariates,
-describe.proj = "globe_2041-2070_GFDL_ssp126", # name of area or time period projected to
-clamp.pred = TRUE,
-thresh = c("MTP", "MTSS"),
-map.thresh = TRUE, # whether thresholded versions of these maps should be created
-map.thresh.extra = "MTP",
-summary.file = file.path(mypath, "global_summary_all_iterations.csv")
+ model.obj = global_model,
+ model.name = "global",
+ mypath = mypath,
+ create.dir = FALSE,
+ env.covar.obj = x_global_126_env_covariates,
+ describe.proj = "globe_2041-2070_GFDL_ssp126", # name of area or time period projected to
+ clamp.pred = TRUE,
+ thresh = c("fixed_1", "MTP", "MTSS", "10_percentile"),
+ map.thresh = TRUE, # whether thresholded versions of these maps should be created
+ map.thresh.extra = "fixed_1",
+ summary.file = file.path(mypath, "global_summary_all_iterations.csv")
 )
 
 ```

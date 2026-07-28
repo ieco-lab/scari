@@ -346,7 +346,7 @@ scari::compute_MaxEnt_summary_statistics(
   env.covar.obj = x_native_env_covariates, # env covariates raster stacked
   train.obj = regional_native_train, # training data used to create model
   test.obj = regional_native_test, # data you wish to use to test the model
-  plot.type = c("cloglog", "logistic"), # types of univariate and marginal response curves to be created
+  plot.type = "cloglog", # types of univariate and marginal response curves to be created
   jk.test.type = c("train", "test") # types of jackknife curves to be created
   )
 
@@ -428,9 +428,7 @@ knitr::include_graphics(
 
 ## 3.1 Create distribution map for area of interest
 
-Lastly, I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `MTP`, `MTSS` and `10_percentile` thresholds. The workflow for this function is wrapped into the function `create_MaxEnt_suitability_maps()`.
-
-I will retrieve the specific value for the MTSS threshold for this model and use it to define a what is considered unsuitable in this raster. Then, I will reclassify the mean raster so that anything below this threshold is now "unsuitable". I will use the mean cloglog threshold for all iterations. I will create a binary version of the mean raster, with unsuitable regions, which are below the MTSS training threshold, as 0, and those above the threshold as 1. Then, I can reclassify averaged raster of MaxEnt predictions. I will load in the averaged prediction for this model and reclassify the raster using a temporary raster layer that I will create. This raster will only have values where the model predicts the climate to be unsuitable, so that it can be plotted overtop the averaged raster to mask unsuitable areas
+Lastly, I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `fixed_1`, `MTSS` and `10_percentile` thresholds. The workflow for this function is wrapped into the function `create_MaxEnt_suitability_maps()`.
 
 ```{r set wd 1}
 
@@ -457,8 +455,8 @@ scari::create_MaxEnt_suitability_maps(
   describe.proj = "globe_1981-2010", # name of area or time period describe.proj to
   clamp.pred = TRUE,
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
-  thresh = c("MTP", "10_percentile", "MTSS"),
+  map.thresh.extra = "fixed_1",
+  thresh = c("fixed_1", "10_percentile", "MTSS"),
   summary.file = file.path(mypath, "regional_native_summary.csv")
 )
 
@@ -478,9 +476,9 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_126_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp126", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "10_percentile", "MTSS"),
+  thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1",
   summary.file = file.path(mypath, "regional_native_summary.csv")
 )
 
@@ -496,9 +494,9 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_370_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp370", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "10_percentile", "MTSS"),
+  thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1",
   summary.file = file.path(mypath, "regional_native_summary.csv")
 )
 
@@ -514,9 +512,9 @@ scari::create_MaxEnt_suitability_maps(
   env.covar.obj = x_global_585_env_covariates, 
   describe.proj = "globe_2041-2070_GFDL_ssp585", # name of area or time period projected to
   clamp.pred = TRUE,
-  thresh = c("MTP", "10_percentile", "MTSS"),
+  thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
-  map.thresh.extra = "MTP",
+  map.thresh.extra = "fixed_1",
   summary.file = file.path(mypath, "regional_native_summary.csv")
 )
 
@@ -524,7 +522,9 @@ scari::create_MaxEnt_suitability_maps(
 
 -->
 
-The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. Here are the maps for:
+The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. 
+
+This model resembles the global average in that the most prominent suitable areas above the MTSS (the colored areas) were predicted in North America, China, Japan, Korea, and Europe. This model adds significant area in southern Argentina and Australia, middle Asia, the western USA and New Zealand. Here are the predicted suitability maps. This model also follows the global average in that as the ssp scenario becomes more severe (ssp126 -> ssp585), the predicted suitable area of each map slowly shifts towards higher latitudes.
 
 The historical data (1981-2010):
 ```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -532,7 +532,7 @@ The historical data (1981-2010):
 # load in maps
 # historical data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_1981-2010.jpg"),
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_1981-2010.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -545,7 +545,7 @@ The predicted future data (2041-2070) under the ssp126 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp126.jpg"),
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp126.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -558,7 +558,7 @@ The predicted future data (2041-2070) under the ssp370 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp370.jpg"),
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp370.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -571,7 +571,7 @@ The predicted future data (2041-2070) under the ssp585 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_MTP_globe_2041-2070_GFDL_ssp585.jpg"),
+  path = file.path(mypath, "plots", "regional_native_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp585.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )

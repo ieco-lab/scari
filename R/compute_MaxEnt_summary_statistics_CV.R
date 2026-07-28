@@ -24,9 +24,8 @@
 #'"plots" folder within the model output sub directory will be created.
 #'
 #'@param env.covar.obj A stack of rasters of environmental covariates. These
-#'covariates are used to train and test the MaxEnt model, as well as to make
-#'predictions. These should be the same covariates that you used to train the
-#'model. This must a `SpatRaster` object created using [terra::rast()].
+#'should be the same covariates that you used to train the model. This must a
+#'`SpatRaster` object created using [terra::rast()].
 #'
 #'@param train.obj The main group of presence and background points used to
 #'train the model. Should be a SWD object, created using the
@@ -69,7 +68,7 @@
 #'* confusion matrices per iteration
 #'* jackknife tests for both training and testing data, per iteration
 #'* jackknife plots
-#'* AUC / TSS
+#'* Evaluation metrics (AUC and TSS)
 #'* ROC plots
 #'* marginal and univariate response curves
 #'
@@ -191,13 +190,13 @@ compute_MaxEnt_summary_statistics_CV <- function(model.obj, model.name = "MODEL"
     )
 
     # compile to data frame
-    auc_tss <- data.frame(AUC, TSS, row.names = c("Training", "Test"))
+    eval_metrics <- data.frame(AUC, TSS, row.names = c("Training", "Test"))
 
     # write to .csv
     # path to directory
 
     # write csv
-    write.csv(auc_tss, file = file.path(mypath, paste0(model.name, "_auc_tss.csv")), row.names = TRUE)
+    write.csv(eval_metrics, file = file.path(mypath, paste0(model.name, "_model_eval_metrics.csv")), row.names = TRUE)
 
 
 

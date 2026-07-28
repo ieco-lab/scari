@@ -76,16 +76,16 @@ First, we will assess the TSS score for each model. The TSS score is a measure o
 
 ```{r import TSS scores, message = FALSE}
 
-regional_native_tss <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_auc_tss.csv")) %>%
+regional_native_tss <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model_eval_metrics.csv")) %>%
   # select test TSS
   dplyr::select(TSS) %>%
   dplyr::slice_tail()
 
-regional_invaded_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_auc_tss.csv")) %>%
+regional_invaded_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model_eval_metrics.csv")) %>%
   dplyr::select(TSS) %>%
   dplyr::slice_tail()
 
-regional_invaded_asian_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_auc_tss.csv")) %>%
+regional_invaded_asian_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model_eval_metrics.csv")) %>%
   dplyr::select(TSS) %>%
   dplyr::slice_tail()
 
