@@ -20,8 +20,26 @@ Old versions of these vignettes are stored in scari/scari_sandbox (scari in this
 
 Example usage file. Contains examples of using create_risk_report() for the country of France. Updated version contains example usage of MaxEnt model outputs using create_MaxEnt_suitability_maps() and compute_MaxEnt_summar_statistics().
 
+## Changelog
+
 v0- initial version
 v1- updates to section 3 to add example calculation of maxent models for other pests of interest.
+
+----------supplement2_figures_tables.Rmd----------
+
+## About
+
+This file creates appendix S2 (tables and figures) and outputs it to a word document for further editing.
+
+## Changelog
+
+v0- creates v2 of appendix S2.
+
+----------initialize_site_pkgdown.R----------
+
+## About
+
+This file is used to create the pkgdown website. It should run at the end of a run of the package.
 
 ----------010_initialize_pkg.Rmd----------
 

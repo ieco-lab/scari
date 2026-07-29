@@ -564,15 +564,15 @@ I will take the above map and reclassify it so that areas that aren't suitable a
 
 Here is an explanation of all available threshold options for our function:
 
-* `BTO` = Balance training omission predicted area and threshold value. This threshold is the value which best balances the predicted area and the training omission rate. It is a compromise between sensitivity and specificity.
+* `BTO` = Balance training omission predicted area and threshold value. This threshold is the value which best balances the predicted area and the training omission rate. It is a compromise between sensitivity and specificity (MaxEnt summary output)
 * `EE` = Equate entropy of thresholded and original distributions. This threshold is the value which best equates the entropy between the original and thresholded value. Entropy is a measure of the "uniformness" of a distribution and is the situation that constrains the internal features the least (Phillips et al, 2006).
 * `ETSS` = Equal training sensitivity and specificity. Equalizes the chances of missing areas of suitable distribution and assigning unsuitable distribution (Damus, 2014).
-* `fixed_1` = Fixed cumulative value 1. Omits a fixed value of the bottom 1% of suitability from the training data points.
-* `fixed_5` = Fixed cumulative value 5. Omits a fixed value of the bottom 5% of suitability from the training data points.
-* `fixed_10` = Fixed cumulative value 10. Omits a fixed value of the bottom 10% of suitability from the training data points.
-* `MTP` or `LPT` = Minimum Training Presence. This threshold is the lowest predicted suitability value in the training presence point set.
-* `MTSS` = Maximum training sensitivity plus specificity. This threshold maximizes the sum of sensitivity and specificity for the training data. We use this threshold for our main analyses.
-* `ten_percentile` or `10_percentile` = Ten percentile training presence. This excludes the lowest 10% of predicted suitability values in the training presence point set.
+* `fixed_1` = Fixed cumulative value 1. Omits a fixed value of the bottom 1% of suitability from the training data points (MaxEnt Summary output).
+* `fixed_5` = Fixed cumulative value 5. Omits a fixed value of the bottom 5% of suitability from the training data points (MaxEnt Summary output).
+* `fixed_10` = Fixed cumulative value 10. Omits a fixed value of the bottom 10% of suitability from the training data points (MaxEnt Summary output).
+* `MTP` or `LPT` = Minimum Training Presence. This threshold is the lowest predicted suitability value in the training presence point set (Radosavljevic, A., & Anderson, R. P. 2014).
+* `MTSS` = Maximum training sensitivity plus specificity. This threshold maximizes the sum of sensitivity and specificity for the training data. We use this threshold for our main analyses (Liu et al, 2016).
+* `ten_percentile` or `10_percentile` = Ten percentile training presence. This excludes the lowest 10% of predicted suitability values in the training presence point set (Radosavljevic, A., & Anderson, R. P. 2014).
 
 In future vignettes, I will retrieve the specific value for the MTSS threshold for this model and use it to define a what is considered unsuitable in this raster. Then, I will reclassify the mean raster so that anything below this threshold is now "unsuitable", and anything above is considered suitable. I will use the mean cloglog threshold for all iterations. I will create a binary version of the mean raster, with unsuitable regions (below the MTSS training threshold) as 0, and those above the threshold as 1. Then, I can reclassify averaged raster of MaxEnt predictions. I will load in the averaged prediction for this model and reclassify the raster using a temporary raster layer that I will create. This raster will only have values where the model predicts the climate to be unsuitable, so that it can be plotted overtop the averaged raster to mask unsuitable areas.
 
@@ -938,21 +938,23 @@ pred_global_2055_mean <- terra::app(
 
 6. Liu, C., White, M., & Newell, G. (2013). Selecting thresholds for the prediction of species occurrence with presence-only data. Journal of Biogeography, 40(4), 778–789. https://doi.org/10.1111/jbi.12058
 
-7. Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: Complexity, overfitting and evaluation. Journal of Biogeography, 41(4), 629–643. https://doi.org/10.1111/jbi.12227
+7. Maxent model Summary Output. (2007, April 11). Maxent Model for Swainson’s Hawk (SWHA). https://geo.pointblue.org/lipmap/maxent_hu_ecoregion/SWHA.html
 
-8. Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190(3), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
+8. Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: Complexity, overfitting and evaluation. Journal of Biogeography, 41(4), 629–643. https://doi.org/10.1111/jbi.12227
 
-9. Steven Phillips. (2017). A Brief Tutorial on Maxent. http://biodiversityinformatics.amnh.org/open_source/maxent/.
+9. Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190(3), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
 
-10. Steven J. Phillips, Miroslav Dudík, & Robert E. Schapire. (2023). Maxent software for modeling species niches and distributions (Version 3.4.3 (Java)) [Computer software]. http://biodiversityinformatics.amnh.org/open_source/maxent/.
+10. Steven Phillips. (2017). A Brief Tutorial on Maxent. http://biodiversityinformatics.amnh.org/open_source/maxent/.
 
-11. Srivastava, V., Roe, A. D., Keena, M. A., Hamelin, R. C., & Griess, V. C. (2021). Oh the places they’ll go: Improving species distribution modelling for invasive forest pests in an uncertain world. Biological Invasions, 23(1), 297–349. https://doi.org/10.1007/s10530-020-02372-9
+11. Steven J. Phillips, Miroslav Dudík, & Robert E. Schapire. (2023). Maxent software for modeling species niches and distributions (Version 3.4.3 (Java)) [Computer software]. http://biodiversityinformatics.amnh.org/open_source/maxent/.
 
-12. Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2019). blockCV: An r package for generating spatially or environmentally separated folds for k-fold cross-validation of species distribution models. Methods in Ecology and Evolution, 10(2), 225–232. https://doi.org/10.1111/2041-210X.13107
+12. Srivastava, V., Roe, A. D., Keena, M. A., Hamelin, R. C., & Griess, V. C. (2021). Oh the places they’ll go: Improving species distribution modelling for invasive forest pests in an uncertain world. Biological Invasions, 23(1), 297–349. https://doi.org/10.1007/s10530-020-02372-9
 
-13. VanDerWal, J., Shoo, L. P., Graham, C., & Williams, S. E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know? Ecological Modelling, 220(4), 589–594. https://doi.org/10.1016/j.ecolmodel.2008.11.010
+13. Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2019). blockCV: An r package for generating spatially or environmentally separated folds for k-fold cross-validation of species distribution models. Methods in Ecology and Evolution, 10(2), 225–232. https://doi.org/10.1111/2041-210X.13107
 
-14. Vignali, S., Barras, A. G., Arlettaz, R., & Braunisch, V. (2020). SDMtune: An R package to tune and evaluate species distribution models. Ecology and Evolution, 10(20), 11488–11506. https://doi.org/10.1002/ece3.6786
+14. VanDerWal, J., Shoo, L. P., Graham, C., & Williams, S. E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know? Ecological Modelling, 220(4), 589–594. https://doi.org/10.1016/j.ecolmodel.2008.11.010
+
+15. Vignali, S., Barras, A. G., Arlettaz, R., & Braunisch, V. (2020). SDMtune: An R package to tune and evaluate species distribution models. Ecology and Evolution, 10(20), 11488–11506. https://doi.org/10.1002/ece3.6786
 
 # Appendix
 
