@@ -3,7 +3,7 @@ title: "Run 'Ri.NAmerica' model trained on SLF invaded region in North America"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-23"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -60,12 +60,12 @@ checkMaxentInstallation(verbose = TRUE)
 
 ```
 
-This chunk sets the java memory allocation (`Xmx`). I will increase the memory allocation from 512m (the default) to 2GB of memory.
+This chunk sets the java memory allocation (`Xmx`). I will increase the memory allocation from 512m (the default) to 8GB (8000mb) of memory. This should be edited according to your system, because you should still leave about 20% of your system memory available for other processes. If you have a 32-bit system, you cannot set the max above 4000mb.
 
 ```{r control MaxEnt settings}
 
 # xmx sets java memory allocation
-options(java.parameters = "-Xmx2048m")
+options(java.parameters = "-Xmx8000m")
 
 # xss sets java stack size
 # options(java.parameters = c("-Xss2560k", "-Xmx2048m"))

@@ -3,7 +3,8 @@
 
 ## Release notes
 
-* includes the most up-to-date SLF occurrence data from GBIF and `lydemapr` package (June 2026)
+* includes the most up-to-date SLF occurrence data from GBIF and `lydemapr` package (July 2026)
+* updated to R 4.6.1 and all packages updated as of July 30, 2026
 * added additional and updated [published sources](https://github.com/ieco-lab/scari/blob/master/data-raw/slf_publishedOccurrenceRecords_papers.csv)
 * big fixes to most functions
 

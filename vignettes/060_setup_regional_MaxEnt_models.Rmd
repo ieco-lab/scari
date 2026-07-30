@@ -3,7 +3,7 @@ title: "Setup for regional-scale MaxEnt models"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-07"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -227,7 +227,7 @@ env.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "
 
 ```
 
-Now I will download the Koppen-Geiger climate zones, which I will use to clip the bioclim layers.
+Now I will download the Koeppen-Geiger climate zones, which I will use to clip the bioclim layers.
 
 ```{r download koppen climate data}
  
@@ -399,7 +399,7 @@ terra::writeVector(
 
 koeppen_zones_rast <- terra::rast(x = file.path(mypath, "models", "working_dir", "koeppen_climate_zones.asc")) 
 
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species) 
 
 ```
@@ -493,7 +493,7 @@ regional_invaded_withSLF_plot <- ggplot() +
   geom_sf(data = regional_invaded_withSLF, aes(fill = as.factor(koeppen_climate_zones)), color = "black", lwd = 0.25) +
   # scales
   labs(
-    title = "K\U00F6ppen-Geiger climate zones as background selection area\nfor 'Ri.NAmerica' model",
+    title = "K\U00F6ppen-Geiger climate zones as background selection area\nfor North America Invaded model",
     caption = "K-G zones selected if containing SLF presences; grey indicates zone with no SLF",
     x = "UTM Easting",
     y = "UTM Northing",
@@ -690,7 +690,7 @@ I need to find a way to clip the climate zones by native vs invaded region, beca
 
 koeppen_zones_rast <- terra::rast(x = file.path(mypath, "models", "working_dir", "koeppen_climate_zones.asc")) 
 
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species) 
 
 ```
@@ -778,7 +778,7 @@ regional_invaded_asian_withSLF_plot <- ggplot() +
   geom_sf(data = regional_invaded_asian_withSLF, aes(fill = as.factor(koeppen_climate_zones)), color = "black", lwd = 0.25) +
   # scales
   labs(
-    title = "K\U00F6ppen-Geiger climate zones as background selection area\nfor 'Ri.Asia' model",
+    title = "K\U00F6ppen-Geiger climate zones as background selection area\nfor Asian Invaded model",
     caption = "K-G zones selected if containing SLF presences; grey indicates zone with no SLF",
     x = "UTM Easting",
     y = "UTM Northing",
@@ -958,7 +958,7 @@ I will import the SLF presences and KG shapefile first.
 ```{r import datasets- Rn}
 
 # slf presences
-slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_points <- read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species) 
 
 # load in KG shapefile 
@@ -1063,7 +1063,7 @@ regional_native_withSLF_plot <- ggplot() +
   geom_sf(data = regional_native_withSLF, aes(fill = as.factor(koeppen_climate_zones)), color = "black", lwd = 0.25) +
   # scales
   labs(
-    title = "K\U00F6ppen climate zones as background selection area for 'Rn' model",
+    title = "K\U00F6ppen climate zones as background selection area for Native model",
     caption = "K-G zones selected if containing SLF presences; grey indicates zone with no SLF",
     x = "UTM Easting",
     y = "UTM Northing",
@@ -1220,7 +1220,7 @@ global_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_global.asc
 regional_invaded_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_KG.asc")) 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1282,7 +1282,7 @@ regional_invaded_background_plot <- ggplot() +
   # raster of interest
   geom_raster(data = regional_invaded_bio11_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = regional_invaded_background, aes(x = x, y = y), color = "firebrick2", size = 0.25) +
-  ggtitle("'Ri.NAmerica' model background points") +
+  ggtitle("North America Invaded model background points") +
   # same coords used to cut other N America plots
   coord_sf(
     xlim = c(-13383144, -5069425), 
@@ -1321,7 +1321,7 @@ Now, I will repeat this process for the next two models.
 invaded_asian_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_asian_KG.asc")) 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1372,7 +1372,7 @@ regional_invaded_asian_points_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_bio11_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = regional_invaded_asian_points, aes(x = x, y = y), color = "firebrick2", size = 0.5) +
-  ggtitle("'Ri.Asia' model background points") +
+  ggtitle("Asian Invaded model background points") +
   coord_sf(crs = "ESRI:54017", datum = "ESRI:54017") +
   scale_x_continuous(limits = c(11861846, 14285214), expand = c(0, 0)) +
   scale_y_continuous(limits = c(3723782, 5227151), expand = c(0, 0))
@@ -1407,7 +1407,7 @@ terra::ext(regional_native_bio2)
 
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 
@@ -1459,7 +1459,7 @@ regional_native_points_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_native_bio2_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = regional_native_points, aes(x = x, y = y), color = "firebrick2", size = 0.25) +
-  ggtitle("'Rn' model background points") +
+  ggtitle("Native model background points") +
   coord_sf(
     xlim = c(7009531, 13605773), 
     ylim = c(-1221040, 5856473),
@@ -1502,7 +1502,7 @@ mypath <- file.path(here::here() %>%
 # background raster for plotting will be same as in last section
 
 # load in slf points to intersect
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) 
 
 ```
@@ -1560,7 +1560,7 @@ regional_invaded_slf_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded, aes(x = x, y = y), color = "darkorange", size = 0.5) +
-  labs(title = "'Ri.NAmerica' model SLF presences") +
+  labs(title = "North America Invaded model SLF presences") +
   coord_sf(
     xlim = c(-13383144, -5069425), 
     ylim = c(1914870, 6384927),
@@ -1637,7 +1637,7 @@ regional_invaded_asian_slf_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_asian, aes(x = x, y = y), color = "darkorange", size = 1) +
-  labs(title = "'Ri.Asia' model SLF presences") +
+  labs(title = "Asian Invaded model SLF presences") +
   coord_sf(crs = "ESRI:54017", datum = "ESRI:54017") +
   scale_x_continuous(limits = c(11861846, 14285214), expand = c(0, 0)) +
   scale_y_continuous(limits = c(3723782, 5227151), expand = c(0, 0))
@@ -1712,7 +1712,7 @@ regional_native_slf_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_native_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_native, aes(x = x, y = y), color = "darkorange", size = 1) +
-  labs(title = "'Rn' model SLF presences") +
+  labs(title = "Native model SLF presences") +
   coord_sf(
     xlim = c(7009531, 13605773), 
     ylim = c(-1221040, 5856473),
@@ -1881,7 +1881,7 @@ regional_invaded_test_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_test, aes(x = x, y = y), color = "darkorange", size = 1) +
-  labs(title = "'Ri.NAmerica' model validation (test) presences") +
+  labs(title = "North America Invaded model validation (test) presences") +
   coord_sf(crs = "ESRI:54017", datum = "ESRI:54017") +
   scale_x_continuous(limits = c(11861846, 14285214), expand = c(0, 0)) +
   scale_y_continuous(limits = c(3723782, 5227151), expand = c(0, 0))
@@ -1904,7 +1904,7 @@ regional_invaded_withSLF_plot <- regional_invaded_withSLF_plot +
     ) +
   labs(
     tag = "C",
-    fill = "zone"
+    fill = "K-G\nzone"
     ) +
   scale_x_continuous(labels = x_scale_labels, breaks = x_scale_labels, expand = c(0, 0)) +
   scale_y_continuous(labels = y_scale_labels, breaks = y_scale_labels, expand = c(0, 0)) +
@@ -1978,7 +1978,7 @@ regional_invaded_patchwork <- (
   (regional_invaded_withSLF_plot + regional_invaded_test_plot) 
   ) +
   plot_annotation(
-    title = "'Ri.NAmerica' model elements",
+    title = "North America Invaded model elements",
     subtitle = "(A) training presences (B) background points (C) background selection area (D) test presences"
     ) 
 
@@ -2023,7 +2023,7 @@ regional_invaded_asian_test_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_asian_test, aes(x = x, y = y), color = "darkorange", size = 1) +
-  labs(title = "'Ri.Asia' model test presences") +
+  labs(title = "Asian Invaded model test presences") +
   coord_sf(
     xlim = c(-13383144, -5069425), 
     ylim = c(1914870, 6384927),
@@ -2050,7 +2050,7 @@ regional_invaded_asian_withSLF_plot <- regional_invaded_asian_withSLF_plot +
     ) +
   labs(
     tag = "C",
-    fill = "zone"
+    fill = "K-G\nzone"
     ) +
   scale_x_continuous(limits = c(11861846, 14285214), labels = x_scale_labels, breaks = x_scale_labels, expand = c(0, 0)) +
   scale_y_continuous(limits = c(3723782, 5227151), labels = y_scale_labels, breaks = y_scale_labels, expand = c(0, 0)) +
@@ -2124,7 +2124,7 @@ regional_invaded_asian_patchwork <- (
   (regional_invaded_asian_withSLF_plot + regional_invaded_asian_test_plot) 
   ) +
   plot_annotation(
-    title = "'Ri.Asia' model elements",
+    title = "Asian Invaded model elements",
     subtitle = "(A) training presences (B) background points (C) background selection area (D) test presences"
     )
 
@@ -2169,7 +2169,7 @@ regional_native_test_plot <- ggplot() +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_native_test, aes(x = x, y = y), color = "darkorange", size = 1) +
-  labs(title = "'Rn' model test presences") +
+  labs(title = "Native model test presences") +
   coord_sf(
     xlim = c(-13383144, -5069425), 
     ylim = c(1914870, 6384927),
@@ -2200,7 +2200,7 @@ regional_native_withSLF_plot <- regional_native_withSLF_plot +
     ) +
   labs(
     tag = "C",
-    fill = "zone"
+    fill = "K-G\nzone"
     ) +
   guides(fill = guide_legend(ncol = 2)) +
   scale_x_continuous(labels = x_scale_labels, breaks = x_scale_labels, expand = c(0, 0)) +
@@ -2267,7 +2267,7 @@ regional_native_patchwork <- (
   (regional_native_withSLF_plot | regional_native_test_plot)
    ) +
   plot_annotation(
-    title = "'Rn' model elements",
+    title = "Native model elements",
     subtitle = "(A) training presences (B) background points (C) background selection area (D) test presences"
     ) +
   plot_layout(widths = unit(20, "cm")) 

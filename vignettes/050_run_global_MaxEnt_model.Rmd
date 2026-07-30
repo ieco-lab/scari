@@ -3,7 +3,7 @@ title: "Run global-scale MaxEnt model"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-06"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -64,12 +64,12 @@ checkMaxentInstallation(verbose = TRUE)
 
 ```
 
-This chunk sets the java memory allocation (`Xmx`). I will increase the memory allocation from 512m (the default) to 2GB of memory.
+This chunk sets the java memory allocation (`Xmx`). I will increase the memory allocation from 512m (the default) to 8GB (8000mb) of memory. This should be edited according to your system, because you should still leave about 20% of your system memory available for other processes. If you have a 32-bit system, you cannot set the max above 4000mb.
 
 ```{r control MaxEnt settings}
 
 # xmx sets java memory allocation
-options(java.parameters = "-Xmx2048m")
+options(java.parameters = "-Xmx8000m")
 
 # xss sets java stack size
 # options(java.parameters = c("-Xss2560k", "-Xmx2048m"))
@@ -87,7 +87,7 @@ First, I will load in the SLF presence dataset created in vignette 020 and the b
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+p_slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) 
 
 # entire eastern USA background point set
@@ -310,7 +310,7 @@ global_model <- SDMtune::train(
   method = "Maxent",
   data = global_train,
   folds = global_trainFolds, # 10 folds for dataset
-  fc = "1qpht", # feature classes set to ALL
+  fc = "lqpht", # feature classes set to ALL
   iter = 5000, # number of iterations
   progress = TRUE
 )
@@ -390,7 +390,7 @@ if (FALSE) {
 
 ```
 
-Based on the test AUC metric, the highest value was attributed to model 13, with a regularization multiplier of 2 and only hinge (h) features. Lets also check the TSS to be sure.
+Based on the test AUC metric, the highest value was attributed to model 7, with a regularization multiplier of 1 and only hinge (h) features. Lets also check the TSS to be sure.
 
 ```{r tune based on test TSS}
   
@@ -720,7 +720,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_global_v5")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 ```

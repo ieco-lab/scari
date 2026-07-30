@@ -3,7 +3,7 @@ title: "Setup for global-scale MaxEnt model"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-06"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -127,7 +127,7 @@ First, I will load in known SLF presences so that background sampling does not o
 ```{r load in SLF presence, eval = TRUE}
 
 # dismo requires the base function (not tidyverse)
-slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) %>%
   as.data.frame()
 

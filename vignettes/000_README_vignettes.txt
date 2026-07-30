@@ -53,7 +53,7 @@ v0- initial version
 v1- 2024-08-26
 v2- 2024-10-16- changed to .Rmd, fixed renv errors with project
 v3- 2025-07-04- added some descriptions to file
-v4- 2026-06-23- fixed some bugs, emphasized gitcreds set
+v4- 2026-07-30- fixed some bugs, emphasized gitcreds set
 
 
 
@@ -88,7 +88,7 @@ v3- 2024-07-29- rework methods and data update- using new GBIF and lydeMapR data
 v4- 2024-08-05- swapped workflow from scrubr (deprecated) to coordinateCleaner R package, removed Taiwan records based on new paper pre-print
 v5- 2025-02-08- retired use of Humboldt and spThin packages. Replaced usage with GeoThinneR package. Changed spatial thinning method to thin using the bioclimatic grid cells rather than simple pairwise distances. Switched order in workflow to 030
 v6- 2025-07-04- reran file with new datasets, transformed final dataset into Behrmann projection
-v7- 2026-06-23- reran file with new datasets, used input directly from LydemapR package, rather than tinyslf csv upload (previous version from Joe Keller, July 7, 2025)
+v7- 2026-07-30- reran file with new datasets, used input directly from LydemapR package, rather than tinyslf csv upload (previous version from Joe Keller, July 7, 2025)- had to update lydemapr coords on 2026-07-30 using new package version (previously 3.0.3, now 4.1.0)
 
 
 
@@ -103,7 +103,7 @@ Preparations for running the global-scale model, including cropping rasters, cho
 v0- initial version
 v1- 2024-07-31- rework- updated SLF presence data and inclusion of other SSP scenarios- added cropping of other ssp scenario rasters
 v2- 2025-07-07- rerun for v4 of model, transformed final dataset into Behrmann projection
-v3- 2026-07-06- rerun for v5 of the model- contains new SLF data
+v3- 2026-07-30- rerun for v5 of the model- contains new SLF data
 
 ----------050_run_global_MaxEnt_model.Rmd----------
 
@@ -118,7 +118,7 @@ v1- in sandbox/vignettes_old. creates v1 of the global model
 v2- creates v2 of the global model- changed procedure for global model cross-validation from k-fold random selection to k-fold blocked selection (multiple papers said this was more rigorous)- added blockCV package usage- LATER: reverted to k-fold random CV because blocked CV did not work- creates
 v3- 2024-07-31- rework- updated SLF presence data and inclusion of other SSP scenarios- creates v3 of the global model, fixed some methods for cross validation of model, added other SSP scenario predictions for model
 v4- 2025-07-07- rerun for v4 of model, transformed final dataset into Behrmann projection
-v5- 2026-07-06- rerun for v5 of the model- contains new SLF data
+v5- 2026-07-30- rerun for v5 of the model- contains new SLF data
 
 
 ----------051_compute_MaxEnt_summary_statistics_workflow.Rmd----------
@@ -150,7 +150,7 @@ v5- added table indicating number of training points per model, added plot facet
 v6- 2024-08-02- rework- updated SLF presence data and inclusion of other SSP scenarios
 v7- 2024-10-09- cleaned and simplified workflow
 v8- 2025-07-14- rerun for new versions of models using Behrmann projection
-v9- 2026-07-06- rerun for new versions of models (v9 invaded, v4 invaded asian, v5 native) using new data for 2025-2026
+v9- 2026-07-30- rerun for new versions of models (v9 invaded, v4 invaded asian, v5 native) using new data for 2025-2026
 
 
 ----------070_run_regional_invaded_MaxEnt_model.Rmd----------

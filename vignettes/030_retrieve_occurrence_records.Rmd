@@ -3,7 +3,7 @@ title: "SLF occurrence records: GBIF, lydemapR, literature"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-06-30"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -268,7 +268,7 @@ rgbif::occ_download_wait('0000043-260623161305970')
 
 ```
 
-The data have been pulled to the gbif server, but now we must download the data and edit it in a number of ways. I will use the download key for all of my functions from now on: key = '0000043-260623161305970'
+The data have been pulled to the gbif server, but now we must download the data and edit it in a number of ways. I will use the download key for all of my functions from now on: `key = '0000043-260623161305970'`.
 
 First, I will import the dataset to my working directory. I will also retrieve the data citation for this download. I will rename the raw download file. Finally, I will subset the desired columns and save them as a separate .csv for use in tidying. The raw query and the raw coordinates will be saved to the `data-raw` folder. I will read in the coordinate data saved there afterwards to prepare for data tidying.
 
@@ -326,9 +326,7 @@ rgbif::gbif_citation('0000043-260623161305970')
 
 Here is the data citation: "GBIF Occurrence Download https://doi.org/10.15468/dl.wfpdrz Accessed from R via rgbif (https://github.com/ropensci/rgbif) on 2026-06-23"
 
-
 There are 59,999 total records from GBIF.
-Datasets = NULL
 
 ### Coordinate veracity
 
@@ -486,10 +484,10 @@ The next chunk was an import from an unpublished version of the lydemapr dataset
 
 if (FALSE) {
   
-  slf_lyde_raw <- readr::read_csv(file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-06-23.csv"))
+  slf_lyde_raw <- readr::read_csv(file = file.path(here::here(), "data-raw", ""))
   
   # overwrite save original version
-  write_csv(x = slf_lyde_raw, file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-06-23.csv"))
+  write_csv(x = slf_lyde_raw, file = file.path(here::here(), "data-raw", ""))
   
 }
 
@@ -502,7 +500,7 @@ Lastly, I will pull records only from areas where SLF have established a populat
 ```{r select only desired records}
 
 # read in data
-slf_lyde <- readr::read_csv(file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-06-23.csv"))
+slf_lyde <- readr::read_csv(file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-07-30.csv"))
 
 # unique values for collection method
 unique(slf_lyde$collection_method)
@@ -516,7 +514,7 @@ slf_lyde1 <- slf_lyde %>%
 
 ```
 
-The data that fit our needs are about 55,000 records total.
+The data that fit our needs are about 81,700 records total.
 
 ### Coordinate veracity
 
@@ -545,7 +543,7 @@ slf_lyde1 <- slf_lyde_report %>%
 
 ```
 
-Again, the majority were duplicates, followed by those that fell into bodies of water.
+Again, the majority were duplicates, followed by those that fell into bodies of water. This removal left about 12,700 records.
 
 ```{r spatial thinning- lydemapR}
 
@@ -565,14 +563,14 @@ slf_lyde2 <- slf_lyde2[[1]] %>% dplyr::select(source:species)
 
 ```
 
-Spatial thinning for the `lyde` dataset left 1386 points out of the 39,000 points that fit our needs. Previous usage of the Humboldt package left 366 points out of 39,000.
+Spatial thinning for the `lyde` dataset left 1,673 final points that fit our needs. Previous usage of this package left 1371 points out of 39,000 after the initial selection of data (only established populations, etc.).
 
 ```{r save cleaned data- lydemapR}
 
-write_csv(slf_lyde2, file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_lyde_cleaned_coords_2026-06-23.csv"))
+write_csv(slf_lyde2, file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_lyde_cleaned_coords_2026-07-30.csv"))
 
 # also save as a .rds file
-write_rds(slf_lyde2, file = file.path(here::here(), "data", "slf_lyde_cleaned_coords_2026-06-23.rds"))
+write_rds(slf_lyde2, file = file.path(here::here(), "data", "slf_lyde_cleaned_coords_2026-07-30.rds"))
 
 ```
 
@@ -635,7 +633,7 @@ For the Lydemapr package data, I chose to include only established populations s
 ```{r visualize raw and thinned lydemapr records, eval = TRUE,  message = FALSE, warning = FALSE}
 
 # raw data
-lyde_raw <- readr::read_csv(file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-06-23.csv"))
+lyde_raw <- readr::read_csv(file = file.path(here::here(), "data-raw", "slf_lyde_raw_coords_2026-07-30.csv"))
 
 # ensure data points represent presences
 lyde_presences <- lyde_raw %>%
@@ -772,7 +770,7 @@ Now, I will load in the cleaned coordinates from GBIF and LydemapR that we produ
 
 slf_gbif_coords3 <- readr::read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_gbif_cleaned_coords_2026-06-23.csv"))
 
-slf_lyde3 <- readr::read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_lyde_cleaned_coords_2026-06-23.csv"))
+slf_lyde3 <- readr::read_csv(file.path(here::here(), "vignette-outputs", "data-tables", "slf_lyde_cleaned_coords_2026-07-30.csv"))
 
 ```
 
@@ -830,7 +828,7 @@ slf_all_coords <- slf_gbif_coords3 %>%
 
 ```{r save joined dataset}
 
-write_csv(x = slf_all_coords, file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_2026-06-23.csv"))
+write_csv(x = slf_all_coords, file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_2026-07-30.csv"))
 
 ```
 
@@ -857,7 +855,7 @@ slf_all_coords1 <- slf_all_coords1[[1]]
 
 ```
 
-This thinning method left 3261 of 4623 records.
+This thinning method left 3422 of 4892 records.
 
 ```{r de-duplicate}
 
@@ -878,7 +876,7 @@ slf_all_coords2 <- slf_all_coords_report %>%
 
 ```
 
-This thinning method removed an additional ~80 records, reducing the final number to 3189. 
+This thinning method removed an additional ~80 records, reducing the final number to 3345. 
 
 Finally, I will re-run the `GeoThinneR` method, additionally using a raw distance metric.
 
@@ -899,7 +897,7 @@ slf_all_coords3 <- slf_all_coords3[[1]]
 
 ```
 
-This method removed a lot of coordinates- reducing the final count from 3020 to 1891 records.
+This method removed a lot of coordinates- reducing the final count from 3345 to 1967 records.
 
 ## 3.2- Save output for MaxEnt
 
@@ -908,7 +906,7 @@ We will finally convert the slf coordinates to the format that will be used by M
 ```{r maxent conversion and save}
 
 # save EPSG4326 version before transformation
-write_csv(x = slf_all_coords3, file = file.path(here::here(), "vignette-outputs", "data-tables", paste0("slf_all_coords_final_2026-06-23_epsg4326.csv")))
+write_csv(x = slf_all_coords3, file = file.path(here::here(), "vignette-outputs", "data-tables", paste0("slf_all_coords_final_2026-07-30_epsg4326.csv")))
 
 # rename columns
 slf_all_coords4 <- slf_all_coords3 %>%
@@ -934,16 +932,16 @@ slf_all_coords5 <- terra::as.data.frame(slf_all_coords4) %>%
 ```{r save work}
 
 # save
-write_csv(x = slf_all_coords5, file = file.path(here::here(), "vignette-outputs", "data-tables", paste0("slf_all_coords_final_2026-06-23.csv")))
+write_csv(x = slf_all_coords5, file = file.path(here::here(), "vignette-outputs", "data-tables", paste0("slf_all_coords_final_2026-07-30.csv")))
 
 # also save as a .rds file
-write_rds(slf_all_coords5, file = file.path(here::here(), "data", paste0("slf_all_coords_final_2026-06-23.rds")))
+write_rds(slf_all_coords5, file = file.path(here::here(), "data", paste0("slf_all_coords_final_2026-07-30.rds")))
   
 ```
 
 ```{r map all points, eval = TRUE}
 
-slf_all_coords_df <- readr::read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23_epsg4326.csv"))
+slf_all_coords_df <- readr::read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30_epsg4326.csv"))
 
  map_all <- ggplot() +
     # basemap
