@@ -166,9 +166,8 @@
 #'
 #'@examples
 #'
-#'# ARGUMENT USAGE:
+#'# ARGUMENT USAGE--------------------------------------------------------------
 #'
-#'```R
 #'mypath <- file.path(here::here() %>%
 #'                     dirname(),
 #'                      "maxent/models/slf_global_v5")
@@ -179,7 +178,10 @@
 #' theme_classic()
 #' )
 #'
-#'# EXAMPLE USAGE:
+#'# EXAMPLE USAGE---------------------------------------------------------------
+#'
+#'```R
+#'
 #'scari::create_MaxEnt_suitability_maps_CV(
 #'  model.obj = global_model,
 #'  model.name = "global",

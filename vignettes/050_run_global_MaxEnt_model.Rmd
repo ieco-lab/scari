@@ -416,9 +416,11 @@ if (FALSE) {
 
 ```
 
-We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 2.0 and qpht features (model 14). The best fit models both have a regularization multiplier of 2.0 features, but we have to pick from qpht or only h features. Initially, I chose model 13; however, upon inspecting the output, there were no areas on the planet considered "unsuitable". All areas were over the fixed_1 threshold, which is the most conservative threshold with respect to invasive species (see 3.1 below for more detail). This means that the model was underfit (too general), likely due to the regularization multiplier. When the regularization multiplier is too high, the result is an over generalized model, which fits with an overly broad predicted area of suitability.
+We get slightly different results based on the test TSS metric. We see that the highest value was attributed to the model with a regularization multiplier of 2.0 and qpht features (model 14). The two best fit models give us a choice between a regularization multiplier of 1.0 or 2.0 and all or "qpht" features. 
 
-Previous iterations of this model had a regularization multiplier of 1.5 and qpht features, which produced more reasonable predictions. I will reflex to that result and use model 11 (the previous iteration), with a reg multiplier of 1.5 and qpht features.
+For previous iterations of the model, I chose model models with a reg multiplier of 2.0, and these models had an artificially inflated suitable area (there were no areas on the planet considered "unsuitable"). All areas were over the `fixed_1` threshold, which is the most conservative threshold with respect to invasive species (see 3.1 below for more detail). This means that the model was underfit (too general). When the regularization multiplier is too high, the result is an over generalized model, which fits with an overly broad predicted area of suitability. I will choose from the models using a reg multiplier of 1.5. 
+
+The most fit model of those with a 1.5 reg multiplier according to the test AUC is model 10 (h features), while the highest of those according to the test TSS is a tie between models 11 and 12 (qpht or all features). The difference between the test TSS between models is greater than between the test AUC, so I will use the TSS. All features has been shown to be redundant (Elith et al, 2011), so I will choose use model 11, with a reg multiplier of 1.5 and qpht features.
 
 I will also use these model settings for the three models performed for SLF at the regional scale.
 
@@ -449,7 +451,7 @@ scari::compute_MaxEnt_summary_statistics_CV(
   trainFolds.obj = global_trainFolds,  # k-folds of training data
   test.obj = global_test, # data you wish to use to test the model
   jk.test.type = c("train", "test"), # types of jackknife curves to be created
-  plot.type = c("cloglog", "logistic") # types of univariate and marginal response curves to be created
+  plot.type = "cloglog" # types of univariate and marginal response curves to be created
   )
 
 ```
@@ -470,7 +472,7 @@ readr::write_rds(global_model_tuned_tss, file = file.path(mypath, "global_model_
 
 ```
 
-Looking at the summary statistics, the most explanatory variable (according to the jackknife test for the training data, which was 80% withheld on a randomized basis) is the minimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model; when left out, it has the most negative impact on the overall model. So, this is the most impactful variable in the training data, which is most explanatory of SLF distributions. The randomly withheld 20% of the testing data, gave the same results. This aligns with the literature (Lee et al, 2011). The permutation importance plot validates these points.
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test for the training data, which was 80% withheld on a randomized basis) is the minimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model; when left out, it has the most negative impact on the overall model. So, this is the most impactful variable in the training data and is most explanatory of SLF distributions. The randomly withheld 20% of the testing data gave the same results, both results align closely with the literature (Lee et al, 2011). The permutation importance plot validates these points.
 
 Here are the jackknife plots:
 ```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -526,7 +528,7 @@ knitr::include_graphics(
 
 ```
 
-The model itself had a training AUC of 0.987 and a test AUC of 0.984, performing well.
+The model itself performed well. It had a training and test AUC 0.986 and 0.977, respectively, and a training 
 
 Here is the ROC curve:
 ```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -537,6 +539,8 @@ knitr::include_graphics(
   rel_path = FALSE, # already done
   error = TRUE
   )
+
+print(read_csv(file.path(mypath, "global_model_eval_metrics.csv")))
 
 ```
 

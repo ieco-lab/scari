@@ -123,10 +123,9 @@
 #'
 #'@examples
 #'
-#'# EXAMPLE USAGE:
+#'# EXAMPLE USAGE---------------------------------------------------------------
 #'
 #'```R
-#'
 #'scari::create_risk_report(
 #' locality.iso = "aus",
 #' locality.name = "australia",
@@ -139,17 +138,13 @@
 #'
 #'```
 #'
-#'# ARGUMENT USAGE:
-#'
-#'```R
+#'# ARGUMENT USAGE--------------------------------------------------------------
 #'
 #'map_style <- list(
 #' xlab("longitude"),
 #' ylab("latitude"),
 #' theme_classic()
 #')
-#'
-#'```
 #'
 #'# The output is in list format, so it should be called using this notation:
 #'

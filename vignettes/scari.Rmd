@@ -449,4 +449,6 @@ Hijmans R (2024). terra: Spatial Data Analysis. R package version 1.7-81, https:
 
 Ushey K, Wickham H (2024). renv: Project Environments. R package version 1.0.7, https://github.com/rstudio/renv, https://rstudio.github.io/renv/.
 
+Vignali, S., Barras, A., Braunisch, V., & Bern, C. B.-U. of. (2023). SDMtune: Species Distribution Model Selection (Version 1.3.3) [Computer software]. https://cloud.r-project.org/web/packages/SDMtune/index.html
+
 Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” Journal of Open Source Software, 4(43), 1686. doi:10.21105/joss.01686.

@@ -120,7 +120,9 @@
 #'
 #'@examples
 #'
-#'# download historical bioclimatic variables:
+#'# download historical bioclimatic variables-----------------------------------
+#'
+#'```R
 #'scari::import_chelsa_v2(
 #' var.type = "climatologies",
 #' var.subtype = "bio",
@@ -133,7 +135,12 @@
 #' save.output = FALSE
 #')
 #'
-#'# download projected bioclimatic variables under climate change:
+#'```
+#'
+#'# download projected bioclimatic variables under climate change---------------
+#'
+#'```R
+#'
 #'scari::import_chelsa_v2(
 #' var.type = "climatologies",
 #' var.subtype = "bio",
@@ -145,6 +152,8 @@
 #' bioclim.model = 'gfdl-esm4', # historical data
 #' save.output = FALSE
 #')
+#'
+#'```
 #'
 #'@keywords internal
 import_chelsa_v2 <- function(var.type = "bio", var.subtype = "bio", var.period, bioclim.type = NA, bioclim.number = NA, bioclim.period = NA, bioclim.ssp = NA, bioclim.model = NA, mypath = NA, create.dir = FALSE, save.output = FALSE) {

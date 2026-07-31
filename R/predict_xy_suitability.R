@@ -78,9 +78,10 @@
 #'
 #'@examples
 #'
+#'# simple predict method-------------------------------------------------------
+#'
 #'```R
 #'
-#'# simple predict method
 #'scari::predict_xy_suitability(
 #' xy.obj = IVR_regions,
 #' xy.type = "IVR regions",
@@ -92,7 +93,12 @@
 #' output.name = "regional_native_wineries_1981-2010"
 #' )
 #'
-#' # buffered predict method
+#' ```
+#'
+#' # buffered predict method----------------------------------------------------
+#'
+#'```R
+#'
 #'scari::predict_xy_suitability(
 #' xy.obj = IVR_regions,
 #' xy.type = "IVR regions",

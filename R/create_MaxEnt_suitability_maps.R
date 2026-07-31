@@ -159,9 +159,7 @@
 #'
 #'@examples
 #'
-#'# ARGUMENT USAGE:
-#'
-#'```R
+#'# ARGUMENT USAGE--------------------------------------------------------------
 #'
 #'mypath <- file.path(here::here() %>%
 #'                     dirname(),
@@ -173,7 +171,10 @@
 #' theme_classic()
 #' )
 #'
-#'# EXAMPLE USAGE:
+#'# EXAMPLE USAGE---------------------------------------------------------------
+#'
+#'```R
+#'
 #'scari::create_MaxEnt_suitability_maps(
 #'  model.obj = regional_native_model,
 #'  model.name = "regional_native",

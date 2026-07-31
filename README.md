@@ -1,15 +1,15 @@
-# Shifting Climate Assessments for Risk of Invasions
+# Shifting Climate Assessments for Risk of Invasions (SCARI)
 ## `scari` R Package Overview <a href="https://ieco-lab.github.io/scari/"><img src="man/figures/logo.png" align="right" height="120" alt="scari website" /></a>
 
 `scari` is an R package and research compendium that documents a multiscale species distribution modeling (SDM) workflow to forecast establishment and impact risk of a species invasion as it shifts with climate change.
 
-We developed this workflow to quantify the shifting risk of future establishment of the invasive species *Lycorma delicatula* (spotted lanternfly or SLF) in important viticulture regions worldwide. The `R` function [create_risk_report](R/create_risk_report.R) produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units. For example usage of this function in different contexts, see articles under [Create Reports](articles/reports_index.html).
+We developed this workflow to quantify the shifting risk for the establishment of invasive species under climate change. We specifically look at *Lycorma delicatula* (spotted lanternfly or SLF) as a focal species for our study, and quantify the potential risk for its establishment within globally important viticulture regions. The `R` function [create_risk_report](R/create_risk_report.R) produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units. For example usage of this function in different contexts, see the [Create Reports](docs/articles/reports_index.html) tab.
 
 ### Citation
 
 The package `scari` is a research compendium for:
 
-Owens, S. M. (2024). Multi-scale Modeling of the Spotted Lanternfly Lycorma delicatula (Hemiptera: Fulgoridae) Reveals Displaced Risk to Viticulture and Regional Range Expansion Due to Climate Change [M.S., Temple University]. In ProQuest Dissertations and Theses (3099643448). https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527
+Owens, S. M. (2024). Multi-scale Modeling of the Spotted Lanternfly *Lycorma delicatula* (Hemiptera: Fulgoridae) Reveals Displaced Risk to Viticulture and Regional Range Expansion Due to Climate Change [M.S., Temple University]. In ProQuest Dissertations and Theses (3099643448). https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527
 ![image](https://github.com/user-attachments/assets/c840b94d-0c42-40bb-9134-cae1c31bb7e3)
 
 ### Installation
@@ -68,30 +68,22 @@ Before diving into this project and our modeling workflow, an end user should:
 1. Read the [companion paper](https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527), which outlines the conceptual underpinnings for this project.
 2. Download, build and install this package locally.
 3. Install the package `renv`, and run `renv::restore()` inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).
-4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv` and lists our package's dependencies.
+4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv`, lists our package's dependencies, and introduces some important information.
 5. See the [Get Started](articles/scari.html) tab for help in using our package to produce localized reports on SLF risk to viticulture or to recreate our analysis for another invasive species of interest
   
 Once these steps are completed, the end user can get started either generating SLF reports, or following and editing the full modeling pipeline. 
-
-#### Notes about using this package's code
-
-I use some of the following conventions to ensure that the package's .html files render correctly, the code is not overly cumbersome to run, and that data aren't re-downloaded unnecessarily:
-
-* I have added a number of `if()` statements throughout my vignettes, usually to prevent data from being downloaded again unnecessarily. Simply change the `FALSE` within the `if()` statement to `TRUE` to run a chunk.
-* I have a chunk near the beginning of every vignette that sets the global chunk options: `knitr::opts_chunk$set(eval = FALSE)`. This prevents the code from running automatically when the vignette is rendered. You can change this to `TRUE` if you want to run the code in that chunk.
-* I have added html comment tags (`<!--` and `-->`) to the code chunks that I do not want to run automatically as the website is rendered. Much of the code that is commented out is redundant, but I have left it in the code for reference so as not to disrupt the true workflow. You can remove these comments if you want to run the code in those chunks.
 
 #### Computing and Software Information
 
 This package was developed and its vignettes were rendered on a Dell Precision desktop PC with the following characteristics:
 
 * Core: intel Xeon CPU, 3.60 GHz
-* RAM memory: 64 GB
+* RAM memory: 64 GB (at least 2GB memory allocation to Java via R)
 * Operating System: Windows 11 Enterprise, version 24H2
-* R version: 4.5.1
-* Rstudio version: 2025.05.1+513
+* R version: 4.6.1
+* Rstudio version: 2026.07.1+147
 
-Be sure to download and install the correct bit version of [Java](https://www.oracle.com/java/technologies/downloads/#java24) for your operating system to use this package.
+Be sure to download and install the correct bit version of [Java](https://www.oracle.com/java/technologies/downloads/#java24) for your operating system to use this package. 
 
 ## References
 

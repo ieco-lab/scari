@@ -85,11 +85,10 @@
 #'
 #'@examples
 #'
-#'# EXAMPLE USAGE:
+#'# simple predict method-------------------------------------------------------
 #'
 #'```R
 #'
-#'# simple predict method
 #'scari::predict_xy_suitability_CV(
 #' xy.obj = IVR_regions,
 #' xy.type = "IVR regions",
@@ -101,7 +100,12 @@
 #' output.name = "global_wineries_1981-2010"
 #' )
 #'
-#' # buffered predict method
+#'```
+#'
+#' # buffered predict method----------------------------------------------------
+#'
+#'```R
+#'
 #'scari::predict_xy_suitability_CV(
 #' xy.obj = IVR_regions,
 #' xy.type = "IVR regions",
@@ -116,7 +120,7 @@
 #' buffer.fun = c("min", "max")
 #' )
 #'
-#' ```
+#'```
 #'
 #'@export
 predict_xy_suitability_CV <- function(xy.obj, xy.type, env.covar.obj, model.obj, mypath, predict.fun = "mean", predict.type = "cloglog", clamp.pred = TRUE, buffer.pred = FALSE, buffer.fun = c("min", "mean", "max"), buffer.dist = 20000, crs = "ESRI:54017", output.name) {

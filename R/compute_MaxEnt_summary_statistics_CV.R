@@ -74,11 +74,10 @@
 #'
 #'@examples
 #'
-#'# ARGUMENT USAGE:
+#'# ARGUMENT USAGE--------------------------------------------------------------
+#'
 #'# model.obj = global_model
 #'# model.name = "global"
-#'
-#'```R
 #'
 #'mypath <- file.path(here::here() %>%
 #'                     dirname(),
@@ -87,7 +86,10 @@
 #'jk.test.type <- c("train", "test") # used to produce jackknife plots
 #'plot.type <- c("cloglog", "logistic") # used to produce marginal and univariate response curves
 #'
-#'# EXAMPLE USAGE:
+#'# EXAMPLE USAGE---------------------------------------------------------------
+#'
+#'```R
+#'
 #'scari::compute_MaxEnt_summary_statistics_CV(
 #' model.obj = global_model,
 #' model.name = "global",
