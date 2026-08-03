@@ -74,7 +74,7 @@ options(java.parameters = "-Xmx8000m")
 
 # 1. Format Data for Model
 
-I will load in the datasets I will need for the MaxEnt models. These are labeled at the beginning of the object name by the parameter they will be used in the `SDMtune::train()` function (x, p or a). I will begin by loading in the covariate data and then by loading in the points datasets. The `env_covariates` dataset labeled `invaded` contains a raster of each of the environmental covariates used to train the model- these were the covariates that were masked using the K-G climate zones in the last vignette.
+I will load in the datasets I will need for the MaxEnt models. These are labeled at the beginning of the object name by the parameter they will be used in the `SDMtune::train()` function (x, p or a). I will begin by loading in the covariate data and then by loading in the points datasets. The `env_covariates` dataset labeled `invaded_n_american` contains a raster of each of the environmental covariates used to train the model- these were the covariates that were masked using the K-G climate zones in the last vignette.
 
 ## 1.1 Input Data- env covariates
 
@@ -87,7 +87,7 @@ mypath <- file.path(here::here() %>%
 
 
 # the env covariate scale used to train the model
-x_invaded_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_KG.asc$", full.names = TRUE)  %>%
+x_invaded_n_american_env_covariates_list <- list.files(path = file.path(mypath, "v1_maxent_10km"), pattern = "\\_regional_invaded_n_american_KG.asc$", full.names = TRUE)  %>%
   # dont include Access to cities
   grep(pattern = "atc_2015", value = TRUE, invert = TRUE)
 
@@ -138,17 +138,17 @@ env_layer_names <- c("bio11", "bio12", "bio15", "bio2")
 ```{r stack historical covariates and make naming consistent, message = FALSE}
 
 # stack env covariates
-x_invaded_env_covariates <- terra::rast(x = x_invaded_env_covariates_list)
+x_invaded_n_american_env_covariates <- terra::rast(x = x_invaded_n_american_env_covariates_list)
 
 # attributes
-nlyr(x_invaded_env_covariates)
-names(x_invaded_env_covariates)
-minmax(x_invaded_env_covariates)
-# ext(x_invaded_env_covariates)
-# crs(x_invaded_env_covariates)
+nlyr(x_invaded_n_american_env_covariates)
+names(x_invaded_n_american_env_covariates)
+minmax(x_invaded_n_american_env_covariates)
+# ext(x_invaded_n_american_env_covariates)
+# crs(x_invaded_n_american_env_covariates)
 
 # I will change the name of the variables because they are throwing errors in SDMtune
-names(x_invaded_env_covariates) <- env_layer_names
+names(x_invaded_n_american_env_covariates) <- env_layer_names
 
 
 
@@ -214,7 +214,7 @@ names(x_global_585_env_covariates) <- env_layer_names
 
 ```{r remove lists}
 
-rm(x_invaded_env_covariates_list)
+rm(x_invaded_n_american_env_covariates_list)
 rm(x_global_hist_env_covariates_list)
 rm(x_global_126_env_covariates_list)
 rm(x_global_370_env_covariates_list)
@@ -229,11 +229,11 @@ I need to also load in the SLF presence and background points datasets created i
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 # background points
-a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv"))
+a_regional_invaded_n_american_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_background_points_v9.csv"))
 
 ```
 
@@ -243,7 +243,7 @@ I will need to combine the above covariates, presence and background point datas
 
 ```{r import training points}
 
-p_slf_invaded_train <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv"))
+p_slf_invaded_n_american_train <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_train_slf_presences_v9.csv"))
 
 ```
 
@@ -251,22 +251,22 @@ Now I will create the "samples with data" object that SDMtune requires.
 
 ```{r prepare training SWD data object}
 
-regional_invaded_train <- SDMtune::prepareSWD(
+regional_invaded_n_american_train <- SDMtune::prepareSWD(
   species = "Lycorma delicatula",
-  env = x_invaded_env_covariates,
-  p = p_slf_invaded_train, 
-  a = a_regional_invaded_background_points,
+  env = x_invaded_n_american_env_covariates,
+  p = p_slf_invaded_n_american_train, 
+  a = a_regional_invaded_n_american_background_points,
   verbose = TRUE # print helpful messages
   )
 
-regional_invaded_train@coords # coordinates
-regional_invaded_train@pa # presence / absence (background counted as absence)
-regional_invaded_train@data # extracted data from 
+regional_invaded_n_american_train@coords # coordinates
+regional_invaded_n_american_train@pa # presence / absence (background counted as absence)
+regional_invaded_n_american_train@data # extracted data from 
 
 
 # OLD method
 #regional_trainTest <-  SDMtune::trainValTest(
-#  x = regional_invaded_SWD,
+#  x = regional_invaded_n_american_SWD,
 #  test = 0.2,
 #  only_presence = TRUE,
 #  seed = 6
@@ -278,9 +278,9 @@ I usually look at how many records were dropped before I save it, because SDMtun
 
 ```{r save training SWD file}
 
-SDMtune::swd2csv(swd = regional_invaded_train, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_with_data_v9.csv"),
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_with_data_v9.csv")
+SDMtune::swd2csv(swd = regional_invaded_n_american_train, file_name = c(
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_train_slf_presences_with_data_v9.csv"),
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_background_points_with_data_v9.csv")
   ))
 
 ```
@@ -291,30 +291,30 @@ The testing / validation SWD object will be created in the same fashion, except 
 
 ```{r import test points}
 
-p_slf_invaded_test <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv"))
+p_slf_invaded_n_american_test <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_test_slf_presences_v9.csv"))
 
 ```
 
 ```{r prepare testing SWD data object}
 
-regional_invaded_test <- SDMtune::prepareSWD(
+regional_invaded_n_american_test <- SDMtune::prepareSWD(
   species = "Lycorma delicatula",
   env = x_global_hist_env_covariates, 
-  p = p_slf_invaded_test, 
-  a = a_regional_invaded_background_points,
+  p = p_slf_invaded_n_american_test, 
+  a = a_regional_invaded_n_american_background_points,
   verbose = TRUE # print helpful messages
   )
 
-regional_invaded_test@coords # coordinates
-regional_invaded_test@pa # presence / absence (background counted as absence)
-regional_invaded_test@data # extracted data from 
+regional_invaded_n_american_test@coords # coordinates
+regional_invaded_n_american_test@pa # presence / absence (background counted as absence)
+regional_invaded_n_american_test@data # extracted data from 
 
 ```
 
 ```{r save testing SWD file}
 
-SDMtune::swd2csv(swd = regional_invaded_test, file_name = c(
-  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_with_data_v9.csv"),
+SDMtune::swd2csv(swd = regional_invaded_n_american_test, file_name = c(
+  file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_test_slf_presences_with_data_v9.csv"),
   file.path(here::here(), "vignette-outputs", "data-tables", "NULL.csv")
   ))
 
@@ -335,9 +335,9 @@ I will use the following list of hyperparameters to train the initial model, whi
 
 ```{r train maxent model}
 
-regional_invaded_model <- SDMtune::train(
+regional_invaded_n_american_model <- SDMtune::train(
   method = "Maxent",
-  data = regional_invaded_train,
+  data = regional_invaded_n_american_train,
   fc = "qpht", # feature classes set to ALL
   reg = 1.5,
   iter = 5000, # number of iterations
@@ -355,86 +355,88 @@ This function produces all summary statistics for this model. For the complete a
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v9")
+                     "maxent/models/slf_regional_invaded_n_american_v9")
 
 scari::compute_MaxEnt_summary_statistics(
-  model.obj = regional_invaded_model, 
-  model.name = "regional_invaded", 
+  model.obj = regional_invaded_n_american_model, 
+  model.name = "regional_invaded_n_american", 
   mypath = mypath, 
   create.dir = TRUE, # create subdirectory
-  env.covar.obj = x_invaded_env_covariates, # env covariates raster stacked
-  train.obj = regional_invaded_train, # training data used to create model
-  test.obj = regional_invaded_test, # data you wish to use to test the model
+  env.covar.obj = x_invaded_n_american_env_covariates, # env covariates raster stacked
+  train.obj = regional_invaded_n_american_train, # training data used to create model
+  test.obj = regional_invaded_n_american_test, # data you wish to use to test the model
   plot.type = "cloglog", # types of univariate and marginal response curves to be created
   jk.test.type = c("train", "test") # types of jackknife curves to be created
   )
 
 ```
 
-Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in North America) is the seasonal precipitation seasonality (Bio 15). By itself, it can produce nearly the same AUC as the full model. However, when left out, Bio 11 (minimum winter temperature) has the most negative impact on the overall model (so it is the most explanatory). Meanwhile, for the testing data in the Asian invaded range, Bio 11 is overall the most impactful variable. It produces nearly the same model by itself, while affecting the model most heavily when left out. This aligns with the literature (Lee et al, 2011). The permutation importance plot validates these points.
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in North America) is the seasonal precipitation seasonality (Bio 15). By itself, it can produce nearly the same AUC as the full model. However, when left out, Bio 11 (minimum winter temperature) has the most negative impact on the overall model (so it is the most explanatory). Meanwhile, for the testing data in the Asian invaded range, Bio 11 is overall the most impactful variable. It produces nearly the same model by itself, while affecting the model most heavily when left out. This aligns with the literature, showing that SLF are heavily influenced by winter temperature minimums in Korea (Lee et al, 2011). The permutation importance plot validates these points.
 
 Here are the jackknife plots:
 ```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
 
 # training
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_jackknife_training.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_jackknife_training.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 # training
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_jackknife_testing.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_jackknife_testing.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 ```
 
-The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around -5°C. The activity of Bio 15 suggests a threshold that trails off from its max at 30% precipitation seasonality. Bio 12 is a narrow peak at around 1500mm precipitation, and Bio 2 generally has activity between 4 and 10.5°C.
+The univariate response curves (the result of creating a model with only that variable) resemble those from the the global scale mean model. Bio 11 resembles a bell-shaped curve, with a peak around 0°C. The activity of Bio 15 suggests a threshold that trails off from its max at about 10% precipitation seasonality. Bio 12 is a sharp peak at around 1500mm precipitation, and Bio 2 generally has activity between 4 and 10.5°C.
 
 Here are the response curves:
 ```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
 
 # bio 2
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_bio2_univar_resp_curve_cloglog.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_bio2_univar_resp_curve_cloglog.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 # bio 11
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_bio11_univar_resp_curve_cloglog.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_bio11_univar_resp_curve_cloglog.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 # bio 12
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_bio12_univar_resp_curve_cloglog.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_bio12_univar_resp_curve_cloglog.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 # bio 15
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_bio15_univar_resp_curve_cloglog.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_bio15_univar_resp_curve_cloglog.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
 
 ```
 
-The model itself had a training AUC of 0.976 and a test AUC of 0.455. The test AUC is less than desired (at least 0.5), but we will be averaging this model with the other two regional models downstream. 
+The model itself had a training AUC of 0.977 and a test AUC of 0.543. The test AUC is less than desired, but it is higher than 0.5 (the threshold at which the model does not discern better than random). It is likely overfit to the training points because of the high number of training points within a confined geographical area. This is due to the higher sampling effort for SLF in the eastern USA than anywhere else in the world.  However, it is highly likely that SLF has not yet reached all suitable areas within North America, given the yearly trend of range expansion, so this model will likely not predict as well as it would if the species were at equilibrium.
+
+The overfit nature of this model is not an issue; our pipeline is designed to average the outputs of multiple models together for more robust predictions. Each model will be weighted by its AUC, so this model will not contribute as much to the ensemble of regional models as one with a higher fit.  
 
 Here is the ROC curve:
 ```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
 
 # ROC
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_ROC.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_ROC.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -451,21 +453,21 @@ Lastly, I will use the `SDMtune::predict()` function to predict the suitability 
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v9")
+                     "maxent/models/slf_regional_invaded_n_american_v9")
 
 ```
 
 ```{r re-load model as needed}
   
-regional_invaded_model <- read_rds(file = file.path(mypath, "regional_invaded_model.rds"))
+regional_invaded_n_american_model <- read_rds(file = file.path(mypath, "regional_invaded_n_american_model.rds"))
 
 ```
 
 ```{r predict mean and thresholded suitability maps for historical data}
 
 scari::create_MaxEnt_suitability_maps(
-  model.obj = regional_invaded_model,
-  model.name = "regional_invaded", 
+  model.obj = regional_invaded_n_american_model,
+  model.name = "regional_invaded_n_american", 
   mypath = mypath, 
   create.dir = FALSE, 
   env.covar.obj = x_global_hist_env_covariates, 
@@ -474,7 +476,7 @@ scari::create_MaxEnt_suitability_maps(
   thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "fixed_1",
-  summary.file = file.path(mypath, "regional_invaded_summary.csv")
+  summary.file = file.path(mypath, "regional_invaded_n_american_summary.csv")
 )
 
 ```
@@ -486,8 +488,8 @@ I will also create suitability maps for ssp scenarios of the projected 2041-2070
 ```{r predict suitability maps for ssp126 data}
 
 scari::create_MaxEnt_suitability_maps(
-  model.obj = regional_invaded_model,
-  model.name = "regional_invaded", 
+  model.obj = regional_invaded_n_american_model,
+  model.name = "regional_invaded_n_american", 
   mypath = mypath, 
   create.dir = FALSE, 
   env.covar.obj = x_global_126_env_covariates, 
@@ -496,7 +498,7 @@ scari::create_MaxEnt_suitability_maps(
   thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "fixed_1",
-  summary.file = file.path(mypath, "regional_invaded_summary.csv")
+  summary.file = file.path(mypath, "regional_invaded_n_american_summary.csv")
 )
 
 ```
@@ -504,8 +506,8 @@ scari::create_MaxEnt_suitability_maps(
 ```{r predict suitability maps for ssp370 data}
 
 scari::create_MaxEnt_suitability_maps(
-  model.obj = regional_invaded_model,
-  model.name = "regional_invaded", 
+  model.obj = regional_invaded_n_american_model,
+  model.name = "regional_invaded_n_american", 
   mypath = mypath, 
   create.dir = FALSE, 
   env.covar.obj = x_global_370_env_covariates, 
@@ -514,7 +516,7 @@ scari::create_MaxEnt_suitability_maps(
   thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "fixed_1",
-  summary.file = file.path(mypath, "regional_invaded_summary.csv")
+  summary.file = file.path(mypath, "regional_invaded_n_american_summary.csv")
 )
 
 ```
@@ -522,8 +524,8 @@ scari::create_MaxEnt_suitability_maps(
 ```{r predict suitability maps for ssp585 data}
 
 scari::create_MaxEnt_suitability_maps(
-  model.obj = regional_invaded_model,
-  model.name = "regional_invaded", 
+  model.obj = regional_invaded_n_american_model,
+  model.name = "regional_invaded_n_american", 
   mypath = mypath, 
   create.dir = FALSE, 
   env.covar.obj = x_global_585_env_covariates, 
@@ -532,7 +534,7 @@ scari::create_MaxEnt_suitability_maps(
   thresh = c("fixed_1", "10_percentile", "MTSS"),
   map.thresh = TRUE, # whether thresholded versions of these maps should be created
   map.thresh.extra = "fixed_1",
-  summary.file = file.path(mypath, "regional_invaded_summary.csv")
+  summary.file = file.path(mypath, "regional_invaded_n_american_summary.csv")
 )
 
 ```
@@ -541,7 +543,7 @@ scari::create_MaxEnt_suitability_maps(
 
 The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream.
 
-The most prominent suitable areas above the MTSS (the colored areas) were predicted in North America and Europe. This model also strangely predicts all suitable area globally, like the global model. Finally, this model omits known suitable area in China, Japan and Korea, so it is not the most accurate in its predictions. It does resemble the global-scale model in its predictions for these two areas, however smaller. There are also notable suitable areas in New Zealand and southern Argentina within the southern hemisphere. Here are the predicted suitability maps. Notably, as the ssp scenario becomes more severe (ssp126 -> ssp585), the predicted suitable area of each map slowly shifts northwards and becomes smaller. When interpreting this model, bear in mind that we will include it within an ensemble average of models and that its contributions toward that ensemble will be weighted by its AUC (considerably low). However, we will not omit it because it likely contains important trends in climatic suitability (see the summary statistics and the response curve for Bio 15). Here are the suitability maps:
+The most prominent suitable areas above the MTSS (the colored areas) were predicted in North America and Europe. Notably, this model omits known suitable area in China, Japan and Korea, so it is not the most accurate in it those predictions. It does resemble the global-scale model in its predictions for Europe and North America, however smaller. There are also notable suitable areas in New Zealand and southern Argentina within the southern hemisphere. Here are the predicted suitability maps. Notably, as the ssp scenario becomes more severe (ssp126 -> ssp585), the predicted suitable area of each map slowly shifts northwards and becomes smaller. When interpreting this model, bear in mind that we will include it within an ensemble average of models and that its contributions toward that ensemble will be weighted by its AUC (considerably low). However, we will not omit it because it likely contains important trends in climatic suitability (see the summary statistics and the response curve for Bio 15). Here are the suitability maps:
 
 The historical data (1981-2010):
 ```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -549,7 +551,7 @@ The historical data (1981-2010):
 # load in maps
 # historical data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_1981-2010.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_1981-2010.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -562,7 +564,7 @@ The predicted future data (2041-2070) under the ssp126 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp126.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp126.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -575,7 +577,7 @@ The predicted future data (2041-2070) under the ssp370 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp370.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp370.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -588,7 +590,7 @@ The predicted future data (2041-2070) under the ssp585 climate change scenario:
 # load in maps
 # ssp126 for 2041-2070 data
 knitr::include_graphics(
-  path = file.path(mypath, "plots", "regional_invaded_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp585.jpg"),
+  path = file.path(mypath, "plots", "regional_invaded_n_american_pred_suit_clamped_cloglog_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp585.jpg"),
   rel_path = FALSE, # already done
   error = TRUE
   )
@@ -601,10 +603,10 @@ knitr::include_graphics(
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v9")
+                     "maxent/models/slf_regional_invaded_n_american_v9")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -615,10 +617,10 @@ scari::predict_xy_suitability(
   xy.obj = slf_presences,
   xy.type = "Lycorma delicatula",
   env.covar.obj = x_global_hist_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_slf_all_coords_1981-2010"
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_slf_all_coords_1981-2010"
 )
 
 ```
@@ -633,10 +635,10 @@ scari::predict_xy_suitability(
   xy.obj = slf_presences,
   xy.type = "Lycorma delicatula",
   env.covar.obj = x_global_126_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_slf_all_coords_2041-2070_GFDL_ssp126"
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_slf_all_coords_2041-2070_GFDL_ssp126"
 )
 
 ```
@@ -647,10 +649,10 @@ scari::predict_xy_suitability(
   xy.obj = slf_presences,
   xy.type = "Lycorma delicatula",
   env.covar.obj = x_global_370_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_slf_all_coords_2041-2070_GFDL_ssp370"
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_slf_all_coords_2041-2070_GFDL_ssp370"
 )
 
 ```
@@ -661,10 +663,10 @@ scari::predict_xy_suitability(
   xy.obj = slf_presences,
   xy.type = "Lycorma delicatula",
   env.covar.obj = x_global_585_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_slf_all_coords_2041-2070_GFDL_ssp585"
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_slf_all_coords_2041-2070_GFDL_ssp585"
 )
 
 ```
@@ -679,7 +681,7 @@ I will perform the same action as above, but for the locations of important wine
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
-                     "maxent/models/slf_regional_invaded_v9")
+                     "maxent/models/slf_regional_invaded_n_american_v9")
 
 # load in all IVR points
 IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
@@ -695,10 +697,10 @@ scari::predict_xy_suitability(
   xy.obj = IVR_regions,
   xy.type = "IVR regions",
   env.covar.obj = x_global_hist_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_wineries_1981-2010",
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_wineries_1981-2010",
   buffer.pred = TRUE
 )
 
@@ -714,10 +716,10 @@ scari::predict_xy_suitability(
   xy.obj = IVR_regions,
   xy.type = "IVR regions",
   env.covar.obj = x_global_126_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_wineries_2041-2070_GFDL_ssp126",
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_wineries_2041-2070_GFDL_ssp126",
   buffer.pred = TRUE
 )
 
@@ -729,10 +731,10 @@ scari::predict_xy_suitability(
   xy.obj = IVR_regions,
   xy.type = "IVR regions",
   env.covar.obj = x_global_370_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_wineries_2041-2070_GFDL_ssp370",
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_wineries_2041-2070_GFDL_ssp370",
   buffer.pred = TRUE
 )
 
@@ -744,10 +746,10 @@ scari::predict_xy_suitability(
   xy.obj = IVR_regions,
   xy.type = "IVR regions",
   env.covar.obj = x_global_585_env_covariates,
-  model.obj = regional_invaded_model,
+  model.obj = regional_invaded_n_american_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
-  output.name = "regional_invaded_wineries_2041-2070_GFDL_ssp585",
+  predict.type = "cloglog",
+  output.name = "regional_invaded_n_american_wineries_2041-2070_GFDL_ssp585",
   buffer.pred = TRUE
 )
 
@@ -759,26 +761,32 @@ We have trained the Ri.NAmerica model, so now we will move on to train the other
 
 # References
 
-1. Elith, J., Phillips, S. J., Hastie, T., Dudík, M., Chee, Y. E., & Yates, C. J. (2011). A statistical explanation of MaxEnt for ecologists: Statistical explanation of MaxEnt. Diversity and Distributions, 17(1), 43–57. https://doi.org/10.1111/j.1472-4642.2010.00725.x
+1. Damus, M. (2014, May 23). Threshold rule [Online post]. Google Groups: Maxent. https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1
 
-2. Feng, X. (2022). Shandongfx/nimbios_enm [HTML]. https://github.com/shandongfx/nimbios_enm (Original work published 2018).
+2. Elith, J., Phillips, S. J., Hastie, T., Dudík, M., Chee, Y. E., & Yates, C. J. (2011). A statistical explanation of MaxEnt for ecologists: Statistical explanation of MaxEnt. Diversity and Distributions, 17(1), 43–57. https://doi.org/10.1111/j.1472-4642.2010.00725.x
 
-3. Gallien, L., Douzet, R., Pratte, S., Zimmermann, N. E., & Thuiller, W. (2012). Invasive species distribution models – how violating the equilibrium assumption can create new insights. Global Ecology and Biogeography, 21(11), 1126–1136. https://doi.org/10.1111/j.1466-8238.2012.00768.x
+3. Feng, X. (2022). Shandongfx/nimbios_enm [HTML]. https://github.com/shandongfx/nimbios_enm (Original work published 2018).
 
-4. Maryam Bordkhani. (n.d.). Threshold rule [Online post].
+4. Gallien, L., Douzet, R., Pratte, S., Zimmermann, N. E., & Thuiller, W. (2012). Invasive species distribution models – how violating the equilibrium assumption can create new insights. Global Ecology and Biogeography, 21(11), 1126–1136. https://doi.org/10.1111/j.1466-8238.2012.00768.x
 
-5. Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: Complexity, overfitting and evaluation. Journal of Biogeography, 41(4), 629–643. https://doi.org/10.1111/jbi.12227
+5. Liu, C., Newell, G., & White, M. (2016). On the selection of thresholds for predicting species occurrence with presence-only data. Ecology and Evolution, 6(1), 337–348. https://doi.org/10.1002/ece3.1878
 
-6. Sobek-Swant, S., Kluza, D. A., Cuddington, K., & Lyons, D. B. (2012). Potential distribution of emerald ash borer: What can we learn from ecological niche models using Maxent and GARP? Forest Ecology and Management, 281, 23–31. https://doi.org/10.1016/j.foreco.2012.06.017
+6. Liu, C., White, M., & Newell, G. (2013). Selecting thresholds for the prediction of species occurrence with presence-only data. Journal of Biogeography, 40(4), 778–789. https://doi.org/10.1111/jbi.12058
 
-7. Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190(3), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
+7. Maxent model Summary Output. (2007, April 11). Maxent Model for Swainson’s Hawk (SWHA). https://geo.pointblue.org/lipmap/maxent_hu_ecoregion/SWHA.html
 
-8. Steven Phillips. (2017). A Brief Tutorial on Maxent. http://biodiversityinformatics.amnh.org/open_source/maxent/.
+8. Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: Complexity, overfitting and evaluation. Journal of Biogeography, 41(4), 629–643. https://doi.org/10.1111/jbi.12227
 
-9. Steven J. Phillips, Miroslav Dudík, & Robert E. Schapire. (2023). Maxent software for modeling species niches and distributions (Version 3.4.3 (Java)) [Computer software]. http://biodiversityinformatics.amnh.org/open_source/maxent/.
+9. Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190(3), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
 
-10. Srivastava, V., Roe, A. D., Keena, M. A., Hamelin, R. C., & Griess, V. C. (2021). Oh the places they’ll go: Improving species distribution modelling for invasive forest pests in an uncertain world. Biological Invasions, 23(1), 297–349. https://doi.org/10.1007/s10530-020-02372-9
+10. Steven Phillips. (2017). A Brief Tutorial on Maxent. http://biodiversityinformatics.amnh.org/open_source/maxent/.
 
-11. VanDerWal, J., Shoo, L. P., Graham, C., & Williams, S. E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know? Ecological Modelling, 220(4), 589–594. https://doi.org/10.1016/j.ecolmodel.2008.11.010
+11. Steven J. Phillips, Miroslav Dudík, & Robert E. Schapire. (2023). Maxent software for modeling species niches and distributions (Version 3.4.3 (Java)) [Computer software]. http://biodiversityinformatics.amnh.org/open_source/maxent/.
 
-12. Vignali, S., Barras, A. G., Arlettaz, R., & Braunisch, V. (2020). SDMtune: An R package to tune and evaluate species distribution models. Ecology and Evolution, 10(20), 11488–11506. https://doi.org/10.1002/ece3.6786
+12. Srivastava, V., Roe, A. D., Keena, M. A., Hamelin, R. C., & Griess, V. C. (2021). Oh the places they’ll go: Improving species distribution modelling for invasive forest pests in an uncertain world. Biological Invasions, 23(1), 297–349. https://doi.org/10.1007/s10530-020-02372-9
+
+13. Valavi, R., Elith, J., Lahoz-Monfort, J. J., & Guillera-Arroita, G. (2019). blockCV: An r package for generating spatially or environmentally separated folds for k-fold cross-validation of species distribution models. Methods in Ecology and Evolution, 10(2), 225–232. https://doi.org/10.1111/2041-210X.13107
+
+14. VanDerWal, J., Shoo, L. P., Graham, C., & Williams, S. E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know? Ecological Modelling, 220(4), 589–594. https://doi.org/10.1016/j.ecolmodel.2008.11.010
+
+15. Vignali, S., Barras, A. G., Arlettaz, R., & Braunisch, V. (2020). SDMtune: An R package to tune and evaluate species distribution models. Ecology and Evolution, 10(20), 11488–11506. https://doi.org/10.1002/ece3.6786

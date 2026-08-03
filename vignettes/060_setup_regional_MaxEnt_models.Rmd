@@ -40,7 +40,7 @@ model_info <- data.frame(
   "train_presences" = c(
     437,
     1217,
-    237
+    238
   ),
   "test_region" = c(
     "N. America invaded region",
@@ -50,7 +50,7 @@ model_info <- data.frame(
   "test_presences" = c(
     87,
     237,
-    47
+    48
   ),
   "background_points" = c(
     "10,000",
@@ -376,7 +376,7 @@ I will also write this raster to a shapefile for easy selection of climate zones
 ```{r write to shapefile}
 
 # next, convert raster to polygon
-KG_zones_invaded_poly <- terra::as.polygons(
+KG_zones_invaded_n_american_poly <- terra::as.polygons(
   x = koeppen_zones_rast,
   aggregate = TRUE, # combine cells with the same value into one area
   values = TRUE, # include cell values as attributes
@@ -387,7 +387,7 @@ gdal(drivers = TRUE)
 
 # write to shapefile
 terra::writeVector(
-  x = KG_zones_invaded_poly,
+  x = KG_zones_invaded_n_american_poly,
   filename = file.path(mypath, "models", "working_dir", "shapefiles", "koeppen_climate_zones.shp"),
   filetype = "ESRI Shapefile",
   overwrite = FALSE
@@ -427,7 +427,7 @@ slf_points_vect <- terra::vect(x = slf_points, geom = c("x", "y"), crs = "ESRI:5
   terra::geom() 
 
 # convert back to data frame
-slf_points_invaded <- terra::as.data.frame(slf_points_vect) %>%
+slf_points_invaded_n_american <- terra::as.data.frame(slf_points_vect) %>%
   dplyr::select(-c(geom, part, hole)) %>%
   # convert to sf object
   sf::st_as_sf(coords = c("x", "y"), crs = "ESRI:54017")
@@ -444,24 +444,24 @@ Now we will intersect the points with the shapefile. I need to crop the shapefil
 ```{r intersect slf points with shapefile- Ri.NAmerica}
 
 # load in shapefile again
-KG_zones_invaded_poly <- sf::read_sf(dsn = file.path(mypath, "models", "working_dir", "shapefiles", "koeppen_climate_zones.shp")) %>%
+KG_zones_invaded_n_american_poly <- sf::read_sf(dsn = file.path(mypath, "models", "working_dir", "shapefiles", "koeppen_climate_zones.shp")) %>%
   dplyr::rename("koeppen_climate_zones" = "Koeppen_cl")
 
 # bounding box for cropping
 ext.obj.vect <- c(xmin = -13602304.166426167, ymin = 1914870.4341456166, xmax = -4927019.123016734, ymax = 6388905.495064239)
 ext.obj.vect <- sf::st_bbox(ext.obj.vect, crs = "ESRI:54017")
 # first, crop K-G raster to N America
-KG_zones_invaded_poly <- sf::st_crop(KG_zones_invaded_poly, y = ext.obj.vect) %>%
+KG_zones_invaded_n_american_poly <- sf::st_crop(KG_zones_invaded_n_american_poly, y = ext.obj.vect) %>%
   # also get rid of ocean
   dplyr::filter(koeppen_climate_zones != 32)
 
 # intersect
-regional_invaded_withSLF <- sf::st_filter(x = KG_zones_invaded_poly, y = slf_points_invaded, join = sf::st_contains)
+regional_invaded_n_american_withSLF <- sf::st_filter(x = KG_zones_invaded_n_american_poly, y = slf_points_invaded_n_american, join = sf::st_contains)
 
 # write to file
 sf::st_write(
-  obj = regional_invaded_withSLF, 
-  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_extent.shp"),
+  obj = regional_invaded_n_american_withSLF, 
+  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_n_american_extent.shp"),
   driver = "ESRI Shapefile",
   append = FALSE
   )
@@ -470,14 +470,14 @@ sf::st_write(
 
 ```{r re-load K-G zones Ri.NAmerica, eval = TRUE, message = FALSE}
 
-regional_invaded_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_extent.shp")) %>%
+regional_invaded_n_american_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_n_american_extent.shp")) %>%
   dplyr::rename("koeppen_climate_zones" = "kppn_c_")
 
 # get extent
-st_bbox(regional_invaded_withSLF) 
+st_bbox(regional_invaded_n_american_withSLF) 
 
 # add zone nums to shapefile
-regional_invaded_withSLF <- regional_invaded_withSLF %>%
+regional_invaded_n_american_withSLF <- regional_invaded_n_american_withSLF %>%
   dplyr::left_join(kmz_names_labels, join_by(koeppen_climate_zones == zone_number)) 
 
 ```
@@ -486,11 +486,11 @@ Now lets plot it for a sanity check.
 
 ```{r plot K-G zones in N America, eval = TRUE}
 
-regional_invaded_withSLF_plot <- ggplot() +
+regional_invaded_n_american_withSLF_plot <- ggplot() +
   # world map
   geom_sf(data = countries_sf, fill = "azure4", color = "black", lwd = 0.25) +
   # slf native range shapefile
-  geom_sf(data = regional_invaded_withSLF, aes(fill = as.factor(koeppen_climate_zones)), color = "black", lwd = 0.25) +
+  geom_sf(data = regional_invaded_n_american_withSLF, aes(fill = as.factor(koeppen_climate_zones)), color = "black", lwd = 0.25) +
   # scales
   labs(
     title = "K\U00F6ppen-Geiger climate zones as background selection area\nfor North America Invaded model",
@@ -500,7 +500,7 @@ regional_invaded_withSLF_plot <- ggplot() +
     fill = "K-G climate\nzone"
     ) +
   # scales
-  scale_fill_brewer(palette = "Paired", labels = regional_invaded_withSLF$zone_name) +
+  scale_fill_brewer(palette = "Paired", labels = regional_invaded_n_american_withSLF$zone_name) +
   # theme
   theme_classic() +
   theme(legend.position = "right") +
@@ -513,15 +513,15 @@ regional_invaded_withSLF_plot <- ggplot() +
     crs = "ESRI:54017" 
 )
 
-regional_invaded_withSLF_plot
+regional_invaded_n_american_withSLF_plot
 
 ```
 
-```{r save invaded K-G plot, include = FALSE}
+```{r save invaded_n_american K-G plot, include = FALSE}
 
 ggsave(
-  regional_invaded_withSLF_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "SLF_regional_invaded_extent_KG_climate_zones.jpg"),
+  regional_invaded_n_american_withSLF_plot, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "slf_regional_invaded_n_american_extent_KG_climate_zones.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -547,7 +547,7 @@ env.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "
 output.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_global.asc$", full.names = FALSE) %>%
   # extract the 4 bioclim layers I will be using in my models. 
   grep("bio2|bio11|bio12|bio15", ., value = TRUE) %>%
-  gsub(pattern = "global", replacement = "NAmerica")
+  gsub(pattern = "global", replacement = "n_american")
 
 # bbox for cropping
 ## coords in root/data-raw/bounding_boxes.txt
@@ -590,14 +590,14 @@ I will start the masking process by importing the bioclim layers and reference l
 ```{r setup for masking bioclim layers- Ri.NAmerica}
 
 # import layers
-env.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_NAmerica.asc$", full.names = TRUE) 
+env.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_n_american.asc$", full.names = TRUE) 
 
 # output file names
-output.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_NAmerica.asc$", full.names = FALSE) %>%
-  gsub(pattern = "NAmerica", replacement = "regional_invaded_KG")
+output.files <- list.files(path = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km"), pattern = "\\_n_american.asc$", full.names = FALSE) %>%
+  gsub(pattern = "n_american", replacement = "regional_invaded_n_american_KG")
 
 # also load shapefile again
-regional_invaded_withSLF <- terra::vect(file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_extent.shp")) 
+regional_invaded_n_american_withSLF <- terra::vect(file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_n_american_extent.shp")) 
 
 # bbox for cropping
 ## OLD
@@ -609,7 +609,7 @@ ext.obj.crop <- terra::ext(-13379444.69115782, 2395972.663390198, -5073583.42298
 
 I will now mask these rasters using the shapefile created above.
 
-```{r loop to mask bioclim layers by NAmerica invaded range}
+```{r loop to mask bioclim layers by n_american invaded range}
   
 # loop to crop extent for all files
 for(a in seq_along(env.files)){
@@ -618,7 +618,7 @@ for(a in seq_along(env.files)){
   rast.hold <- terra::rast(env.files[a])
   
   # mask new rasters using shapefile
-  rast.hold <- terra::mask(x = rast.hold, mask = regional_invaded_withSLF, overwrite = FALSE)
+  rast.hold <- terra::mask(x = rast.hold, mask = regional_invaded_n_american_withslf, overwrite = FALSE)
   # crop to extent as well
   rast.hold <- terra::crop(x = rast.hold, y = ext.obj.crop, overwrite = FALSE)
   
@@ -643,7 +643,7 @@ Lets plot one of the new layers to make sure the cropping worked.
 
 ```{r plot to ensure cropping worked, eval = TRUE, warning = FALSE}
 
-bio11_df <- terra::rast(x = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km", "bio11_1981-2010_regional_invaded_KG.asc")) %>%
+bio11_df <- terra::rast(x = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km", "bio11_1981-2010_regional_invaded_n_american_KG.asc")) %>%
   # convert to df
   terra::as.data.frame(., xy = TRUE)
 
@@ -747,7 +747,7 @@ regional_invaded_asian_withSLF <- sf::st_filter(x = KG_zones_invaded_asian_poly,
 # write to file
 sf::st_write(
   obj = regional_invaded_asian_withSLF, 
-  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_asian_extent.shp"),
+  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_asian_extent.shp"),
   driver = "ESRI Shapefile",
   append = FALSE
   )
@@ -756,7 +756,7 @@ sf::st_write(
 
 ```{r re-load K-G zones Ri.Asia, eval = TRUE}
 
-regional_invaded_asian_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_asian_extent.shp")) %>%
+regional_invaded_asian_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_asian_extent.shp")) %>%
   dplyr::rename("koeppen_climate_zones" = "kppn_c_")
 
 # get extent
@@ -805,7 +805,7 @@ regional_invaded_asian_withSLF_plot
 
 ggsave(
   regional_invaded_asian_withSLF_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "SLF_regional_invaded_asian_extent_KG_climate_zones.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "slf_regional_invaded_asian_extent_KG_climate_zones.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -832,7 +832,7 @@ output.files <- list.files(path = file.path(mypath, "historical_climate_rasters"
 
 
 # load in shapefile as spatVector 
-regional_invaded_asian_withSLF <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_asian_extent.shp"))
+regional_invaded_asian_withSLF <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_asian_extent.shp"))
 
 # for cropping
 ext.obj.crop <- terra::ext(11861845.759289555, 2999956.334646307, 14857498.721065253, 5227150.879943501, xy = TRUE) # inverse order xmin, ymin, xmax, ymax
@@ -1032,7 +1032,7 @@ regional_native_withSLF <- sf::st_filter(x = KG_zones_native_poly, y = slf_point
 # write to file
 sf::st_write(
   obj = regional_native_withSLF, 
-  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_native_extent.shp"),
+  dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_native_extent.shp"),
   driver = "ESRI Shapefile",
   append = FALSE
   )
@@ -1041,7 +1041,7 @@ sf::st_write(
 
 ```{r re-load shapefile as needed, eval = TRUE}
 
-regional_native_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_native_extent.shp")) %>%
+regional_native_withSLF <- sf::read_sf(dsn = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_native_extent.shp")) %>%
   dplyr::rename("koeppen_climate_zones" = "kppn_c_")
 
 # get extent
@@ -1090,7 +1090,7 @@ regional_native_withSLF_plot
 
 ggsave(
   regional_native_withSLF_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "SLF_native_extent_KG_climate_zones.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "slf_native_extent_KG_climate_zones.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1115,7 +1115,7 @@ output.files <- list.files(path = file.path(mypath, "historical_climate_rasters"
   gsub(pattern = "global", replacement = "regional_native_KG")
 
 # also load shapefile again
-regional_native_withSLF <- terra::vect(file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_native_extent.shp")) 
+regional_native_withSLF <- terra::vect(file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_native_extent.shp")) 
 
 ## OLD
 #ext.obj.crop <- terra::ext(72.666527, -9.666806, 140.999860, 53.249861, xy = TRUE) 
@@ -1217,7 +1217,7 @@ global_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_global.asc
 ```{r load datasets- Ri.NAmerica}
 
 # load in raster to choose points from
-regional_invaded_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_KG.asc")) 
+regional_invaded_n_american_bio11 <- raster::raster(x = file.path(mypath, "bio11_1981-2010_regional_invaded_n_american_KG.asc")) 
 
 # load in slf points to intersect
 slf_points <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
@@ -1234,8 +1234,8 @@ Create 10,000 random background points. These will be corrected for the latitudi
 set.seed(5)
 
 # generate random points 
-regional_invaded_background <- dismo::randomPoints(
-  mask = regional_invaded_bio11, 
+regional_invaded_n_american_background <- dismo::randomPoints(
+  mask = regional_invaded_n_american_bio11, 
   n = 10000, # default number used by maxent
   p = slf_points,
   excludep = TRUE, # exclude cells where slf has been found
@@ -1245,13 +1245,13 @@ regional_invaded_background <- dismo::randomPoints(
 
 # save as csv
 write_csv(
-  x = regional_invaded_background, 
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv")
+  x = regional_invaded_n_american_background, 
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_background_points_v9.csv")
   )
 # save as rds file
 write_rds(
-  regional_invaded_background, 
-  file = file.path(here::here(), "data", "regional_invaded_background_points_v9.rds")
+  regional_invaded_n_american_background, 
+  file = file.path(here::here(), "data", "regional_invaded_n_american_background_points_v9.rds")
 )
 
 
@@ -1263,25 +1263,25 @@ Now lets visualize the result.
 
 # rasters
 # bg raster
-regional_invaded_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_regional_invaded_KG.asc")) %>%
+regional_invaded_n_american_bio11_df <- terra::rast(x = file.path(mypath, "bio11_1981-2010_regional_invaded_n_american_KG.asc")) %>%
   terra::as.data.frame(., xy = TRUE)
   
 # re-read background points 
-regional_invaded_background <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v9.csv")) 
+regional_invaded_n_american_background <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_background_points_v9.csv")) 
 
 ```
 
 ```{r plot Ri.NAmerica background, eval = TRUE, echo = FALSE}
 
-regional_invaded_background_plot <- ggplot() +
+regional_invaded_n_american_background_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
   geom_sf(data = countries_sf, fill = NA, color = NA) +
   # base layer
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   # raster of interest
-  geom_raster(data = regional_invaded_bio11_df, aes(x = x, y = y), fill = "azure1") +
-  geom_point(data = regional_invaded_background, aes(x = x, y = y), color = "firebrick2", size = 0.25) +
+  geom_raster(data = regional_invaded_n_american_bio11_df, aes(x = x, y = y), fill = "azure1") +
+  geom_point(data = regional_invaded_n_american_background, aes(x = x, y = y), color = "firebrick2", size = 0.25) +
   ggtitle("North America Invaded model background points") +
   # same coords used to cut other N America plots
   coord_sf(
@@ -1292,7 +1292,7 @@ regional_invaded_background_plot <- ggplot() +
     crs = "ESRI:54017" 
     )
 
-regional_invaded_background_plot
+regional_invaded_n_american_background_plot
 
 ```
 
@@ -1301,8 +1301,8 @@ We can see that the background points are isolated to the area selected using th
 ```{r save Ri.Namerica background plot, include = FALSE}
 
 ggsave(
-  regional_invaded_background_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_background_points_v9.jpg"),
+  regional_invaded_n_american_background_plot, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_n_american_model_background_points_v9.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1524,7 +1524,7 @@ slf_points_vect <- terra::vect(x = slf_points, geom = c("x", "y"), crs = "ESRI:5
   terra::geom() 
 
 # convert back to data frame
-slf_points_invaded <- terra::as.data.frame(slf_points_vect) %>%
+slf_points_invaded_n_american <- terra::as.data.frame(slf_points_vect) %>%
   dplyr::select(-c(geom, part, hole))
 
 # will not need this object again
@@ -1535,8 +1535,8 @@ rm(slf_points_vect)
 ```{r save presences- Ri.NAmerica}
 
 write_csv(
-  x = slf_points_invaded,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv")
+  x = slf_points_invaded_n_american,
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_train_slf_presences_v9.csv")
 )
 
 ```
@@ -1546,20 +1546,20 @@ Now I will plot these points on the raster to ensure that the bounding box worke
 ```{r plot model presences- Ri.NAmerica, eval = TRUE, echo = FALSE}
 
 # load in raster
-regional_invaded_df <- terra::rast(x = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km", "bio2_1981-2010_regional_invaded_KG.asc")) %>%
+regional_invaded_n_american_df <- terra::rast(x = file.path(mypath, "historical_climate_rasters", "chelsa2.1_30arcsec", "v1_maxent_10km", "bio2_1981-2010_regional_invaded_n_american_KG.asc")) %>%
   terra::as.data.frame(., xy = TRUE)
 
 # re-import point data
-slf_points_invaded <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_train_slf_presences_v9.csv")) 
+slf_points_invaded_n_american <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_train_slf_presences_v9.csv")) 
 
 # plot
-regional_invaded_slf_plot <- ggplot() +
+regional_invaded_n_american_slf_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
   geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
-  geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
-  geom_point(data = slf_points_invaded, aes(x = x, y = y), color = "darkorange", size = 0.5) +
+  geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
+  geom_point(data = slf_points_invaded_n_american, aes(x = x, y = y), color = "darkorange", size = 0.5) +
   labs(title = "North America Invaded model SLF presences") +
   coord_sf(
     xlim = c(-13383144, -5069425), 
@@ -1569,15 +1569,15 @@ regional_invaded_slf_plot <- ggplot() +
     crs = "ESRI:54017" 
     )
 
-regional_invaded_slf_plot
+regional_invaded_n_american_slf_plot
   
 ```
 
 ```{r save Ri.NAmerica presence plot, include = FALSE}
 
 ggsave(
-  regional_invaded_slf_plot, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_train_slf_presences_v9.jpg"),
+  regional_invaded_n_american_slf_plot, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_n_american_train_slf_presences_v9.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1591,7 +1591,7 @@ ggsave(
 ```{r filter presences from invaded_asian range}
 
 # native range extent shapefile used to select slf presences
-mask_layer <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_invaded_asian_extent.shp"))
+mask_layer <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_invaded_asian_extent.shp"))
 
 # convert to vector
 slf_points_masked <- terra::vect(x = slf_points, geom = c("x", "y"), crs = "ESRI:54017") %>%
@@ -1664,7 +1664,7 @@ ggsave(
 ```{r filter presences from native range}
 
 # native range extent shapefile used to select slf presences
-mask_layer <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "SLF_regional_native_extent.shp"))
+mask_layer <- terra::vect(x = file.path(here::here(), "vignette-outputs", "shapefiles", "slf_regional_native_extent.shp"))
 
 # convert to vector
 slf_points_masked <- terra::vect(x = slf_points, geom = c("x", "y"), crs = "ESRI:54017") %>%
@@ -1747,25 +1747,25 @@ The training and test points should be geographically separated, but this create
 ```{r select test points for Ri.NAmerica model}
 
 # this model is trained on N American presences and tested on invaded asian presences
-# select 20% of training total using round(nrow(slf_points_invaded) * 0.2) 
+# select 20% of training total using round(nrow(slf_points_invaded_n_american) * 0.2) 
 
 set.seed(8)
 
 # randomly select subset of rows for testing
 # size is 20% the length of the training dataset
 
-# slf_points_invaded_test_rows <-  sample(nrow(slf_points_invaded_asian), size = round(nrow(slf_points_invaded) * 0.2), replace = FALSE) 
+# slf_points_invaded_n_american_test_rows <-  sample(nrow(slf_points_invaded_asian), size = round(nrow(slf_points_invaded_n_american) * 0.2), replace = FALSE) 
 # filter
-# slf_points_invaded_test <- slf_points_invaded_asian[slf_points_invaded_test_rows, ]
+# slf_points_invaded_n_american_test <- slf_points_invaded_asian[slf_points_invaded_n_american_test_rows, ]
 
 # initially, I used the above code to select 20% of the training dataset, but 20% of the training dataset was more than the entire test dataset and replacements would have been needed. So, I will just select the entire test dataset instead.
 
-slf_points_invaded_test <- slf_points_invaded_asian
+slf_points_invaded_n_american_test <- slf_points_invaded_asian
 
 # write to csv
 write_csv(
-  x = slf_points_invaded_test,
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv")
+  x = slf_points_invaded_n_american_test,
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_test_slf_presences_v9.csv")
 )
 
 
@@ -1779,9 +1779,9 @@ write_csv(
 set.seed(9)
 
 # randomly select subset of rows for testing, without replacement
-slf_points_invaded_asian_test_rows <-  sample(nrow(slf_points_invaded), size = round(nrow(slf_points_invaded_asian) * 0.2), replace = FALSE)
+slf_points_invaded_asian_test_rows <-  sample(nrow(slf_points_invaded_n_american), size = round(nrow(slf_points_invaded_asian) * 0.2), replace = FALSE)
 # filter
-slf_points_invaded_asian_test <- slf_points_invaded[slf_points_invaded_asian_test_rows, ]
+slf_points_invaded_asian_test <- slf_points_invaded_n_american[slf_points_invaded_asian_test_rows, ]
 
 # write to csv
 write_csv(
@@ -1800,9 +1800,9 @@ write_csv(
 set.seed(10)
 
 # randomly select subset of rows for testing, without replacement
-slf_points_native_test_rows <-  sample(nrow(slf_points_invaded), size = round(nrow(slf_points_native) * 0.2), replace = FALSE) 
+slf_points_native_test_rows <-  sample(nrow(slf_points_invaded_n_american), size = round(nrow(slf_points_native) * 0.2), replace = FALSE) 
 # filter
-slf_points_native_test <- slf_points_invaded[slf_points_native_test_rows, ]
+slf_points_native_test <- slf_points_invaded_n_american[slf_points_native_test_rows, ]
 
 # write to csv
 write_csv(
@@ -1863,8 +1863,8 @@ These chunks will splice together the plots from above as summary plots.
 ```{r load necessary datasets- Ri.NAmerica}
 
 # validation dataset
-slf_points_invaded_test <- read.csv(
-  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v9.csv")
+slf_points_invaded_n_american_test <- read.csv(
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_test_slf_presences_v9.csv")
   )
 # raster for the validation plot
 invaded_asian_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_regional_invaded_asian_KG.asc")) %>%
@@ -1874,13 +1874,13 @@ invaded_asian_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_regional_i
 
 ```{r plot validation region for Ri.NAmerica model}
 
-regional_invaded_test_plot <- ggplot() +
+regional_invaded_n_american_test_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
   geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_df, aes(x = x, y = y), fill = "azure1") +
-  geom_point(data = slf_points_invaded_test, aes(x = x, y = y), color = "darkorange", size = 1) +
+  geom_point(data = slf_points_invaded_n_american_test, aes(x = x, y = y), color = "darkorange", size = 1) +
   labs(title = "North America Invaded model validation (test) presences") +
   coord_sf(crs = "ESRI:54017", datum = "ESRI:54017") +
   scale_x_continuous(limits = c(11861846, 14285214), expand = c(0, 0)) +
@@ -1895,7 +1895,7 @@ x_scale_labels <- seq(from = -13000000, to = -6000000, by = 2000000)
 y_scale_labels <- seq(from = 2000000, to = 6000000, by = 1000000)
 
 # background selection area
-regional_invaded_withSLF_plot <- regional_invaded_withSLF_plot + 
+regional_invaded_n_american_withSLF_plot <- regional_invaded_n_american_withSLF_plot + 
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1916,7 +1916,7 @@ regional_invaded_withSLF_plot <- regional_invaded_withSLF_plot +
 
 
 # background points
-regional_invaded_background_plot <- regional_invaded_background_plot + 
+regional_invaded_n_american_background_plot <- regional_invaded_n_american_background_plot + 
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1934,7 +1934,7 @@ regional_invaded_background_plot <- regional_invaded_background_plot +
 
 
 # training presences
-regional_invaded_slf_plot  <- regional_invaded_slf_plot +
+regional_invaded_n_american_slf_plot  <- regional_invaded_n_american_slf_plot +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1956,7 +1956,7 @@ x_scale_labels <- seq(from = 12000000, to = 14000000, by = 5000000)
 y_scale_labels <- seq(from = 3800000, to = 5200000, by = 200000)
 
 # test/validation presences
-regional_invaded_test_plot <- regional_invaded_test_plot +
+regional_invaded_n_american_test_plot <- regional_invaded_n_american_test_plot +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1973,9 +1973,9 @@ regional_invaded_test_plot <- regional_invaded_test_plot +
   )
 
 # patchwork plot
-regional_invaded_patchwork <- (
-  (regional_invaded_slf_plot + regional_invaded_background_plot) / 
-  (regional_invaded_withSLF_plot + regional_invaded_test_plot) 
+regional_invaded_n_american_patchwork <- (
+  (regional_invaded_n_american_slf_plot + regional_invaded_n_american_background_plot) / 
+  (regional_invaded_n_american_withSLF_plot + regional_invaded_n_american_test_plot) 
   ) +
   plot_annotation(
     title = "North America Invaded model elements",
@@ -1987,8 +1987,8 @@ regional_invaded_patchwork <- (
 ```{r save plot Ri.NAmerica patchwork}
 
 ggsave(
-  regional_invaded_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_model_v9_summary.jpg"),
+  regional_invaded_n_american_patchwork, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_invaded_n_american_model_v9_summary.jpg"),
   height = 10, 
   width = 14,
   device = jpeg,
@@ -2007,8 +2007,8 @@ slf_points_invaded_asian_test <- read.csv(
   )
 
 # load in raster for validation plot
-regional_invaded <- terra::rast(
-  x = file.path(mypath, "bio2_1981-2010_regional_invaded_KG.asc")
+regional_invaded_n_american <- terra::rast(
+  x = file.path(mypath, "bio2_1981-2010_regional_invaded_n_american_KG.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -2021,7 +2021,7 @@ regional_invaded_asian_test_plot <- ggplot() +
   # empty world map to force same aspect ratio
   geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
-  geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
+  geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_asian_test, aes(x = x, y = y), color = "darkorange", size = 1) +
   labs(title = "Asian Invaded model test presences") +
   coord_sf(
@@ -2153,8 +2153,8 @@ slf_points_native_test <- read.csv(
   ) 
 
 # load in raster for validation plot
-regional_invaded <- terra::rast(
-  x = file.path(mypath, "bio2_1981-2010_regional_invaded_KG.asc")
+regional_invaded_n_american <- terra::rast(
+  x = file.path(mypath, "bio2_1981-2010_regional_invaded_n_american_KG.asc")
   ) %>%
   terra::as.data.frame(., xy = TRUE)
 
@@ -2167,7 +2167,7 @@ regional_native_test_plot <- ggplot() +
   # empty world map to force same aspect ratio
   geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
-  geom_raster(data = regional_invaded_df, aes(x = x, y = y), fill = "azure1") +
+  geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_native_test, aes(x = x, y = y), color = "darkorange", size = 1) +
   labs(title = "Native model test presences") +
   coord_sf(

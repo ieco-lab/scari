@@ -3,7 +3,7 @@ title: "Run 'Ri.Asia' model trained on SLF invaded range in Japan and South Kore
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-23"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -223,7 +223,7 @@ I need to also load in the SLF presence and background points datasets created i
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 # training presences
@@ -355,7 +355,7 @@ scari::compute_MaxEnt_summary_statistics(
 
 ```
 
-Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in Korea and Japan) is the mimimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model. When left out, Bio 11 is also the most explanatory. Meanwhile, for the testing data in the North American invaded range, Bio 11 is overall the most impactful variable when producing a model on its own. Meanwhile all variables except Bio 15 have a negative effect when left out individually from the model (basically, a model excluding any variable except Bio 15 is substantially inhibited in its predictive power). The permutation importance plot validates that bio 11 and 15 are the most important.
+Looking at the summary statistics, the most explanatory variable (according to the jackknife test, training data in Korea and Japan) is the mimimum winter temperature (Bio 11). By itself, it can produce nearly the same AUC as the full model. When left out, Bio 11 is also the most explanatory (basically, a model excluding any variable except Bio 15 is substantially inhibited in its predictive power). Bio 11 is similarly the the most impactful variable in the testing data when producing a model on its own. The permutation importance plot validates that bio 11 is the most important.
 
 Here are the jackknife plots:
 ```{r load jackknife plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -376,7 +376,7 @@ knitr::include_graphics(
 
 ```
 
-The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around 0°C. Bio 12 is a narrow peak at around 1500mm precipitation which trails off in the positive direction, and Bio 2 generally has activity between 5 and 10°C, with a sharp peak at around 9°C. These three variables roughly agree with the N. American invaded model in their minima and maxima (our main concern), but differ some in shape.
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around 0°C. Bio 12 is a narrow peak at around 1300mm precipitation which trails off in the positive direction, and Bio 2 generally has activity between 5 and 10°C, with a sharp peak at around 9°C. These three variables roughly agree with the N. American invaded model in their minima and maxima (our main concern), but differ some in shape.
 
 Here are the response curves:
 ```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -413,7 +413,7 @@ knitr::include_graphics(
 
 Bio 15 is a bit strange in that it is bimodal, with peak activity below 30% and then between 70-100%. This suggests that most SLF populations are present at either high or low levels of precipitation seasonality (the quality of being variable in precipitation over the course of a year). This could have to do with the monsoonal effects of the rainy/dry seasons in Korea. This partially contrasts the N American invaded model, which has populations exclusively below 30%. The models agree on activity in this area, but Korea has most populations in the 70-100% range (see the rug plots).
 
-The model itself had a training AUC of 0.955 and a test AUC of 0.812. 
+The model itself had a training AUC of 0.956 and a test AUC of 0.775. 
 
 Here is the ROC curve:
 ```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -528,7 +528,7 @@ scari::create_MaxEnt_suitability_maps(
 
 The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. 
 
-The most prominent suitable areas above the MTSS (the colored areas) were predicted in completely different areas than the previous two models. This model omits the northeastern USA and highlights significant suitability in tropical regions of South America, sub-Saharan Africa, India and southeast Asia. It seems to omit most temperate regions. This is an excellent find, because it this model may predict suitable areas that would not be detected if the data were run as a global average (the traditional method for SDM). There is no noticeable trend in the predicted future suitability maps, with the exception of minor increases in suitability in the tropics as the scenario increases. Here are the maps:
+The most prominent suitable areas above the MTSS (the colored areas) were predicted in completely different areas than the previous two models. This model highlights significant suitability in tropical regions of South America, sub-Saharan Africa, India and southeast Asia. It seems to omit most temperate regions. This is an excellent find, because it this model may predict suitable areas that would not be detected if the data were run as a global average (the traditional method for SDM). There is no noticeable trend in the predicted future suitability maps, with the exception of expansion in suitable areas in the tropics as the scenario increases. Here are the maps:
 
 The historical data (1981-2010):
 ```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -595,7 +595,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_regional_invaded_asian_v4")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -608,7 +608,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_slf_all_coords_1981-2010"
 )
 
@@ -626,7 +626,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_126_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_slf_all_coords_2041-2070_GFDL_ssp126"
 )
 
@@ -640,7 +640,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_370_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_slf_all_coords_2041-2070_GFDL_ssp370"
 )
 
@@ -654,7 +654,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_585_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_slf_all_coords_2041-2070_GFDL_ssp585"
 )
 
@@ -662,7 +662,7 @@ scari::predict_xy_suitability(
 
 -->
 
-## 3.3 Predict suibability for IVR regions
+## 3.3 Predict suitability for IVR regions
 
 I will perform the same action as above, but for the locations of important wineries around the world.
 
@@ -688,7 +688,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_wineries_1981-2010",
   buffer.pred = TRUE
 )
@@ -707,7 +707,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_126_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_wineries_2041-2070_GFDL_ssp126",
   buffer.pred = TRUE
 )
@@ -722,7 +722,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_370_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_asian_wineries_2041-2070_GFDL_ssp370",
   buffer.pred = TRUE
 )
@@ -737,7 +737,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_585_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_invaded_wineries_2041-2070_GFDL_ssp585",
   buffer.pred = TRUE
 )
