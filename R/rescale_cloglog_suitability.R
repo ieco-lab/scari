@@ -7,7 +7,7 @@
 #'parameter. The scaling function is applied as an exponential, for the purposes
 #'of visualizing suitability change around a critical threshold (at the scale of
 #'0-1, it can often be hard to see changes across the suitability threshold if
-#'its value is very small). THis function will not work correctly if the desired
+#'its value is very small). This function will not work correctly if the desired
 #'threshold value is 0.
 #'
 #'This function and some of its inputs were co-authored by Jacob Woods.

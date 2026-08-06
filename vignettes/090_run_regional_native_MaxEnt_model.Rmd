@@ -3,7 +3,7 @@ title: "Run 'Rn' model trained on SLF native range in east Asia"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-07-23"
+date: "2026-07-30"
 ---
 
 # Overview
@@ -223,7 +223,7 @@ I need to also load in the SLF presence dataset created in vignette 030 and the 
 ```{r load in points datasets}
 
 # slf presences
-p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+p_slf_points <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 # training presences
@@ -331,12 +331,16 @@ regional_native_model <- SDMtune::train(
 
 This function produces all summary statistics for this model. For the complete and annotated workflow used to create this function, see `051_compute_MaxEnt_summary_statistics_workflow.Rmd`.
 
-```{r compute summary statistics using custom function}
+```{r set wd 1, eval = TRUE}
 
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
                      "maxent/models/slf_regional_native_v5")
+
+```
+
+```{r compute summary statistics using custom function}
 
 scari::compute_MaxEnt_summary_statistics(
   model.obj = regional_native_model, 
@@ -373,7 +377,7 @@ knitr::include_graphics(
 
 ```
 
-The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around 0°C (a bit higher than the -5°C of the invaded North American range). Bio 12 is a narrow peak at around 800mm precipitation which trails off into a positive tail until about 3000mm, which mostly agreed with the other two models. Bio 2 generally has activity below 12°C.
+The variables behaved differently in the response curves. Looking at the univariate response curves (the result of creating a model with only that variable), Bio 11 resembles a bell-shaped curve, with a peak around -2°C (a bit higher than the -5°C of the invaded North American range). Bio 12 is a narrow peak at around 800mm precipitation which trails off into a positive tail until about 3000mm, which mostly agreed with the other two models. Bio 2 generally has activity below 12°C.
 
 Here are the response curves:
 ```{r load response curve plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -410,7 +414,7 @@ knitr::include_graphics(
 
 Bio 15 is a bit strange in that it is bimodal, with peak activity from 40-60% and then some at 110%. This suggests that most SLF populations are present at either high or low levels of precipitation seasonality (the quality of being variable in precipitation over the course of a year). This could have to do with the monsoonal effects of the rainy/dry seasons in parts of China. This contrasts the N American invaded model, which has populations exclusively below 30%. This was similar to the invaded east Asian range in Korea/Japan, but the effect was not as strong.
 
-The model itself had a training AUC of 0.91 and a test AUC of 0.988. The test AUC is higher than the training AUC, but this is not surprising, as the test points within the invaded range are much more geographically constrained than within the native range.
+The model itself had a training AUC of 0.912 and a "perfect" test AUC of 1. The test AUC is higher than the training AUC, but this is not surprising, as the test points within the invaded range are much more geographically constrained than within the native range. This means that all SLF training points are predicted as 1 suitability, but again, this is likely due to how varied the training range is in contrast with the testing points, which are very constrained geograpically.
 
 Here is the ROC curve:
 ```{r load ROC plots, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -430,7 +434,7 @@ knitr::include_graphics(
 
 Lastly, I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `fixed_1`, `MTSS` and `10_percentile` thresholds. The workflow for this function is wrapped into the function `create_MaxEnt_suitability_maps()`.
 
-```{r set wd 1}
+```{r set wd 1, eval = TRUE}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
@@ -522,9 +526,11 @@ scari::create_MaxEnt_suitability_maps(
 
 -->
 
-The suitability maps for this model are shown below. I will load in the maps that were thresholded by both the MTSS and MTP thresholds. Bear in mind that I chose the MTSS threshold for analyses downstream. 
+The suitability maps for this model are shown below. I will load in the maps that were thresholded by the fixed_1 and MTSS thresholds. Bear in mind that I chose only the MTSS threshold for analyses downstream. 
 
 This model resembles the global average in that the most prominent suitable areas above the MTSS (the colored areas) were predicted in North America, China, Japan, Korea, and Europe. This model adds significant area in southern Argentina and Australia, middle Asia, the western USA and New Zealand. Here are the predicted suitability maps. This model also follows the global average in that as the ssp scenario becomes more severe (ssp126 -> ssp585), the predicted suitable area of each map slowly shifts towards higher latitudes.
+
+In contrast with previous models, this model predicts very large suitable areas, with suitability values nearly always approaching 1. This is an interesting result and is not exactly ideal, but this is not a concern because we will be averaging this model with the other two regional-scale models to obtain a more realistic predicted suitable area.
 
 The historical data (1981-2010):
 ```{r load suitability maps hist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
@@ -587,7 +593,7 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_regional_native_v5")
 
 # slf presence data
-slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-06-23.csv")) %>%
+slf_presences <- read.csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30.csv")) %>%
   dplyr::select(-species)
 
 ```
@@ -600,7 +606,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_slf_all_coords_1981-2010"
 )
 
@@ -618,7 +624,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_126_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_slf_all_coords_2041-2070_GFDL_ssp126"
 )
 
@@ -632,7 +638,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_370_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_slf_all_coords_2041-2070_GFDL_ssp370"
 )
 
@@ -646,7 +652,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_585_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_slf_all_coords_2041-2070_GFDL_ssp585"
 )
 
@@ -684,7 +690,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_wineries_1981-2010",
   buffer.pred = TRUE
 )
@@ -703,7 +709,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_126_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_wineries_2041-2070_GFDL_ssp126",
   buffer.pred = TRUE
 )
@@ -718,7 +724,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_370_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_wineries_2041-2070_GFDL_ssp370",
   buffer.pred = TRUE
 )
@@ -733,7 +739,7 @@ scari::predict_xy_suitability(
   env.covar.obj = x_global_585_env_covariates,
   model.obj = regional_native_model,
   mypath = mypath,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "regional_native_wineries_2041-2070_GFDL_ssp585",
   buffer.pred = TRUE
 )

@@ -20,6 +20,9 @@
 #'at the country level and then look at the return for the name of the state/province
 #'included.
 #'
+#'@param focal.species Character, default is "L_delicatula". The name of the species
+#'for which the report is generated.
+#'
 #'@param crs Character. The crs (coordinate reference system) of the projection
 #'used in building the input species data. Should be in the format of an EPSG or
 #'ESRI code (ex: EPSG:4326). Default is "ESRI:54017", the Behrmann Equal Area projection.
@@ -170,7 +173,7 @@
 #'```
 #'
 #'@export
-create_risk_report <- function(locality.iso, locality.name = locality.iso, locality.type, crs = "ESRI:54017", period.present = "1981-2010", period.projected = "2041-2070", model.projected = "GFDL-ESM4", ssp.projected = "ssp_126_370_585", save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
+create_risk_report <- function(locality.iso, locality.name = locality.iso, locality.type, focal.species = "L_delicatula", crs = "ESRI:54017", period.present = "1981-2010", period.projected = "2041-2070", model.projected = "GFDL-ESM4", ssp.projected = "ssp_126_370_585", save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
 
   # Error checks----------------------------------------------------------------
 
@@ -274,17 +277,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   load(file.path(here::here(), "R", "sysdata.rda"))
 
   # import rasters
-  slf_binarized_hist <- terra::rast(file.path(raster.path, "slf_binarized_summed_1981-2010.asc"))
-  slf_binarized_future <- terra::rast(file.path(raster.path, "slf_binarized_summed_2041-2070_ssp_mean_GFDL.asc"))
-  slf_range_shift <- terra::rast(file.path(raster.path, "slf_range_shift_summed_ssp_mean_GFDL.asc"))
+  binarized_hist <- terra::rast(file.path(raster.path, "slf_binarized_summed_1981-2010.asc"))
+  binarized_future <- terra::rast(file.path(raster.path, "slf_binarized_summed_2041-2070_ssp_mean_GFDL.asc"))
+  range_shift <- terra::rast(file.path(raster.path, "slf_range_shift_summed_ssp_mean_GFDL.asc"))
 
   # map.style
   # if it is not changed from NA, import default style
   if (is.na(map.style)) {
 
     map_style <- list(
-      xlab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "longitude", "UTM_eastings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
-      ylab(ifelse(terra::is.lonlat(terra::crs(slf_binarized_hist)) == TRUE, "latitude", "UTM_northings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
+      xlab(ifelse(terra::is.lonlat(terra::crs(binarized_hist)) == TRUE, "longitude", "UTM_eastings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
+      ylab(ifelse(terra::is.lonlat(terra::crs(binarized_hist)) == TRUE, "latitude", "UTM_northings")), # if raster is in lonlat, label as lon/lat, otherwise UTM
       # aesthetics
       theme_classic(),
       theme(
@@ -607,25 +610,25 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # first, I will mask these rasters using the locality_sf
   # use the version locality_sv instead for masking
 
-  slf_binarized_hist <- terra::mask(
-    x = slf_binarized_hist,
+  binarized_hist <- terra::mask(
+    x = binarized_hist,
     mask = locality_sv
   )
 
-  slf_binarized_future <- terra::mask(
-    x = slf_binarized_future,
+  binarized_future <- terra::mask(
+    x = binarized_future,
     mask = locality_sv
   )
 
 
 
   # rename values
-  names(slf_binarized_hist) <- "global_regional_binarized"
-  names(slf_binarized_future) <- "global_regional_binarized"
+  names(binarized_hist) <- "global_regional_binarized"
+  names(binarized_future) <- "global_regional_binarized"
 
   # convert to df for plotting
-  slf_binarized_hist_df <- terra::as.data.frame(slf_binarized_hist, xy = TRUE)
-  slf_binarized_future_df <- terra::as.data.frame(slf_binarized_future, xy = TRUE)
+  binarized_hist_df <- terra::as.data.frame(binarized_hist, xy = TRUE)
+  binarized_future_df <- terra::as.data.frame(binarized_future, xy = TRUE)
 
 
   # binarized maps
@@ -642,10 +645,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # plot with state_province layer if plotting at country level
   if(locality.type == "country") {
 
-  slf_binarized_hist_plot <- ggplot() +
+  binarized_hist_plot <- ggplot() +
     map_style +
     # data layer
-    geom_raster(data = slf_binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+    geom_raster(data = binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
     # add province layer
     geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
     # fill scale 1
@@ -663,17 +666,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # whether or not to plot buffer layer
   if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-    slf_binarized_hist_plot <- slf_binarized_hist_plot +
+    binarized_hist_plot <- binarized_hist_plot +
       # underlying buffer layer
       geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     # otherwise, plot without buffers
   } else if (is.na(buffer.dist)) {
-    slf_binarized_hist_plot <- slf_binarized_hist_plot
+    binarized_hist_plot <- binarized_hist_plot
 
   }
 
-  slf_binarized_hist_plot <- slf_binarized_hist_plot +
+  binarized_hist_plot <- binarized_hist_plot +
     # points
     geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
     # scale bar
@@ -708,10 +711,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # otherwise, plot without a state_province layer
   } else if(locality.type == "state_province") {
 
-    slf_binarized_hist_plot <- ggplot() +
+    binarized_hist_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -729,17 +732,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_hist_plot <- slf_binarized_hist_plot +
+      binarized_hist_plot <- binarized_hist_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
       # dont plot
     } else if (is.na(buffer.dist)) {
-      slf_binarized_hist_plot <- slf_binarized_hist_plot
+      binarized_hist_plot <- binarized_hist_plot
 
     }
 
-    slf_binarized_hist_plot <- slf_binarized_hist_plot +
+    binarized_hist_plot <- binarized_hist_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
       # scale bar
@@ -778,10 +781,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # plot with state_province layer if plotting at country level
   if(locality.type == "country") {
 
-    slf_binarized_future_plot <- ggplot() +
+    binarized_future_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -799,16 +802,16 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_future_plot <- slf_binarized_future_plot +
+      binarized_future_plot <- binarized_future_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
-      slf_binarized_future_plot <- slf_binarized_future_plot
+      binarized_future_plot <- binarized_future_plot
 
     }
 
-    slf_binarized_future_plot <- slf_binarized_future_plot +
+    binarized_future_plot <- binarized_future_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
       # scale bar
@@ -843,10 +846,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # otherwise, plot without a state_province layer
   } else if(locality.type == "state_province") {
 
-    slf_binarized_future_plot <- ggplot() +
+    binarized_future_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
+      geom_raster(data = binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
       geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
@@ -865,17 +868,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # whether or not to plot buffer layer
     if (!is.na(buffer.dist) && nrow(IVR_buffers_plot_layer) > 0) {
 
-      slf_binarized_future_plot <- slf_binarized_future_plot +
+      binarized_future_plot <- binarized_future_plot +
         # underlying buffer layer
         geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
-      slf_binarized_future_plot <- slf_binarized_future_plot
+      binarized_future_plot <- binarized_future_plot
 
     }
 
 
-    slf_binarized_future_plot <- slf_binarized_future_plot +
+    binarized_future_plot <- binarized_future_plot +
       # IVRs
       geom_point(data = IVR_locations_plot_layer, aes(x = x, y = y, fill = "viticultural\narea"), size = 2.5, shape = 21) +
       # scale bar
@@ -914,17 +917,17 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## plot lead/trailing edge map------------------------------------------------
 
   # first, mask rasters
-    slf_range_shift <- terra::mask(
-      x = slf_range_shift,
+    range_shift <- terra::mask(
+      x = range_shift,
       mask = locality_sv
     )
 
 
 
   # rename values
-  names(slf_range_shift) <- "range_shift_summed"
+  names(range_shift) <- "range_shift_summed"
   # convert to df
-  slf_range_shift_df <- terra::as.data.frame(slf_range_shift, xy = TRUE)
+  range_shift_df <- terra::as.data.frame(range_shift, xy = TRUE)
 
 
   # now, create vectors of values used to manually edit the scale of the plot
@@ -940,10 +943,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # if the locality is a country
   if(locality.type == "country") {
 
-  slf_range_shift_plot <- ggplot() +
+  range_shift_plot <- ggplot() +
     map_style +
     # data layer
-    geom_raster(data = slf_range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
+    geom_raster(data = range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
     # add province layer
     geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
     # fill scale
@@ -989,10 +992,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # otherwise, plot without a state_province layer
   } else if(locality.type == "state_province") {
 
-    slf_range_shift_plot <- ggplot() +
+    range_shift_plot <- ggplot() +
       map_style +
       # data layer
-      geom_raster(data = slf_range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
+      geom_raster(data = range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
       # add province layer
       geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
       # fill scale
@@ -1399,18 +1402,18 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   # use terra::expanse to calculate predicted area presently and under climate change
   # hist
-  slf_model_prop_table_hist <- suppressWarnings(
+  model_prop_table_hist <- suppressWarnings(
     terra::expanse(
-      x = slf_binarized_hist,
+      x = binarized_hist,
       unit = "km",
       byValue = TRUE
     )
     ) # terra expanse tends to tell me that the UTM projections dont work when they do, so I silenced this warning
 
   # future
-  slf_model_prop_table_future_ssp_mean <- suppressWarnings(
+  model_prop_table_future_ssp_mean <- suppressWarnings(
     terra::expanse(
-      x = slf_binarized_future,
+      x = binarized_future,
       unit = "km",
       byValue = TRUE
     )
@@ -1423,13 +1426,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   )
 
   # join
-  slf_model_prop_table_joined <- dplyr::left_join(slf_model_prop_table_hist, slf_model_prop_table_future_ssp_mean, by = c("value", "layer")) %>%
+  model_prop_table_joined <- dplyr::left_join(model_prop_table_hist, model_prop_table_future_ssp_mean, by = c("value", "layer")) %>%
     # add labels
     dplyr::left_join(., categories.obj, by = "value")
 
 
   # tidy
-  slf_model_prop_table_joined <- slf_model_prop_table_joined %>%
+  model_prop_table_joined <- model_prop_table_joined %>%
     dplyr::select(-c(layer, value)) %>%
     dplyr::rename(
       "area_km_hist" = "area.x",
@@ -1450,18 +1453,18 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     )
 
   # add superscript
-  colnames(slf_model_prop_table_joined)[2] <- paste0("area_km", common::supsc("2"), "_present")
-  colnames(slf_model_prop_table_joined)[4] <- paste0("area_km", common::supsc("2"), "_future")
+  colnames(model_prop_table_joined)[2] <- paste0("area_km", common::supsc("2"), "_present")
+  colnames(model_prop_table_joined)[4] <- paste0("area_km", common::supsc("2"), "_future")
 
   # .html formatting
   # format row colors
-  slf_model_prop_table_joined[1, 1] <- kableExtra::cell_spec(slf_model_prop_table_joined[1, 1], format = "html", bold = TRUE, escape = FALSE, color = "azure4")
-  slf_model_prop_table_joined[2, 1] <- kableExtra::cell_spec(slf_model_prop_table_joined[2, 1], format = "html", bold = TRUE, escape = FALSE, color = "darkorange")
-  slf_model_prop_table_joined[3, 1] <- kableExtra::cell_spec(slf_model_prop_table_joined[3, 1], format = "html", bold = TRUE, escape = FALSE, color = "gold")
-  slf_model_prop_table_joined[4, 1] <- kableExtra::cell_spec(slf_model_prop_table_joined[4, 1], format = "html", bold = TRUE, escape = FALSE, color = "darkred")
+  model_prop_table_joined[1, 1] <- kableExtra::cell_spec(model_prop_table_joined[1, 1], format = "html", bold = TRUE, escape = FALSE, color = "azure4")
+  model_prop_table_joined[2, 1] <- kableExtra::cell_spec(model_prop_table_joined[2, 1], format = "html", bold = TRUE, escape = FALSE, color = "darkorange")
+  model_prop_table_joined[3, 1] <- kableExtra::cell_spec(model_prop_table_joined[3, 1], format = "html", bold = TRUE, escape = FALSE, color = "gold")
+  model_prop_table_joined[4, 1] <- kableExtra::cell_spec(model_prop_table_joined[4, 1], format = "html", bold = TRUE, escape = FALSE, color = "darkred")
 
   # convert to kable
-  slf_model_prop_kable <- knitr::kable(x = slf_model_prop_table_joined, format = "html", escape = FALSE) %>%
+  model_prop_kable <- knitr::kable(x = model_prop_table_joined, format = "html", escape = FALSE) %>%
     kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE) %>%
     # footnotes
     kableExtra::add_footnote(paste0("present risk calculated for period ", period.present), notation = "alphabet") %>%
@@ -1477,9 +1480,9 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## create range shift table---------------------------------------------------
 
   # use terra expanse to calculate suitable area
-  slf_range_shift_table <- suppressWarnings(
+  range_shift_table <- suppressWarnings(
     terra::expanse(
-      x = slf_range_shift,
+      x = range_shift,
       unit = "km",
       byValue = TRUE
     )
@@ -1495,18 +1498,18 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   #tidying
   # add rows
-  slf_range_shift_table <-  slf_range_shift_table %>%
+  range_shift_table <-  range_shift_table %>%
     dplyr::left_join(., range.tibble, by = "value")
 
   # conditional to add missing categories
-  if(!'remains_unsuitable' %in% slf_range_shift_table$Ld_range_shift_type) slf_range_shift_table <- slf_range_shift_table %>% tibble::add_row(layer = 1, value = 5, area = 0, Ld_range_shift_type = "remains_unsuitable")
-  if(!'contraction' %in% slf_range_shift_table$Ld_range_shift_type) slf_range_shift_table <- slf_range_shift_table %>% tibble::add_row(layer = 1, value = 6, area = 0, Ld_range_shift_type = "contraction")
-  if(!'expansion' %in% slf_range_shift_table$Ld_range_shift_type) slf_range_shift_table <- slf_range_shift_table %>% tibble::add_row(layer = 1, value = 9, area = 0, Ld_range_shift_type = "expansion")
-  if(!'retained_suitability' %in% slf_range_shift_table$Ld_range_shift_type) slf_range_shift_table <- slf_range_shift_table %>% tibble::add_row(layer = 1, value = 10, area = 0, Ld_range_shift_type = "retained_suitability")
+  if(!'remains_unsuitable' %in% range_shift_table$Ld_range_shift_type) range_shift_table <- range_shift_table %>% tibble::add_row(layer = 1, value = 5, area = 0, Ld_range_shift_type = "remains_unsuitable")
+  if(!'contraction' %in% range_shift_table$Ld_range_shift_type) range_shift_table <- range_shift_table %>% tibble::add_row(layer = 1, value = 6, area = 0, Ld_range_shift_type = "contraction")
+  if(!'expansion' %in% range_shift_table$Ld_range_shift_type) range_shift_table <- range_shift_table %>% tibble::add_row(layer = 1, value = 9, area = 0, Ld_range_shift_type = "expansion")
+  if(!'retained_suitability' %in% range_shift_table$Ld_range_shift_type) range_shift_table <- range_shift_table %>% tibble::add_row(layer = 1, value = 10, area = 0, Ld_range_shift_type = "retained_suitability")
 
 
   # more tidying
-  slf_range_shift_table <- slf_range_shift_table %>%
+  range_shift_table <- range_shift_table %>%
     dplyr::mutate(
       prop_total_area = scales::label_percent()(area / sum(area)),
       area = scales::label_comma()(area)
@@ -1517,11 +1520,11 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   # EVEN MORE tidying
   # add superscript
-  colnames(slf_range_shift_table)[2] <- paste0("area_km", common::supsc("2"))
+  colnames(range_shift_table)[2] <- paste0("area_km", common::supsc("2"))
 
   # .html formatting
   # format row colors
-  slf_range_shift_table <- slf_range_shift_table %>%
+  range_shift_table <- range_shift_table %>%
     dplyr::mutate(Ld_range_shift_type = kableExtra::cell_spec(Ld_range_shift_type, format = "html", escape = FALSE, bold = TRUE, background = dplyr::case_when(
       Ld_range_shift_type == "remains_unsuitable" ~ "azure4",
       Ld_range_shift_type == "contraction" ~ "blue",
@@ -1531,7 +1534,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     ))
 
   # convert to kable
-  slf_range_shift_kable <- knitr::kable(x = slf_range_shift_table, format = "html", escape = FALSE) %>%
+  range_shift_kable <- knitr::kable(x = range_shift_table, format = "html", escape = FALSE) %>%
     # standardize col width
     kableExtra::column_spec(1:3, width_min = '4cm') %>%
     # styling
@@ -1617,7 +1620,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   ## create report--------------------------------------------------------------
 
-  slf_risk_report <- list(
+  risk_report <- list(
     # tibble of info on the report
     "Report_info" = tibble::tibble(
       "Report_info" = c("Report prepared for:", "Locality Type:", "Time period of present risk based on historical data:", "Time period of future risk projection:", "CMIP6 model used for future risk projection:", "SSP scenarios included:"),
@@ -1625,14 +1628,14 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     ),
     "viticultural_regions_list" = IVR_locations_output_kable,
     "risk_maps" = list(
-      "present_risk_map" = slf_binarized_hist_plot,
-      "future_risk_map" = slf_binarized_future_plot
+      "present_risk_map" = binarized_hist_plot,
+      "future_risk_map" = binarized_future_plot
     ),
-    "risk_maps_prop_area_table" = slf_model_prop_kable,
+    "risk_maps_prop_area_table" = model_prop_kable,
     "viticultural_risk_plot" = xy_joined_rescaled_plot,
     "viticultural_risk_table" = IVR_risk_kable,
-    "range_shift_map" = slf_range_shift_plot,
-    "range_shift_table" = slf_range_shift_kable
+    "range_shift_map" = range_shift_plot,
+    "range_shift_table" = range_shift_kable
   )
 
   # success message
@@ -1642,7 +1645,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   ## return report and save if save.report = TRUE-------------------------------
 
   # output into global env
-  assign(paste0(locality_name_internal, "_slf_risk_report"), slf_risk_report, envir = .GlobalEnv)
+  assign(paste0(locality_name_internal, "_", focal.species, "_risk_report"), risk_report, envir = .GlobalEnv)
 
 
   if(save.report == TRUE) {
@@ -1657,20 +1660,20 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # save files
 
     ## IVR list
-    readr::write_csv(IVR_locations_output, file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_regions_list.csv")))
+    readr::write_csv(IVR_locations_output, file = file.path(mypath, paste0(locality_name_internal, "_", focal.species , "_report_viticultural_regions_list.csv")))
 
     ## risk maps----------------------------------------------------------------
     suppressWarnings(ggsave(
-      slf_binarized_hist_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_present.jpg")),
+      binarized_hist_plot,
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_present.jpg")),
       height = 8,
       width = 10,
       device = jpeg,
       dpi = "retina"
     ))
     suppressWarnings(ggsave(
-      slf_binarized_future_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
+      binarized_future_plot,
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,
@@ -1679,8 +1682,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # range shift map-----------------------------------------------------------
     suppressWarnings(ggsave(
-      slf_range_shift_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
+      range_shift_plot,
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,
@@ -1690,7 +1693,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # risk quadrant plot
     suppressWarnings(ggsave(
       xy_joined_rescaled_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_risk_plot.jpg")),
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_viticultural_risk_plot.jpg")),
       height = 8,
       width = 8,
       device = jpeg,
@@ -1703,7 +1706,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # save as .html
     kableExtra::save_kable(
       IVR_risk_kable,
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_risk_table.html")),
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_viticultural_risk_table.html")),
       self_contained = TRUE,
       bs_theme = "simplex",
       density = 500
@@ -1711,16 +1714,16 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # convert to jpg
     webshot::webshot(
-      url = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_risk_table.html")),
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_risk_table.jpg")),
+      url = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_viticultural_risk_table.html")),
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_viticultural_risk_table.jpg")),
       zoom = 4
     )
 
     # prop area table
     # save as .html
     kableExtra::save_kable(
-      slf_model_prop_kable,
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_areas_table.html")),
+      model_prop_kable,
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_areas_table.html")),
       self_contained = TRUE,
       bs_theme = "simplex",
       density = 500
@@ -1728,16 +1731,16 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # convert to jpg
     webshot::webshot(
-      url = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_areas_table.html")),
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_areas_table.jpg")),
+      url = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_areas_table.html")),
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_areas_table.jpg")),
       zoom = 2
     )
 
 
-    # slf range shift table
+    #  range shift table
     kableExtra::save_kable(
-      slf_range_shift_kable,
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_table.html")),
+      range_shift_kable,
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_table.html")),
       self_contained = TRUE,
       bs_theme = "simplex",
       density = 500
@@ -1745,8 +1748,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # convert to jpg
     webshot::webshot(
-      url = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_table.html")),
-      file = file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_table.jpg")),
+      url = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_table.html")),
+      file = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_table.jpg")),
       zoom = 2
     )
 
@@ -1754,9 +1757,9 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # remove .html files
     file.remove(
-      file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_viticultural_risk_table.html")),
-      file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_range_shift_table.html")),
-      file.path(mypath, paste0(locality_name_internal, "_L_delicatula_report_risk_map_areas_table.html"))
+      file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_viticultural_risk_table.html")),
+      file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_table.html")),
+      file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_areas_table.html"))
       )
 
 

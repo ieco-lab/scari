@@ -51,7 +51,7 @@
 #'
 #'Requires the following packages: "cli", "httr", "terra", "tidyverse", "utils"
 #'
-#'See (CHELSA v2.1 Technical Specifications)[https://chelsa-climate.org/wp-admin/download-page/CHELSA_tech_specification_V2.pdf] for more detail on specific climatologies, including their units, usage, and interpretation.
+#'See CHELSA v2.1 Technical Specifications at https://www.chelsa-climate.org/models/chelsa for more detail on specific climatologies, including their units, usage, and interpretation.
 #'
 #'### var.subtype
 #'

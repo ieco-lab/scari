@@ -3,7 +3,7 @@ title: "Ensemble regional-scale models using a weighted mean"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-07-28"
+date: "2026-08-06"
 ---
 
 # Overview
@@ -13,6 +13,11 @@ In vignettes 060-090, I created three regional-scale MaxEnt models for invasive 
 Our goal is to compare the global-scale output with that from the three regional-scale models. A global-scale model is the traditional approach to modeling species distributions and represents an important generalization made using all data, but it may not consider localized climate conditions that differ between regions (Gallien et al, 2012). I hypothesized that by creating models at multiple spatial scales, I can have more confidence in suitability predictions made for specific SLF populations and important viticultural regions, and can predict the risk of specific populations spreading now and under climate change (Araújo and New, 2007). I also hypothesize that the regional-scale models, once ensembled into a single prediction, will make more refined predictions than a global-scale model could. 
 
 We will ensemble the three regional-scale models into a single prediction using a weighted mean approach. This will involve weighting each model's predictions by the ExDet metric (Which we measured in the last vignette, 100) and its test AUC value. The ExDet metric measures the level of extrapolation in the model's predictions when projecting models. Measuring the level of extrapolation is very important when making predictions across different climate zones, time periods, or for range shifting species (we can check all of those boxes) (Elith et al, 2010; Mesgaran et al, 2014). We will directly use the Exdet metric from each model to measure our confidence in its predictions for a particular grid cell. We will also use the test AUC from each model in the weighting so that we also consider goodness of fit. 
+
+*CURRENT MODEL VERSIONS:* 
+* North American Invaded v9
+* Asian Invaded v4
+* Native v5
 
 # Setup
 

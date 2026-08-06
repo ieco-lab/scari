@@ -49,7 +49,7 @@ or extracted from a raster using \code{terra::extract()}, as needed.
 }
 \examples{
 
-# I typically use it with dplyr::mutate() to create a new column in a data frame.
+# I typically use it with `dplyr::mutate()` to create a new column in a data frame.
 
 ```R
 

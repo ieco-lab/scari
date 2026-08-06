@@ -86,20 +86,22 @@ The function requires the packages 'tidyverse', 'here', 'devtools', 'rJava', 'di
 }
 \examples{
 
-# ARGUMENT USAGE:
+# ARGUMENT USAGE--------------------------------------------------------------
+
 # model.obj = regional_native_model
 # model.name = "regional_native"
 
-```R
-
 mypath <- file.path(here::here() \%>\%
                     dirname(),
-                     "maxent/models/slf_regional_native_v3")
+                     "maxent/models/slf_regional_native_v5")
 
 jk.test.type <- c("train", "test") # used to produce jackknife plots
 plot.type <- c("cloglog", "logistic") # used to produce marginal and univariate response curves
 
-# EXAMPLE USAGE:
+# EXAMPLE USAGE---------------------------------------------------------------
+
+```R
+
 scari::compute_MaxEnt_summary_statistics(
 model.obj = regional_native_model,
 model.name = "regional_native",

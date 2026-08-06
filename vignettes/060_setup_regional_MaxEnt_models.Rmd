@@ -29,7 +29,7 @@ Here is a table summarizing the model structures:
 model_info <- data.frame(
   "model" = c(
     "Native (Rn) v5",
-    "Invaded N America (Ri.NAmerica) v9",
+    "Invaded N American (Ri.NAmerica) v9",
     "Invaded Asian (Ri.Asia) v4"
     ),
   "train_region" = c(

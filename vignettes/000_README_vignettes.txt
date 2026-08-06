@@ -201,7 +201,7 @@ v2- creates the v1 of the regional_native_model in maxent/models. Removed gridSe
 v3
 v4- 2024-08-08- rework- updated SLF presence data and inclusion of other SSP scenarios, creates v3 of the regional_native model
 v5- 2025-07-14- rework- v4 of model-transformed final dataset into Behrmann projection
-v6- 2026-06-23- creates v5 of model based on newer data
+v6- 2026-07-30- creates v5 of model based on newer data
 
 
 
@@ -219,7 +219,7 @@ v2- added grey area to each figure to represent bg area
 v3- 2024-08-09- rework- updated SLF presence data and inclusion of other SSP scenarios
 v4- 2024-10-18- changed plotting to re-load rasters so that vignette could be rendered without dsmextra package (will retire because its not available for R 4.4)
 v5- 2025-07-28- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
-
+v6- 2026-08-06- rerun for model versions (global v5, invaded n america v9, invaded asiian v4, native v5)
 
 
 ----------110_ensemble_regional_models.Rmd----------
@@ -235,6 +235,7 @@ v1-
 v2- added section to ensemble ExDet and MIC rasters, bar chart showing % cont to regional ensemble
 v3- 2024-08-09- rework- updated SLF presence data and inclusion of other SSP scenarios
 v4- 2025-07-28- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+v5- 2026-08-06- rerun for model versions (global v5, invaded n america v9, invaded asiian v4, native v5)
 
 
 

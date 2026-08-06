@@ -12,6 +12,9 @@
 #'@param model.name Character. A string matching the name of the object set for
 #'`model.obj`. Exclude unnecessary phrases, such as the "_model" ending.
 #'
+#'@param focal.species Character, default is "L_delicatula". The name of the species
+#'for which the report is generated.
+#'
 #'@param mypath Character.A file path to the sub directory where the model
 #'output will be stored. Should be used with the [file.path()] function
 #'(i.e. with '/' instead of '\\'). If this sub directory does not already exist
@@ -125,7 +128,7 @@
 #'of defining the entire study area as suitable. This renders this threshold
 #'useless for defining suitable area.
 #'
-#'citations: Radosavljevic, A., & Anderson, R. P. (2014), Phillips et al, (2006), Liu et al, (2016), (Damus, M. (2014, May 23). Threshold rule [Online post]. Google Groups: Maxent.)
+#'citations: Radosavljevic, A., & Anderson, R. P. (2014), Phillips et al, (2006), Liu et al, (2016), (Damus, M. (2014, May 23). Threshold rule [Online post](https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1). Google Groups: Maxent.)
 #'
 #'## env.covar.obj:
 #'This must a `SpatRaster` raster stack created using [terra::rast()]. The stack
@@ -139,7 +142,7 @@
 #'
 #'* `xlab("UTM Easting")`
 #'* `ylab("UTM Northing")`
-#'* `labs(fill = "Suitability for SLF")`
+#'* `labs(fill = paste("Suitability for", focal.species))`
 #'* `theme_classic()`
 #'* `theme(legend_position = "bottom")`
 #'* `theme(panel.background = element_rect(fill = "lightblue2", color = "lightblue2"), legend.title = element_text(face = "bold"))`
@@ -199,13 +202,17 @@
 #'```
 #'
 #'@export
-create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, mypath, create.dir = FALSE, env.covar.obj, describe.proj = NA, predict.fun = "mean", predict.type = "cloglog", clamp.pred = TRUE, thresh = NA, map.thresh = FALSE, map.thresh.extra = NA, map.style = NA, summary.file = NA) {
+create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, focal.species = "L_delicatula", mypath, create.dir = FALSE, env.covar.obj, describe.proj = NA, predict.fun = "mean", predict.type = "cloglog", clamp.pred = TRUE, thresh = NA, map.thresh = FALSE, map.thresh.extra = NA, map.style = NA, summary.file = NA) {
 
   # Error checks----------------------------------------------------------------
 
   # ensure objects are character type
   if (is.character(model.name) == FALSE) {
     cli::cli_abort("Parameter 'model.name' must be of type 'character'")
+    stop()
+  }
+  if (is.character(focal.species) == FALSE) {
+    cli::cli_abort("Parameter 'focal.species' must be of type 'character'")
     stop()
   }
   if (is.character(predict.fun) == FALSE) {
@@ -282,7 +289,7 @@ create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, mypath, cre
       ),
       scale_x_continuous(expand = c(0, 0)),
       scale_y_continuous(expand = c(0, 0)),
-      labs(fill = "Suitability for SLF"),
+      labs(fill = paste("Suitability for", focal.species)),
       scale_fill_viridis_c(
         option = "D",
         limits = c(0, 1.0),
@@ -343,7 +350,7 @@ create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, mypath, cre
       model_suit_plot <- ggplot() +
         geom_raster(data = model_suit,
                     aes(x = x, y = y, fill = model_suit[, 3])) +
-        labs(title = paste0("Suitability for SLF: ", toupper(a), " | ", b),
+        labs(title = paste0("Suitability for ", focal.species,  ": ", toupper(a), " | ", b),
              subtitle = paste0("Model: '", model.name, "'", ifelse(clamp.pred == TRUE, ", clamped", ""), ifelse(is.na(describe.proj), "", paste0(", projected to ", describe.proj)))) +
         map_style
 
@@ -563,7 +570,7 @@ create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, mypath, cre
 
               # aesthetics
               labs(
-                title = paste0("suitability for SLF: ", toupper(i), " | cloglog | ", thresh_name, " threshold"),
+                title = paste0("suitability for ", focal.species, ": ", toupper(i), " | cloglog | ", thresh_name, " threshold"),
                 subtitle = paste0("Model: '", model.name, "'", ifelse(clamp.pred == TRUE, ", clamped", ""), ifelse(is.na(describe.proj), "", paste0(", projected to ", describe.proj))),
                 fill = ""
                 )
@@ -601,7 +608,7 @@ create_MaxEnt_suitability_maps_CV <- function(model.obj, model.name, mypath, cre
               # plot binary threshold on top
               geom_raster(data = model_mask_layer_df,
                           aes(x = x, y = y), fill = "azure4") +
-              labs(title = paste0("suitability for SLF: ", toupper(i), " | cloglog | ", thresh_name, " threshold"),
+              labs(title = paste0("suitability for ", focal.species, ": ", toupper(i), " | cloglog | ", thresh_name, " threshold"),
                    subtitle = paste0("Model: '", model.name, "'", ifelse(clamp.pred == TRUE, ", clamped", ""), ifelse(is.na(describe.proj), "", paste0(", projected to ", describe.proj)))) +
               map_style
 

@@ -76,7 +76,7 @@
 #'
 #'mypath <- file.path(here::here() %>%
 #'                     dirname(),
-#'                      "maxent/models/slf_regional_native_v3")
+#'                      "maxent/models/slf_regional_native_v5")
 #'
 #'jk.test.type <- c("train", "test") # used to produce jackknife plots
 #'plot.type <- c("cloglog", "logistic") # used to produce marginal and univariate response curves

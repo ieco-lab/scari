@@ -83,6 +83,7 @@ v1- 2024-02-13- name changed and version without _CV created
 v2-
 v3- 2025-08-07- added scale bars and N arrow functionality
 v4- 2026-07-27- fixed issues with threshold selection. Previously, MTP assumed as a baseline for maps with stacked threshold- added a warning that MTP may cause issues, changed baseline threshold of suitabiliy to fixed 1% training
+v5- 2026-08-06- removed usage of species-specific naming
 
 ----------create_MaxEnt_suitability_maps.R----------
 
@@ -101,6 +102,7 @@ v1- 2024-02-13- this version created to deal with maxent models without cross va
 v2-
 v3-
 v4- 2026-07-27- fixed issues with threshold selection. Previously, MTP assumed as a baseline for maps with stacked threshold- added a warning that MTP may cause issues, changed baseline threshold of suitabiliy to fixed 1% training
+v5- 2026-08-06- removed usage of species-specific naming
 
 ----------create_risk_report.R----------
 
@@ -118,24 +120,20 @@ v1-
 v2-
 v3-
 v4- 2024-08-29- added functionality to calculate totals of predicted SLF risk categories from risk maps
+v5- 2026-08-06- removed usage of SLF terminology to make documentation more general
 
 
-
-----------rescale_cloglog_suitability.R----------
+----------import_chelsa_v2.1.R----------
 
 ## About
 
-This function will take the cloglog suitability output from MaxEnt, which is on a 0-1 scale, and re-scale it to have a set median value.
-The range of the values will still be 0-1, but the median will now be the value of the `thresh` parameter.
-The scaling function is applied as an exponential, for the purposes of visualizing suitability change around a critical threshold
-(at the scale of 0-1, it can often be hard to see changes across the suitability threshold if its value is very small).
-Note that this function will not work if the value of thresh is 0.
-
-First used in vignette 130
+This function accesses web URLs to download high-resolution climatologies from [CHELSA](https://www.chelsa-climate.org/).
 
 ## Changelog
 
 v0- initial version
+v1-
+
 
 
 ----------predict_xy_suitability_CV.R----------
@@ -174,7 +172,21 @@ v0- 2024-02-13- this version created to deal with maxent models without cross va
 v1- 2024-08-07- added method to make predictions based on buffer around points- take the max value within the buffer rather than the exact point value
 v2- 2025-07-11- bug fixes
 
+----------rescale_cloglog_suitability.R----------
 
+## About
+
+This function will take the cloglog suitability output from MaxEnt, which is on a 0-1 scale, and re-scale it to have a set median value.
+The range of the values will still be 0-1, but the median will now be the value of the `thresh` parameter.
+The scaling function is applied as an exponential, for the purposes of visualizing suitability change around a critical threshold
+(at the scale of 0-1, it can often be hard to see changes across the suitability threshold if its value is very small).
+Note that this function will not work if the value of thresh is 0.
+
+First used in vignette 130
+
+## Changelog
+
+v0- initial version
 
 
 ############################################################

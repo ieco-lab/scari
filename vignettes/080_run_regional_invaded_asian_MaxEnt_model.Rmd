@@ -334,12 +334,15 @@ regional_invaded_asian_model <- SDMtune::train(
 
 This function produces all summary statistics for this model. For the complete and annotated workflow used to create this function, see `051_compute_MaxEnt_summary_statistics_workflow.Rmd`.
 
-```{r compute summary statistics using custom function}
+```{r set wd, eval = TRUE}
 
-# output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
                      "maxent/models/slf_regional_invaded_asian_v4")
+
+```
+
+```{r compute summary statistics using custom function}
 
 scari::compute_MaxEnt_summary_statistics(
   model.obj = regional_invaded_asian_model, 
@@ -433,7 +436,7 @@ knitr::include_graphics(
 
 Lastly, I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `fixed_1`, `MTSS` and `10_percentile` thresholds. The workflow for this function is wrapped into the function `create_MaxEnt_suitability_maps()`.
 
-```{r set wd}
+```{r set wd, eval = TRUE}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),

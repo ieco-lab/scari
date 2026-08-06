@@ -98,9 +98,10 @@ clamping should be applied if they are not within the training are (clamp.pred =
 }
 \examples{
 
+# simple predict method-------------------------------------------------------
+
 ```R
 
-# simple predict method
 scari::predict_xy_suitability(
 xy.obj = IVR_regions,
 xy.type = "IVR regions",
@@ -112,7 +113,12 @@ predict.type = c("cloglog", "logistic"),
 output.name = "regional_native_wineries_1981-2010"
 )
 
-# buffered predict method
+```
+
+# buffered predict method----------------------------------------------------
+
+```R
+
 scari::predict_xy_suitability(
 xy.obj = IVR_regions,
 xy.type = "IVR regions",

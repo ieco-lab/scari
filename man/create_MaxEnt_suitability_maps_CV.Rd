@@ -7,6 +7,7 @@
 create_MaxEnt_suitability_maps_CV(
   model.obj,
   model.name,
+  focal.species = "L_delicatula",
   mypath,
   create.dir = FALSE,
   env.covar.obj,
@@ -27,6 +28,9 @@ class 'SDMmodelCV'.}
 
 \item{model.name}{Character. A string matching the name of the object set for
 \code{model.obj}. Exclude unnecessary phrases, such as the "_model" ending.}
+
+\item{focal.species}{Character, default is "L_delicatula". The name of the species
+for which the report is generated.}
 
 \item{mypath}{Character.A file path to the sub directory where the model
 output will be stored. Should be used with the \code{\link[=file.path]{file.path()}} function
@@ -164,7 +168,7 @@ often have an artifact (as we found in our study and as Phillips 2006 found)
 of defining the entire study area as suitable. This renders this threshold
 useless for defining suitable area.
 
-citations: Radosavljevic, A., & Anderson, R. P. (2014), Phillips et al, (2006), Liu et al, (2016), (Damus, M. (2014, May 23). Threshold rule \link{Online post}. Google Groups: Maxent.)
+citations: Radosavljevic, A., & Anderson, R. P. (2014), Phillips et al, (2006), Liu et al, (2016), (Damus, M. (2014, May 23). Threshold rule \href{https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1}{Online post}. Google Groups: Maxent.)
 }
 
 \subsection{env.covar.obj:}{
@@ -181,7 +185,7 @@ Map style default options:
 \itemize{
 \item \code{xlab("UTM Easting")}
 \item \code{ylab("UTM Northing")}
-\item \code{labs(fill = "Suitability for SLF")}
+\item \code{labs(fill = paste("Suitability for", focal.species))}
 \item \code{theme_classic()}
 \item \code{theme(legend_position = "bottom")}
 \item \code{theme(panel.background = element_rect(fill = "lightblue2", color = "lightblue2"), legend.title = element_text(face = "bold"))}
@@ -194,9 +198,8 @@ Map style default options:
 }
 \examples{
 
-# ARGUMENT USAGE:
+# ARGUMENT USAGE--------------------------------------------------------------
 
-```R
 mypath <- file.path(here::here() \%>\%
                     dirname(),
                      "maxent/models/slf_global_v5")
@@ -207,7 +210,10 @@ ylab("UTM Northing"),
 theme_classic()
 )
 
-# EXAMPLE USAGE:
+# EXAMPLE USAGE---------------------------------------------------------------
+
+```R
+
 scari::create_MaxEnt_suitability_maps_CV(
  model.obj = global_model,
  model.name = "global",

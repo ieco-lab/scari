@@ -8,6 +8,7 @@ create_risk_report(
   locality.iso,
   locality.name = locality.iso,
   locality.type,
+  focal.species = "L_delicatula",
   crs = "ESRI:54017",
   period.present = "1981-2010",
   period.projected = "2041-2070",
@@ -36,6 +37,9 @@ but please include those used used in the ethnic naming (ex: Côte d'Ivoire).}
 not know the state or province you are looking for, you might create a report
 at the country level and then look at the return for the name of the state/province
 included.}
+
+\item{focal.species}{Character, default is "L_delicatula". The name of the species
+for which the report is generated.}
 
 \item{crs}{Character. The crs (coordinate reference system) of the projection
 used in building the input species data. Should be in the format of an EPSG or
@@ -146,10 +150,9 @@ Additionally, \code{root/vignette-outputs/rasters} is the default path for the \
 }
 \examples{
 
-# EXAMPLE USAGE:
+# EXAMPLE USAGE---------------------------------------------------------------
 
 ```R
-
 scari::create_risk_report(
 locality.iso = "aus",
 locality.name = "australia",
@@ -162,17 +165,13 @@ buffer.dist = 20000 # this is only used for buffered predictions, default is NA 
 
 ```
 
-# ARGUMENT USAGE:
-
-```R
+# ARGUMENT USAGE--------------------------------------------------------------
 
 map_style <- list(
 xlab("longitude"),
 ylab("latitude"),
 theme_classic()
 )
-
-```
 
 # The output is in list format, so it should be called using this notation:
 
