@@ -14,7 +14,8 @@ The goal of this analysis is to train four models: a global model, a native rang
 
 In this vignette, I will set up to run the global model and project it for climate change. I will need to format the data in this vignette, will be trained and tested on all available climate data that is split into 10 random folds. In the next vignette I will run this model, and in the following vignette I will set up for the three regional models.
 
-*CURRENT MODEL VERSION: v5*
+*CURRENT MODEL VERSION:*
+* Global mean model: v5
 
 ```{r model_info table, echo = FALSE}
 

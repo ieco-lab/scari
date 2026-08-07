@@ -18,6 +18,7 @@ In addition to the ExDet analysis, I will be performing an MIC (Most Influential
 Both of these analyses will be performed using the `dsmextra` package.
 
 *CURRENT MODEL VERSIONS:* 
+* Global mean model: v5
 * North American Invaded v9
 * Asian Invaded v4
 * Native v5
@@ -125,7 +126,7 @@ map_exdet <- function(raster, raster.df) {
         format_decimal(min(values(raster), na.rm = TRUE)), 
         format_decimal(max(values(raster), na.rm = TRUE))
         ),
-      guide = guide_colorbar(frame.colour = "black", ticks.colour = "black", barwidth = 20, order = 1)
+      guide = guide_colorbar(frame.colour = "black", ticks.colour = "black", barwidth = 20, order = 1, theme = theme(legend.text = element_text(angle = 45, hjust = 1, vjust = 1)))
       ) 
   
 }
@@ -554,7 +555,7 @@ exdet_MIC_global_hist <- dsmextra::compute_extrapolation(
 
 ```
 
-# <!--
+<!--
 
 ## 2.2 CMIP6 2041-2070 projected climate scenarios
 
@@ -809,6 +810,8 @@ exdet_regional_native_hist_plot <- exdet_regional_native_hist_plot +
     fill = "ExDet Analysis"
     ) 
 
+exdet_regional_native_hist_plot
+
 ```
 
 ```{r save plot- Rn hist exdet}
@@ -875,7 +878,7 @@ I will repeat this workflow for each of the models and their CMIP6 version clima
 
 In the next vignette, I will utilize the ExDet analysis in my ensemble techniques for the regional-scale models. This ensembling technique should give me a unified prediction with which to compare the global-scale model and make predictions.
 
-# <!--
+<!--
 
 ## 3.2 regional_native SSP126 
 
@@ -935,10 +938,15 @@ exdet_regional_native_126 <- exdet_MIC_regional_native_126[["rasters"]][["ExDet"
 
 ```{r create exdet plot- Rn ssp126 exdet}
 
+# re-import raster
+exdet_regional_native_126 <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v5", "ExDet_slf_regional_native_v5_background_projGlobe_2041-2070_ssp126_GFDL.tif"))
+# convert to df
+exdet_regional_native_126_df <- terra::as.data.frame(exdet_regional_native_126, xy = TRUE)
+
 # plot mean raster first
 exdet_regional_native_126_plot <- map_exdet(
   raster = exdet_regional_native_126,
-  raster.df = exdet_MIC_regional_native_126[["data"]][["all"]]
+  raster.df = exdet_regional_native_126_df
 )
 
 # add new scale for bg area
@@ -1071,10 +1079,15 @@ exdet_regional_native_370 <- exdet_MIC_regional_native_370[["rasters"]][["ExDet"
 
 ```{r create exdet plot- Rn ssp370 exdet}
 
+# re-import raster
+exdet_regional_native_370 <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v5", "ExDet_slf_regional_native_v5_background_projGlobe_2041-2070_ssp370_GFDL.tif"))
+# convert to df
+exdet_regional_native_370_df <- terra::as.data.frame(exdet_regional_native_370, xy = TRUE)
+
 # plot mean raster first
 exdet_regional_native_370_plot <- map_exdet(
   raster = exdet_regional_native_370,
-  raster.df = exdet_MIC_regional_native_370[["data"]][["all"]]
+  raster.df = exdet_regional_native_370_df
 )
  
 # new fill scale for bg area
@@ -1207,10 +1220,15 @@ exdet_regional_native_585 <- exdet_MIC_regional_native_585[["rasters"]][["ExDet"
 
 ```{r create exdet plot- Rn ssp585 exdet}
 
+# re-import raster
+exdet_regional_native_585 <- terra::rast(x = file.path(mypath, "models", "slf_regional_native_v5", "ExDet_slf_regional_native_v5_background_projGlobe_2041-2070_ssp585_GFDL.tif"))
+# convert to df
+exdet_regional_native_585_df <- terra::as.data.frame(exdet_regional_native_585, xy = TRUE)
+
 # plot mean raster first
 exdet_regional_native_585_plot <- map_exdet(
   raster = exdet_regional_native_585,
-  raster.df = exdet_MIC_regional_native_585[["data"]][["all"]]
+  raster.df = exdet_regional_native_585_df
 )
 
 # background area df scale
@@ -1345,10 +1363,15 @@ exdet_regional_invaded_n_american_hist <- exdet_MIC_regional_invaded_n_american_
 
 ```{r create exdet plot- Ri.NAmerica hist exdet}
 
+# re-import raster
+exdet_regional_invaded_n_american_hist <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_n_american_v9", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_1981-2010.tif"))
+# convert to df
+exdet_regional_invaded_n_american_hist_df <- terra::as.data.frame(exdet_regional_invaded_n_american_hist, xy = TRUE)
+
 # plot mean raster first
 exdet_regional_invaded_n_american_hist_plot <- map_exdet(
   raster = exdet_regional_invaded_n_american_hist,
-  raster.df = exdet_MIC_regional_invaded_n_american_hist[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_n_american_hist_df
 )
 
 
@@ -1480,13 +1503,18 @@ exdet_regional_invaded_n_american_126 <- exdet_MIC_regional_invaded_n_american_1
 
 ```{r create exdet plot- Ri.NAmerica ssp126 exdet}
 
+# re-import raster
+exdet_regional_invaded_n_american_126 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_n_american_v9", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp126_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_n_american_126_df <- terra::as.data.frame(exdet_regional_invaded_n_american_126, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_n_american_126_plot <- map_exdet(
+exdet_regional_invaded_n_american_126_plot <- map_exdet(
   raster = exdet_regional_invaded_n_american_126,
-  raster.df = exdet_MIC_regional_invaded_n_american_126[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_n_american_126_df
 )
 
-exdet_MIC_regional_invaded_n_american_126_plot <- exdet_MIC_regional_invaded_n_american_126_plot +
+exdet_regional_invaded_n_american_126_plot <- exdet_regional_invaded_n_american_126_plot +
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
   geom_raster(data = regional_invaded_n_american_background_area_df, aes(x = x, y = y, fill = "Background")) +
@@ -1506,7 +1534,7 @@ exdet_MIC_regional_invaded_n_american_126_plot <- exdet_MIC_regional_invaded_n_a
 
 
 ggsave(
-  exdet_MIC_regional_invaded_n_american_126_plot, 
+  exdet_regional_invaded_n_american_126_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -1614,13 +1642,18 @@ exdet_regional_invaded_n_american_370 <- exdet_MIC_regional_invaded_n_american_3
 
 ```{r create exdet plot exdet}
 
+# re-import raster
+exdet_regional_invaded_n_american_370 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_n_american_v9", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp370_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_n_american_370_df <- terra::as.data.frame(exdet_regional_invaded_n_american_370, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_n_american_370_plot <- map_exdet(
+exdet_regional_invaded_n_american_370_plot <- map_exdet(
   raster = exdet_regional_invaded_n_american_370,
-  raster.df = exdet_MIC_regional_invaded_n_american_370[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_n_american_370_df
 )
 
-exdet_MIC_regional_invaded_n_american_370_plot <- exdet_MIC_regional_invaded_n_american_370_plot +
+exdet_regional_invaded_n_american_370_plot <- exdet_regional_invaded_n_american_370_plot +
   # new scale
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
@@ -1641,7 +1674,7 @@ exdet_MIC_regional_invaded_n_american_370_plot <- exdet_MIC_regional_invaded_n_a
 
 
 ggsave(
-  exdet_MIC_regional_invaded_n_american_370_plot, 
+  exdet_regional_invaded_n_american_370_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -1678,7 +1711,6 @@ mic_regional_invaded_n_american_370_plot <- ggplot() +
 ```
 
 ```{r save plot- Ri.NAmerica ssp370 mic}
-
 
 ggsave(
   mic_regional_invaded_n_american_370_plot, 
@@ -1749,13 +1781,18 @@ exdet_regional_invaded_n_american_585 <- exdet_MIC_regional_invaded_n_american_5
 
 ```{r create exdet plot- Ri.NAmerica ssp585 exdet}
 
+# re-import raster
+exdet_regional_invaded_n_american_585 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_n_american_v9", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp585_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_n_american_585_df <- terra::as.data.frame(exdet_regional_invaded_n_american_585, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_n_american_585_plot <- map_exdet(
+exdet_regional_invaded_n_american_585_plot <- map_exdet(
   raster = exdet_regional_invaded_n_american_585,
-  raster.df = exdet_MIC_regional_invaded_n_american_585[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_n_american_585_df
 )
 
-exdet_MIC_regional_invaded_n_american_585_plot <- exdet_MIC_regional_invaded_n_american_585_plot +
+exdet_regional_invaded_n_american_585_plot <- exdet_regional_invaded_n_american_585_plot +
   # new scale
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
@@ -1776,7 +1813,7 @@ exdet_MIC_regional_invaded_n_american_585_plot <- exdet_MIC_regional_invaded_n_a
 
 
 ggsave(
-  exdet_MIC_regional_invaded_n_american_585_plot, 
+  exdet_regional_invaded_n_american_585_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_n_american_v9_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -1886,10 +1923,15 @@ exdet_regional_invaded_asian_hist <- exdet_MIC_regional_invaded_asian_hist[["ras
 
 ```{r create exdet plot- Ri.Asia hist}
 
+# re-import raster
+exdet_regional_invaded_asian_hist <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_asian_v4", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_1981-2010.tif"))
+# convert to df
+exdet_regional_invaded_asian_hist_df <- terra::as.data.frame(exdet_regional_invaded_asian_hist, xy = TRUE)
+
 # plot mean raster first
 exdet_regional_invaded_asian_hist_plot <- map_exdet(
   raster = exdet_regional_invaded_asian_hist,
-  raster.df = exdet_MIC_regional_invaded_asian_hist[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_asian_hist_df
 )
 
 exdet_regional_invaded_asian_hist_plot <- exdet_regional_invaded_asian_hist_plot +
@@ -2021,13 +2063,18 @@ exdet_regional_invaded_asian_126 <- exdet_MIC_regional_invaded_asian_126[["raste
 
 ```{r create exdet plot- Ri.Asia ssp126}
 
+# re-import raster
+exdet_regional_invaded_asian_126 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_asian_v4", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp126_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_asian_126_df <- terra::as.data.frame(exdet_regional_invaded_asian_126, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_asian_126_plot <- map_exdet(
+exdet_regional_invaded_asian_126_plot <- map_exdet(
   raster = exdet_regional_invaded_asian_126,
-  raster.df =  exdet_MIC_regional_invaded_asian_126[["data"]][["all"]]
+  raster.df =  exdet_regional_invaded_asian_126_df
 )
 
-exdet_MIC_regional_invaded_asian_126_plot <- exdet_MIC_regional_invaded_asian_126_plot +
+exdet_regional_invaded_asian_126_plot <- exdet_regional_invaded_asian_126_plot +
   # new scale
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
@@ -2045,9 +2092,8 @@ exdet_MIC_regional_invaded_asian_126_plot <- exdet_MIC_regional_invaded_asian_12
 
 ```{r save plot- Ri.Asia ssp126 exdet}
 
-
 ggsave(
-  exdet_MIC_regional_invaded_asian_126_plot, 
+  exdet_regional_invaded_asian_126_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp126_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -2155,13 +2201,18 @@ exdet_regional_invaded_asian_370 <- exdet_MIC_regional_invaded_asian_370[["raste
 
 ```{r create exdet plot- Ri.Asia ssp370}
 
+# re-import raster
+exdet_regional_invaded_asian_370 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_asian_v4", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp370_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_asian_370_df <- terra::as.data.frame(exdet_regional_invaded_asian_370, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_asian_370_plot <- map_exdet(
+exdet_regional_invaded_asian_370_plot <- map_exdet(
   raster = exdet_regional_invaded_asian_370,
-  raster.df = exdet_MIC_regional_invaded_asian_370[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_asian_370_df
 )
 
-exdet_MIC_regional_invaded_asian_370_plot <- exdet_MIC_regional_invaded_asian_370_plot +
+exdet_regional_invaded_asian_370_plot <- exdet_regional_invaded_asian_370_plot +
   # new scale
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
@@ -2181,7 +2232,7 @@ exdet_MIC_regional_invaded_asian_370_plot <- exdet_MIC_regional_invaded_asian_37
 
 
 ggsave(
-  exdet_MIC_regional_invaded_asian_370_plot, 
+  exdet_regional_invaded_asian_370_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp370_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -2289,13 +2340,18 @@ exdet_regional_invaded_asian_585 <- exdet_MIC_regional_invaded_asian_585[["raste
 
 ```{r create exdet plot- Ri.Asia ssp585}
 
+# re-import raster
+exdet_regional_invaded_asian_585 <- terra::rast(x = file.path(mypath, "models", "slf_regional_invaded_asian_v4", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp585_GFDL.tif"))
+# convert to df
+exdet_regional_invaded_asian_585_df <- terra::as.data.frame(exdet_regional_invaded_asian_585, xy = TRUE)
+
 # plot mean raster first
-exdet_MIC_regional_invaded_asian_585_plot <- map_exdet(
+exdet_regional_invaded_asian_585_plot <- map_exdet(
   raster = exdet_regional_invaded_asian_585,
-  raster.df = exdet_MIC_regional_invaded_asian_585[["data"]][["all"]]
+  raster.df = exdet_regional_invaded_asian_585_df
 )
 
-exdet_MIC_regional_invaded_asian_585_plot <- exdet_MIC_regional_invaded_asian_585_plot +
+exdet_regional_invaded_asian_585_plot <- exdet_regional_invaded_asian_585_plot +
   # new scale
   ggnewscale::new_scale_fill() +
   # add layer for bg point area
@@ -2315,7 +2371,7 @@ exdet_MIC_regional_invaded_asian_585_plot <- exdet_MIC_regional_invaded_asian_58
 
 
 ggsave(
-  exdet_MIC_regional_invaded_asian_585_plot, 
+  exdet_regional_invaded_asian_585_plot, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "ExDet_slf_regional_invaded_asian_v4_background_projGlobe_2041-2070_ssp585_GFDL.jpg"),
   height = 8, 
   width = 12,
@@ -2431,10 +2487,15 @@ Finally, I will create plots of each of the ExDet and MIC analyses.
 
 ```{r create exdet plot- global hist}
 
+# re-import raster
+exdet_global_hist <- terra::rast(x = file.path(mypath, "models", "slf_global_v5", "ExDet_slf_global_v5_background_projGlobe_1981-2010.tif"))
+# convert to df
+exdet_global_hist_df <- terra::as.data.frame(exdet_global_hist, xy = TRUE)
+
 # plot mean raster first
 exdet_global_hist_plot <- map_exdet(
   raster = exdet_global_hist,
-  raster.df = exdet_MIC_global_hist[["data"]][["all"]]
+  raster.df = exdet_global_hist_df
 ) +
   # labels
   labs(
@@ -2550,10 +2611,15 @@ exdet_global_126 <- exdet_MIC_global_126[["rasters"]][["ExDet"]][["all"]]
 
 ```{r create exdet plot}
 
+# re-import raster
+exdet_global_126 <- terra::rast(x = file.path(mypath, "models", "slf_global_v5", "ExDet_slf_global_v5_background_projGlobe_2041-2070_ssp126_GFDL.tif"))
+# convert to df
+exdet_global_126_df <- terra::as.data.frame(exdet_global_126, xy = TRUE)
+
 # plot mean raster first
 exdet_global_126_plot <- map_exdet(
   raster = exdet_global_126,
-  raster.df = exdet_MIC_global_126[["data"]][["all"]]
+  raster.df = exdet_global_126_df
 ) +
   # labels
   labs(
@@ -2670,10 +2736,15 @@ exdet_global_370 <- exdet_MIC_global_370[["rasters"]][["ExDet"]][["all"]]
 
 ```{r create exdet plot- global ssp370}
 
+# re-import raster
+exdet_global_370 <- terra::rast(x = file.path(mypath, "models", "slf_global_v5", "ExDet_slf_global_v5_background_projGlobe_2041-2070_ssp370_GFDL.tif"))
+# convert to df
+exdet_global_370_df <- terra::as.data.frame(exdet_global_370, xy = TRUE)
+
 # plot mean raster first
 exdet_global_370_plot <- map_exdet(
   raster = exdet_global_370,
-  raster.df = exdet_MIC_global_370[["data"]][["all"]]
+  raster.df = exdet_global_370_df
 ) +
   labs(
     title = "ExDet analysis | bio2, bio11, bio12, bio15 | 2041-2070 | ssp370 GFDL-ESM4",
@@ -2684,7 +2755,6 @@ exdet_global_370_plot <- map_exdet(
 ```
 
 ```{r save plot- global ssp370 exdet}
-
 
 ggsave(
   exdet_global_370_plot, 
@@ -2789,10 +2859,15 @@ exdet_global_585 <- exdet_MIC_global_585[["rasters"]][["ExDet"]][["all"]]
 
 ```{r create exdet plot- global ssp585}
 
+# re-import raster
+exdet_global_585 <- terra::rast(x = file.path(mypath, "models", "slf_global_v5", "ExDet_slf_global_v5_background_projGlobe_2041-2070_ssp585_GFDL.tif"))
+# convert to df
+exdet_global_585_df <- terra::as.data.frame(exdet_global_585, xy = TRUE)
+
 # plot mean raster first
 exdet_global_585_plot <- map_exdet(
   raster = exdet_global_585,
-  raster.df = exdet_MIC_global_585[["data"]][["all"]]
+  raster.df = exdet_global_585_df
 ) +
   labs(
     title = "ExDet analysis | bio2, bio11, bio12, bio15 | 2041-2070 | ssp585 GFDL-ESM4",
@@ -2803,7 +2878,6 @@ exdet_global_585_plot <- map_exdet(
 ```
 
 ```{r save plot- global ssp585 exdet}
-
 
 ggsave(
   exdet_global_585_plot, 
@@ -2860,7 +2934,7 @@ ggsave(
 
 3. Mesgaran, M. B., Cousens, R. D., & Webber, B. L. (2014). Here be dragons: A tool for quantifying novelty due to covariate range and correlation change when projecting species distribution models. Diversity and Distributions, 20(10), 1147–1159. https://doi.org/10.1111/ddi.12209
 
-# <!--
+<!--
 
 # Appendix 
 

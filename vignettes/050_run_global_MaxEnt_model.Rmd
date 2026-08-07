@@ -16,7 +16,8 @@ This vignette has 3 subvignettes (051-053) that each outline and comment the bas
 
 # Setup
 
-*CURRENT MODEL VERSION: v5*
+*CURRENT MODEL VERSION:*
+* Global mean model: v5
 
 ```{r load necesssary packages, message = FALSE}
 
