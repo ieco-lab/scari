@@ -3,7 +3,7 @@ title: "Plot shift in SLF risk to important viticultural regions under climate c
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2026-01-27"
+date: "2026-08-07"
 ---
 
 # Overview
@@ -36,7 +36,6 @@ ggplot() +
    theme_bw() +
    coord_fixed(ratio = 1)
    
-
 ```
 **Fig. 1** Example quadrant plot for assessing SLF risk across two different scales of SDM.
 
@@ -108,9 +107,9 @@ Load in summary files for the global and regional ensemble models, which contain
 # summary file to extract thresholds from
 
 # global
-summary_global <- read_csv(file = file.path(mypath, "slf_global_v4", "global_summary_all_iterations.csv"))
+summary_global <- read_csv(file = file.path(mypath, "slf_global_v5", "global_summary_all_iterations.csv"))
 
-summary_regional_ensemble <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values.csv"))
+summary_regional_ensemble <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_threshold_values.csv"))
 
 
 ```
@@ -120,32 +119,32 @@ I will load in the global and regional ensemble suitability maps. These will be 
 ```{r load in suitability rasters, eval = TRUE, message = FALSE}
 
 # global
-global_1995 <- terra::rast(x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc"))
+global_1995 <- terra::rast(x = file.path(mypath, "slf_global_v5", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc"))
 
-global_2055 <- terra::rast(x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc"))
+global_2055 <- terra::rast(x = file.path(mypath, "slf_global_v5", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc"))
 
 
 # regional_ensemble
 # historical
 regional_ensemble_1995 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
   )
 # CMIP6
 ## ssp 126
 regional_ensemble_2055_126 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
   )
 # ssp 370
 regional_ensemble_2055_370 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
   )
 # ssp 585
 regional_ensemble_2055_585 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
   )
 # ssp mean
 regional_ensemble_2055_ssp_mean <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
   )
 
 ```
@@ -195,21 +194,21 @@ I will load in the global model datasets and create the regional_ensemble datase
 
 # historical
 xy_global_1995 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_wineries_1981-2010_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
+  file = file.path(mypath, "slf_global_v5", "global_wineries_1981-2010_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
   ) 
 
 # CMIP6
 ## ssp 126
 xy_global_2055_126 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_wineries_2041-2070_GFDL_ssp126_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
+  file = file.path(mypath, "slf_global_v5", "global_wineries_2041-2070_GFDL_ssp126_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
   ) 
 ## ssp 370
 xy_global_2055_370 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_wineries_2041-2070_GFDL_ssp370_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
+  file = file.path(mypath, "slf_global_v5", "global_wineries_2041-2070_GFDL_ssp370_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
   ) 
 ## ssp 585
 xy_global_2055_585 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_wineries_2041-2070_GFDL_ssp585_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
+  file = file.path(mypath, "slf_global_v5", "global_wineries_2041-2070_GFDL_ssp585_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
   ) 
 
 ```
@@ -223,8 +222,8 @@ Additionally, I need to rename each coordinate column to reflect its column of o
 # add join columns to all datasets
 xy_global_1995 <- xy_global_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 3),
+      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
   # rename original cols to keep straight during joins
   dplyr::rename(
@@ -234,8 +233,8 @@ xy_global_1995 <- xy_global_1995 %>%
 
 xy_global_2055_126 <- xy_global_2055_126 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 3),
+      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
    dplyr::rename(
       x_global_2055_126 = x,
@@ -246,8 +245,8 @@ xy_global_2055_126 <- xy_global_2055_126 %>%
 
 xy_global_2055_370 <- xy_global_2055_370 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 3),
+      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
    dplyr::rename(
       x_global_2055_370 = x,
@@ -257,8 +256,8 @@ xy_global_2055_370 <- xy_global_2055_370 %>%
 
 xy_global_2055_585 <- xy_global_2055_585 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 3),
+      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
    dplyr::rename(
       x_global_2055_585 = x,
@@ -303,6 +302,8 @@ xy_global_1995_epsg4326 <- xy_global_1995_epsg4326 %>%
     value = "clean"
   ) 
 
+
+
 rm(xy_global_1995_epsg4326)
 
 ```
@@ -339,13 +340,13 @@ Now, perform a filtering join and save
 # edits to IVR dataset for rounding- create a join column
 IVR_locations_join <- IVR_locations_UTM %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 3),
+      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data- this removes the 5 duplicates only
     )
 # join col already in xy_global_1995
 
 # join with filtering join to keep least number of common records
-IVR_locations_join <-  semi_join(IVR_locations_join, xy_global_1995, by = c("join_col_x", "join_col_y")) 
+IVR_locations_join <- dplyr::semi_join(IVR_locations_join, xy_global_1995, by = c("join_col_x", "join_col_y")) 
 # this join worked, kept 1,072 records
 
 # add ID column
@@ -400,7 +401,7 @@ xy_global_2055_ssp_mean <- xy_global_2055_126 %>%
 
 write_csv(
   x = xy_global_2055_ssp_mean,
-  file = file.path(mypath, "slf_global_v4", "global_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
+  file = file.path(mypath, "slf_global_v5", "global_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit_clamped_cloglog_mean_20000m_buffer.csv")
     )
 
 ```
@@ -441,10 +442,10 @@ rasters <- list(regional_ensemble_1995, regional_ensemble_2055_126, regional_ens
 col_names <- c("hist", "ssp126", "ssp370", "ssp585")
 # output file names
 output_names <- c(
-  "regional_ensemble_v2_wineries_1981-2010",
-  "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp126",
-  "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp370",
-  "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp585"
+  "regional_ensemble_v3_wineries_1981-2010",
+  "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp126",
+  "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp370",
+  "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp585"
   )
 
 
@@ -476,7 +477,7 @@ for (a in seq_along(rasters)) {
   # write to csv
   write_csv(
     x = xy_hold,
-    file = file.path(mypath, "slf_regional_ensemble_v2", paste0(output_names[a], "_xy_pred_suit.csv"))
+    file = file.path(mypath, "slf_regional_ensemble_v3", paste0(output_names[a], "_xy_pred_suit.csv"))
   )
   
   
@@ -499,14 +500,14 @@ Now I will re-load the data files I just created
 ```{r re-load xy suit files, message = FALSE}
 
 # historical
-xy_regional_ensemble_1995 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "regional_ensemble_v2_wineries_1981-2010_xy_pred_suit.csv"))
+xy_regional_ensemble_1995 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_v3_wineries_1981-2010_xy_pred_suit.csv"))
 # CMIP6
 ## ssp 126
-xy_regional_ensemble_2055_126 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp126_xy_pred_suit.csv"))
+xy_regional_ensemble_2055_126 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp126_xy_pred_suit.csv"))
 ## ssp 370
-xy_regional_ensemble_2055_370 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp370_xy_pred_suit.csv"))
+xy_regional_ensemble_2055_370 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp370_xy_pred_suit.csv"))
 ## ssp 585
-xy_regional_ensemble_2055_585 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "regional_ensemble_v2_wineries_2041-2070_GFDL_ssp585_xy_pred_suit.csv"))
+xy_regional_ensemble_2055_585 <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_v3_wineries_2041-2070_GFDL_ssp585_xy_pred_suit.csv"))
 
 ```
 
@@ -586,7 +587,7 @@ xy_regional_ensemble_2055_ssp_mean <- xy_regional_ensemble_2055_126 %>%
 
 write_csv(
   x = xy_regional_ensemble_2055_ssp_mean,
-  file = file.path(mypath, "slf_global_v4", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
+  file = file.path(mypath, "slf_global_v5", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
   )
 
 ```
@@ -1381,7 +1382,7 @@ We now have risk quadrant plots and tables that we can use to assess the level o
 
 2. Smith, T. 2021, August 11. Evaluating Invasion Stage with SDMs - plantarum.ca. <https://plantarum.ca/2021/08/11/invasion-stage/>.
 
-<!--
+# <!--
 
 # Appendix
 
@@ -1392,7 +1393,7 @@ This workflow follows steps 1-3, except that it plots based on the unweighted me
 ```{r load in summary files 2}
 # summary file to extract thresholds from
 
-summary_regional_ensemble_unweighted <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values_unweighted.csv"))
+summary_regional_ensemble_unweighted <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_threshold_values_unweighted.csv"))
 
 
 ```
@@ -1403,11 +1404,11 @@ Finally, I will load in the global and regional ensemble suitability maps. These
 
 # regional_ensemble
 regional_ensemble_1995_unweighted <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_1981-2010.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_unweighted_mean_globe_1981-2010.asc")
   )
 
 regional_ensemble_2055_unweighted <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_unweighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
   )
 
 ```

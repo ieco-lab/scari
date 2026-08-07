@@ -271,7 +271,8 @@ v1- using function to transform scatter plot axes
 v2-
 v3- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
 v4- 2025-08-04- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
-    2026-10-27- no new version, but retrieved code from v3 or v2 to create unweighted version of viticultural xy scatter
+    2025-10-27- no new version, but retrieved code from v3 or v2 to create unweighted version of viticultural xy scatter
+v5- 2026-08-07- rerun for model versions (global v5, invaded n america v9, invaded asiian v4, native v5)
 
 
 
