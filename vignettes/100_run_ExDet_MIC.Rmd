@@ -180,8 +180,6 @@ x_global_hist_env_covariates_list <- list.files(path = file.path(mypath, "v1_max
                        dirname(),
                      "maxent/future_climate_rasters/chelsa2.1_30arcsec")
 
-# the env covariates for performing xy predictions for global slf and IVR points
-
 # SSP126
 x_global_126_env_covariates_list <- list.files(path = file.path(mypath, "2041-2070_ssp126_GFDL", "v1_maxent_10km"), pattern = "\\_global.asc$", full.names = TRUE) %>%
   # dont include Access to cities

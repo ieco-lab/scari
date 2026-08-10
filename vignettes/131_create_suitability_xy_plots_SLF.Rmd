@@ -3,7 +3,7 @@ title: "Infer stability of known SLF populations due climate change effects"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-05"
+date: "2026-08-10"
 ---
 
 # Overview
@@ -35,6 +35,10 @@ ggplot() +
 
 ```
 **Fig. 1** Example quadrant plot for assessing SLF risk across two different scales of SDM.
+
+*CURRENT MODEL VERSIONS:* 
+* Global mean model: v5
+* Ensemble of regional-scale models: v3
 
 # Setup
 
@@ -94,9 +98,9 @@ Load in summary files for the global and regional ensemble models, which contain
 # summary file to extract thresholds from
 
 # global
-summary_global <- read_csv(file = file.path(mypath, "slf_global_v4", "global_summary_all_iterations.csv"))
+summary_global <- read_csv(file = file.path(mypath, "slf_global_v5", "global_summary_all_iterations.csv"))
 
-summary_regional_ensemble <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_threshold_values.csv"))
+summary_regional_ensemble <- read_csv(file = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_threshold_values.csv"))
 
 ```
 
@@ -107,32 +111,32 @@ Finally, I will load in the global and regional ensemble suitability maps. These
 ```{r load in suitability rasters, eval = TRUE, message = FALSE}
 
 # global
-global_1995 <- terra::rast(x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc"))
+global_1995 <- terra::rast(x = file.path(mypath, "slf_global_v5", "global_pred_suit_clamped_cloglog_globe_1981-2010_mean.asc"))
 
-global_2055 <- terra::rast(x = file.path(mypath, "slf_global_v4", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc"))
+global_2055 <- terra::rast(x = file.path(mypath, "slf_global_v5", "global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp_averaged.asc"))
 
 
 # regional_ensemble
 # historical
 regional_ensemble_1995 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_1981-2010.asc")
   )
 # CMIP6
 ## ssp 126
 regional_ensemble_2055_126 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp126.asc")
   )
 # ssp 370
 regional_ensemble_2055_370 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp370.asc")
   )
 # ssp 585
 regional_ensemble_2055_585 <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp585.asc")
   )
 # ssp mean
 regional_ensemble_2055_ssp_mean <- terra::rast(
-  x = file.path(mypath, "slf_regional_ensemble_v2", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
+  x = file.path(mypath, "slf_regional_ensemble_v3", "ensemble_regional_weighted_mean_globe_2041-2070_GFDL_ssp_averaged.asc")
   )
 
 ```
@@ -143,12 +147,12 @@ I will load in the dataset containing SLF populations. I also need to add the "j
 
 ```{r load in SLF dataset, eval = TRUE}
 
-slf_populations <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds"))
+slf_populations <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds"))
 
 # round to create join_cols
 slf_populations <- slf_populations %>%
   dplyr::mutate(
-    join_col_x = round(x, 5),
+    join_col_x = round(x, 4),
     join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
   ) 
 
@@ -160,14 +164,14 @@ I will load in one of the xy_suitability files to compare with the slf populatio
 
 # historical
 xy_global_1995 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_slf_all_coords_1981-2010_xy_pred_suit_clamped_cloglog_mean.csv")
+  file = file.path(mypath, "slf_global_v5", "global_slf_all_coords_1981-2010_xy_pred_suit_clamped_cloglog_mean.csv")
   ) 
 
 xy_global_1995 <- xy_global_1995 %>%
 # add join columns
   dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   # rename original cols to keep straight during joins
   dplyr::rename(
@@ -188,7 +192,7 @@ slf_populations_join <- slf_populations_join %>%
   dplyr::select(-c(join_col_x, join_col_y)) 
 
 # write to file
-readr::write_rds(slf_populations_join, file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_tidied.rds"))
+readr::write_rds(slf_populations_join, file.path(here::here(), "data", "slf_all_coords_final_2026-07-30_tidied.rds"))
 
 # remove object
 rm(slf_populations_join)
@@ -200,7 +204,7 @@ Now that the records have been harmonized between the datasets, I will save to f
 ```{r save tidied data, eval = TRUE}
 
 #read it back in
-slf_populations <- read_rds(file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_tidied.rds"))
+slf_populations <- read_rds(file.path(here::here(), "data", "slf_all_coords_final_2026-07-30_tidied.rds"))
 
 ```
 
@@ -215,15 +219,15 @@ I will load in the global model datasets and create the regional_ensemble datase
 # CMIP6
 ## ssp 126
 xy_global_2055_126 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_slf_all_coords_2041-2070_GFDL_ssp126_xy_pred_suit_clamped_cloglog_mean.csv")
+  file = file.path(mypath, "slf_global_v5", "global_slf_all_coords_2041-2070_GFDL_ssp126_xy_pred_suit_clamped_cloglog_mean.csv")
   ) 
 ## ssp 370
 xy_global_2055_370 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_slf_all_coords_2041-2070_GFDL_ssp370_xy_pred_suit_clamped_cloglog_mean.csv")
+  file = file.path(mypath, "slf_global_v5", "global_slf_all_coords_2041-2070_GFDL_ssp370_xy_pred_suit_clamped_cloglog_mean.csv")
   ) 
 ## ssp 585
 xy_global_2055_585 <- read_csv(
-  file = file.path(mypath, "slf_global_v4", "global_slf_all_coords_2041-2070_GFDL_ssp585_xy_pred_suit_clamped_cloglog_mean.csv")
+  file = file.path(mypath, "slf_global_v5", "global_slf_all_coords_2041-2070_GFDL_ssp585_xy_pred_suit_clamped_cloglog_mean.csv")
   ) 
 
 ```
@@ -232,8 +236,8 @@ xy_global_2055_585 <- read_csv(
 
 xy_global_2055_126 <- xy_global_2055_126 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_126 = x,
@@ -245,8 +249,8 @@ xy_global_2055_126 <- xy_global_2055_126 %>%
 
 xy_global_2055_370 <- xy_global_2055_370 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_370 = x,
@@ -257,8 +261,8 @@ xy_global_2055_370 <- xy_global_2055_370 %>%
 
 xy_global_2055_585 <- xy_global_2055_585 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_585 = x,
@@ -296,7 +300,7 @@ xy_global_2055_ssp_mean <- xy_global_2055_126 %>%
 
 write_csv(
   x = xy_global_2055_ssp_mean,
-  file = file.path(mypath, "slf_global_v4", "global_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_clamped_cloglog_mean.csv")
+  file = file.path(mypath, "slf_global_v5", "global_slf_all_coords_2041-2070_GFDL_ssp_mean_xy_pred_suit_clamped_cloglog_mean.csv")
     )
 
 ```
@@ -351,8 +355,8 @@ xy_regional_ensemble_2055_585 <- terra::extract(
 slf_coordinates <- slf_populations %>%
   dplyr::select(ID, x, y) %>%
   dplyr::mutate(
-    join_col_x = round(x, 5),
-    join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+    join_col_x = round(x, 4),
+    join_col_y = round(y, 4) 
     ) 
 
 # perform join
@@ -421,7 +425,7 @@ xy_regional_ensemble_2055_ssp_mean <- xy_regional_ensemble_2055_126 %>%
 
 write_csv(
   x = xy_regional_ensemble_2055_ssp_mean,
-  file = file.path(mypath, "slf_regional_ensemble_v2", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
+  file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
   )
 
 ```
@@ -440,7 +444,8 @@ xy_global_1995 <- xy_global_1995 %>%
   dplyr::rename(
     x = x_global_1995,
     y = y_global_1995,
-    "xy_global_1995" = "cloglog_suitability"
+    "xy_global_1995" = "cloglog_suitability",
+    "ID" = "slf_populations[, 1]"
     ) %>%
   dplyr::relocate(ID) %>%
   # remove join columns
@@ -451,7 +456,8 @@ xy_global_2055_ssp_mean <- xy_global_2055_ssp_mean %>%
   # add ID column
   cbind(., slf_populations[, 1]) %>%
   dplyr::rename(
-    "xy_global_2055" = "suit_ssp_averaged"
+    "xy_global_2055" = "suit_ssp_averaged",
+    "ID" = "slf_populations[, 1]"
     ) %>%
   dplyr::relocate(ID)
 
@@ -509,7 +515,7 @@ I created the function `scari::rescale_cloglog_suitability()` to accomplish this
 
 ```{r re-laod slf populations dataset, eval = TRUE}
 
-slf_populations <- read_rds(file.path(here::here(), "data", "slf_all_coords_final_2025-07-07_tidied.rds"))
+slf_populations <- read_rds(file.path(here::here(), "data", "slf_all_coords_final_2026-07-30_tidied.rds"))
 
 ```
 
@@ -642,29 +648,29 @@ We need a baseline for visualizing the trends in these scatter plots, so I will 
 # add join columns to all datasets
 xy_global_1995 <- xy_global_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_regional_ensemble_1995 <- xy_regional_ensemble_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_global_2055 <- xy_global_2055 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_regional_ensemble_2055 <- xy_regional_ensemble_2055 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
@@ -766,29 +772,29 @@ xy_regional_ensemble_2055_rescaled_thresholds <- read_rds(file = file.path(here:
 # add join columns to all datasets
 xy_global_1995_rescaled <- xy_global_1995_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_regional_ensemble_1995_rescaled <- xy_regional_ensemble_1995_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_global_2055_rescaled <- xy_global_2055_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_regional_ensemble_2055_rescaled <- xy_regional_ensemble_2055_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
@@ -801,7 +807,6 @@ xy_joined_rescaled <- dplyr::full_join(xy_global_1995_rescaled, xy_regional_ense
   # order
   dplyr::relocate(ID, Species, join_col_x, join_col_y, xy_global_1995_rescaled, xy_global_2055_rescaled) %>%
   dplyr::select(-c(xy_global_1995, xy_global_2055, xy_regional_ensemble_1995, xy_regional_ensemble_2055))
-
 
 ```
 
@@ -936,8 +941,8 @@ I will create a summary table of the quadrant placement (and thus the level of r
 # edit slf_populations first
 slf_populations <- slf_populations %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     )
 
 # create dataset and tidy
@@ -979,6 +984,11 @@ n_records <- nrow(slf_populations_risk)
 ```{r risk categories table, eval = TRUE}
 
 slf_risk_table <- slf_populations_risk %>%
+  # ensure columns are character
+  dplyr::mutate(
+    risk_1995 = as.character(risk_1995),
+    risk_2055 = as.character(risk_2055)
+  ) %>%
   # create counts and make into acrostic table
   dplyr::group_by(risk_1995, risk_2055) %>%
   dplyr::summarize(count = n()) %>%
@@ -1000,9 +1010,9 @@ slf_risk_table <- slf_populations_risk %>%
 
 
 slf_risk_table <- slf_risk_table %>%
-  dplyr::rename("rows_1995_cols_2055" = "risk_1995") %>%
-  dplyr::relocate("rows_1995_cols_2055", "extreme", "high", "moderate") %>%
-  dplyr::arrange(factor(.$rows_1995_cols_2055, levels = risk_levels)) %>%
+  dplyr::rename("rows_present_cols_future" = "risk_1995") %>%
+  dplyr::relocate("rows_present_cols_future", "extreme", "high", "moderate") %>%
+  dplyr::arrange(factor(.$rows_present_cols_future, levels = risk_levels)) %>%
   # replace missing categories with 0
   replace(is.na(.), 0) 
 
@@ -1011,7 +1021,7 @@ slf_risk_table <- slf_risk_table %>%
   # add totals column
   tibble::add_column("total_present" = rowSums(.[, 2:5])) %>%
   # add row totals
-  tibble::add_row(rows_1995_cols_2055 = "total_2055", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = n_records) 
+  tibble::add_row(rows_present_cols_future = "total_future", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = n_records) 
 
 ```
 
@@ -1077,7 +1087,19 @@ quad3_risk_prop <- tibble(
 
 ```
 
-With this analysis, I found that currently, only about 2.9% of known (rarefied) SLF populations are low risk according to the global model. However, 1.1% of the total populations are specifically in quadrant 3 (high risk). This means that the global model alone would label 22 of the 769 slf populations as low risk, when in actuality 9 or about 40.9% of these are at high risk of persisting (above the MTSS threshold) when we spatially segment the presence data into an ensemble of regional-scale models. After climate change, 78 of the 1063 populations (10%) would be unsuitable if the global model alone were used to describe the risk of SLF. However, 22 or 28% of these unsuitable populations are still suitable in regional_scale models and thus would be missed by an analysis of risk using only a global-scale model.
+```{r display table results, eval = TRUE}
+
+global_regional_risk_shift
+
+quad3_risk_prop
+
+total_slf
+
+```
+
+With this analysis, I found that presently, 3.6% (71 of 1,961) of known SLF populations are not at risk of persisting (maintaining an established population under current climate conditions) according to the global model (table 1 above, row 2). However, 33.6% (24 of 71) of these points are presently in quadrant 3, "high risk" (table 1 above, row 3). This means that the global model alone would label these 24 SLF populations as not being at risk of persisting under present climate conditions, when they are potentially at based on our spatial segmentation of the presence data into an ensemble of regional-scale models. See the quadrant plot at the beginning of this vignette for the template of the plot for these results.
+
+These numbers effectively double under climate change. 6.2% (123 of 1,961) would be unsuitable if the global model alone were used to describe the risk of these populations persisting. However, 27% (34 of 123) of these populations are still likely to persist according to out regional_scale models, and thus would be missed by an analysis of risk using only a global-scale model.
 
 This means that our regional-scale ensemble is adding resolution and nuance to our estimation of risk for SLF establishment.
 
@@ -1108,9 +1130,19 @@ webshot::webshot(
   zoom = 2
 )
 
-
 # rm html
-file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_plot_quadrant_props.html"))
+# file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_plot_quadrant_props.html"))
+
+# save as latex
+global_regional_risk_shift_LX <- knitr::kable(x = global_regional_risk_shift, format = "latex", escape = FALSE) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+kableExtra::save_kable(
+  global_regional_risk_shift_LX, 
+  file = file.path(here::here(), "vignette-outputs", "figures", "slf_risk_plot_quadrant_props.tex"),
+  self_contained = TRUE,
+  bs_theme = "simplex"
+  )
 
 ```
 

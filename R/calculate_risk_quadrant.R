@@ -90,6 +90,10 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
 
   ## function-------------------------------------------------------------------
 
+  # unlist first for input into case_when
+  suit_x <- unlist(suit_x, use.names = FALSE)
+  suit_y <- unlist(suit_y, use.names = FALSE)
+
   # apply case_when
   risk_output <- dplyr::case_when(
     suit_x >= thresh.x & suit_y >= thresh.y ~ "extreme",
@@ -99,7 +103,7 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
   )
 
   # convert to df
-  as.data.frame(risk_output)
+  risk_output <- as.list(risk_output)
 
   # return
   return(risk_output)

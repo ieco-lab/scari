@@ -398,12 +398,12 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       category = "cultural",
       destdir = file.path(here::here(), "data-raw", "ne_states_provinces"),
       load = TRUE, # load into environment
-      returnclass = "sf" # shapefile
+      returnclass = "sf" # shape file
     )
 
   }
 
-  # tidy shapefiles-------------------------------------------------------------
+  # tidy shape files-------------------------------------------------------------
 
   # convert to proper crs
   countries_sf <- sf::st_transform(countries_sf, crs = crs)
@@ -413,10 +413,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   countries_sf <- countries_sf %>%
     dplyr::mutate(
       NAME_LONG = tolower(NAME_LONG),
-      NAME_LONG = gsub(NAME_LONG, pattern = " ", replacement = "_"),
-      NAME_LONG = gsub(NAME_LONG, pattern = "/", replacement = ""),
-      NAME_LONG = gsub(NAME_LONG, pattern = "-", replacement = "_"),
-      NAME_LONG = gsub(NAME_LONG, pattern = ".", replacement = "", fixed = TRUE),
+      NAME_LONG = gsub(NAME_LONG, pattern = " |-", replacement = "_", fixed = TRUE),
+      NAME_LONG = gsub(NAME_LONG, pattern = "/|.", replacement = "", fixed = TRUE),
       # alpha-3 iso used to isolate sf
       ADM0_A3 = toupper(ADM0_A3),
       ADM0_A3 = gsub(ADM0_A3, pattern = " ", replacement = ""),
@@ -431,10 +429,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     dplyr::mutate(
       # names of states
       name = tolower(name),
-      name = gsub(name, pattern = " ", replacement = "_"),
-      name = gsub(name, pattern = "/", replacement = ""),
-      name = gsub(name, pattern = "-", replacement = "_"),
-      name = gsub(name, pattern = ".", replacement = "", fixed = TRUE),
+      name = gsub(name, pattern = " |-", replacement = "_", fixed = TRUE), # replace these with an underscore
+      name = gsub(name, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
+      name = gsub(name, pattern = ")|(", replacement = "", fixed = TRUE), # remove these
+      name = gsub(name, pattern = "wine|region|state|province|and|surrounding|area|of|villiage|continental|grapes|territory|disputed|community|both|in|lima|since|including", replacement = ""), # a specific instance of some regions being referred to as "wine regions"
       # alpha-3 iso used to isolate sf
       adm0_a3 = toupper(adm0_a3),
       adm0_a3 = gsub(adm0_a3, pattern = " ", replacement = "")
@@ -447,23 +445,30 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     dplyr::mutate(
       # country
       Country = tolower(Country),
-      Country = gsub(Country, pattern = " ", replacement = "_"),
-      Country = gsub(Country, pattern = "/", replacement = ""),
-      Country = gsub(Country, pattern = "-", replacement = "_"),
-      Country = gsub(Country, pattern = ".", replacement = "", fixed = TRUE),
+      Country = gsub(Country, pattern = " |-", replacement = "_", fixed = TRUE), # replace these with an underscore
+      Country = gsub(Country, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
+      Country = gsub(Country, pattern = ")|(", replacement = "", fixed = TRUE) # remove these
+
+    )
+
+  # now remove specific words
+  IVR_locations <- IVR_locations %>%
+    dplyr::mutate(
       # subregion
       Region = tolower(Region),
-      Region = gsub(Region, pattern = " ", replacement = "_"),
-      Region = gsub(Region, pattern = "/", replacement = ""),
-      Region = gsub(Region, pattern = "-", replacement = "_"),
-      Region = gsub(Region, pattern = ".", replacement = "", fixed = TRUE),
-      Region = gsub(Region, pattern = "–", replacement = "", fixed = TRUE)
+      Region = gsub(Region, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
+      Region = gsub(Region, pattern = ")|(", replacement = "", fixed = TRUE), # remove these
+      Region = gsub(Region, pattern = "–", replacement = "", fixed = TRUE),
+      # specific words- mention of wine regions, states or provinces, other words
+      Region = gsub(Region, pattern = "wine|region|state|province|and|surrounding|area|of|villiage|continental|grapes|territory|disputed|community|both|in|lima|since|including", replacement = ""), # a specific instance of some regions being referred to as "wine regions"
+      Region = gsub(Region, pattern = "[0-9]+", replacement = "", fixed = TRUE), # remove all numbers
+      Region = gsub("\\b([[:alpha:]]+)\\b(?:[_[:space:]-]+\\1\\b)+", "\\1", Region, ignore.case = TRUE) # remove all duplicates of words separated by some character
     )
 
   # add join cols
   IVR_locations <- IVR_locations %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
+      join_col_x = round(x, 4),
       join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     )
 
@@ -490,7 +495,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # the check if the locality is a state or province
   } else if(locality.type == "state_province") {
     state.name.check <- states_provinces_sf %>%
-      dplyr::filter(name == locality_name_internal)
+      dplyr::filter(name %in% locality_name_internal)
 
     # if at least 1 record, success
     if(nrow(state.name.check) > 0) {
@@ -650,7 +655,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # data layer
     geom_raster(data = binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
     # add province layer
-    geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+    geom_sf(data = locality_sf_plot_layer, fill = NA, color = "black", linewidth = 0.3) +
     # fill scale 1
     scale_discrete_manual(
       name = "projected risk",
@@ -658,7 +663,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       breaks = breaks.obj,
       labels = labels.obj,
       aesthetics = "fill",
-      guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+      guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
     ) +
     # new scale
     ggnewscale::new_scale_fill()
@@ -668,7 +673,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     binarized_hist_plot <- binarized_hist_plot +
       # underlying buffer layer
-      geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
+      geom_sf(data = IVR_buffers_plot_layer, aes(fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     # otherwise, plot without buffers
   } else if (is.na(buffer.dist)) {
@@ -716,7 +721,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # data layer
       geom_raster(data = binarized_hist_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
-      geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+      geom_sf(data = locality_sf, fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
       scale_discrete_manual(
         name = "projected risk",
@@ -724,7 +729,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
         breaks = breaks.obj,
         labels = labels.obj,
         aesthetics = "fill",
-        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
       ) +
       # new scale
       ggnewscale::new_scale_fill()
@@ -734,7 +739,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
       binarized_hist_plot <- binarized_hist_plot +
         # underlying buffer layer
-        geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
+        geom_sf(data = IVR_buffers_plot_layer, aes(fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
       # dont plot
     } else if (is.na(buffer.dist)) {
@@ -786,7 +791,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # data layer
       geom_raster(data = binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
-      geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+      geom_sf(data = locality_sf_plot_layer, fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
       scale_discrete_manual(
         name = "projected risk",
@@ -794,7 +799,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
         breaks = breaks.obj,
         labels = labels.obj,
         aesthetics = "fill",
-        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
       ) +
       # new scale
       ggnewscale::new_scale_fill()
@@ -804,7 +809,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
       binarized_future_plot <- binarized_future_plot +
         # underlying buffer layer
-        geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
+        geom_sf(data = IVR_buffers_plot_layer, aes(fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
       binarized_future_plot <- binarized_future_plot
@@ -851,7 +856,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # data layer
       geom_raster(data = binarized_future_df, aes(x = x, y = y, fill = as.factor(global_regional_binarized))) +
       # add province layer
-      geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+      geom_sf(data = locality_sf, fill = NA, color = "black", linewidth = 0.3) +
       # fill scale raster
       scale_discrete_manual(
         name = "projected risk",
@@ -859,7 +864,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
         breaks = breaks.obj,
         labels = labels.obj,
         aesthetics = "fill",
-        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
       ) +
       # new scale
       ggnewscale::new_scale_fill()
@@ -870,7 +875,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
       binarized_future_plot <- binarized_future_plot +
         # underlying buffer layer
-        geom_sf(data = IVR_buffers_plot_layer, aes(geometry = geometry, fill = "viticultural\narea"), color = "black", alpha = 0.35)
+        geom_sf(data = IVR_buffers_plot_layer, aes(fill = "viticultural\narea"), color = "black", alpha = 0.35)
 
     } else if (is.na(buffer.dist)) {
       binarized_future_plot <- binarized_future_plot
@@ -948,7 +953,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     # data layer
     geom_raster(data = range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
     # add province layer
-    geom_sf(data = locality_sf_plot_layer, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+    geom_sf(data = locality_sf_plot_layer, fill = NA, color = "black", linewidth = 0.3) +
     # fill scale
     scale_discrete_manual(
       name = "suitability for\nL delicatula",
@@ -956,7 +961,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       breaks = breaks.obj2,
       labels = labels.obj2,
       aesthetics = "fill",
-      guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+      guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
     ) +
     # new fill scale
     ggnewscale::new_scale_fill() +
@@ -997,7 +1002,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
       # data layer
       geom_raster(data = range_shift_df, aes(x = x, y = y, fill = as.factor(range_shift_summed))) +
       # add province layer
-      geom_sf(data = locality_sf, aes(geometry = geometry), fill = NA, color = "black", linewidth = 0.3) +
+      geom_sf(data = locality_sf, fill = NA, color = "black", linewidth = 0.3) +
       # fill scale
       scale_discrete_manual(
         name = stringr::str_wrap("suitability for L delicatula"),
@@ -1005,7 +1010,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
         breaks = breaks.obj2,
         labels = labels.obj2,
         aesthetics = "fill",
-        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20, draw.ulim = TRUE, draw.llim = TRUE)
+        guide = guide_colorsteps(frame.colour = "black", ticks.colour = "black", barwidth = 20)
       ) +
       # new fill scale
       ggnewscale::new_scale_fill() +
@@ -1059,7 +1064,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # add join cols
   xy_global_hist <- xy_global_hist %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
+      join_col_x = round(x, 4),
       join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
     dplyr::select(-c(x, y)) %>%
@@ -1068,7 +1073,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   xy_global_future <- xy_global_future %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
+      join_col_x = round(x, 4),
       join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
     dplyr::select(-c(x, y)) %>%
@@ -1077,7 +1082,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   xy_regional_ensemble_hist <- xy_regional_ensemble_hist %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
+      join_col_x = round(x, 4),
       join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
     dplyr::select(-c(x, y)) %>%
@@ -1086,7 +1091,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   xy_regional_ensemble_future <- xy_regional_ensemble_future %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
+      join_col_x = round(x, 4),
       join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
     dplyr::select(-c(x, y)) %>%
@@ -1299,6 +1304,11 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
   # create risk table
   IVR_risk_table <- IVR_locations_risk %>%
+    # ensure columns are character
+    dplyr::mutate(
+      risk_hist = as.character(risk_hist),
+      risk_future = as.character(risk_future)
+    ) %>%
     # create counts and make into acrostic table
     dplyr::group_by(risk_hist, risk_future) %>%
     dplyr::summarize(count = dplyr::n()) %>%
@@ -1623,8 +1633,8 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   risk_report <- list(
     # tibble of info on the report
     "Report_info" = tibble::tibble(
-      "Report_info" = c("Report prepared for:", "Locality Type:", "Time period of present risk based on historical data:", "Time period of future risk projection:", "CMIP6 model used for future risk projection:", "SSP scenarios included:"),
-      "value" = c(stringr::str_to_title(locality_name_internal), stringr::str_to_title(locality.type), period.present, period.projected, model.projected, ssp.projected)
+      "Report_data" = c("Report prepared for species:", "Locality Name:", "Locality Type:", "Time period of present risk based on historical data:", "Time period of future risk projection:", "CMIP6 model used for future risk projection:", "SSP scenarios included:"),
+      "value" = c(focal.species, stringr::str_to_title(locality_name_internal), stringr::str_to_title(locality.type), period.present, period.projected, model.projected, ssp.projected)
     ),
     "viticultural_regions_list" = IVR_locations_output_kable,
     "risk_maps" = list(

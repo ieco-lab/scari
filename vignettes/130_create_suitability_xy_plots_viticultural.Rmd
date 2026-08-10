@@ -45,6 +45,10 @@ The MTSS threshold of suitability will be used as the central crosshairs of this
 
 First, I will plot the un-transformed version of the data and then will transform and plot the data again. I will use a table to calculate the number of regions that move across the MTSS threshold and fall into each category before and after climate change. Finally, I will save the predicted suitability values with our `wineries` dataset for downstream analysis. Our `wineries.rda` dataset contains the locations of 1,086 globally important viticultural regions.
 
+*CURRENT MODEL VERSIONS:* 
+* Global mean model: v5
+* Ensemble of regional-scale models: v3
+
 # Setup
 
 ```{r load necesssary packages, message = FALSE}
@@ -57,7 +61,6 @@ library(devtools)
 
 # spatial data handling
 library(terra)
-library(CoordinateCleaner)
 
 # plot aesthetics
 library(scales)
@@ -149,46 +152,17 @@ regional_ensemble_2055_ssp_mean <- terra::rast(
 
 ```
 
-## tidy wineries dataset
-
- I will load in dataset containing locations of globally important viticultural regions. I will also de-duplicate the records because there were "many-to-many" joining matches downstream. De-duplicating removed about 17 records. I also remove the species column, which is automatically created by `SDMtune::predict()` upstream.
-
-```{r load and de-duplicate wineries dataset}
-
-# load in OG (not transformed) wineries dataset- transformed is wineries_esri54017.rds
-# coordinatecleaner requires latlon
-load(file.path(here::here(), "data-raw", "wineries.rda"))
-
-IVR_locations <- wineries %>%
-  # tidy
-  dplyr::select(-c(Latitude, Longitude)) %>%
-  dplyr::filter(
-    !is.na(x),
-    !is.na(y)
-    ) %>%
-  dplyr::mutate(record_type = "IVR_location")
-
-# remove duplicate coordinates
-IVR_locations <- CoordinateCleaner::clean_coordinates(
-  x = IVR_locations,
-  lon = "x",
-  lat = "y",
-  species = "record_type",
-  tests = "duplicates",
-  value = "clean" # just return same df without duplicates
-) %>%
-  dplyr::select(-record_type)
-
-# remove unnecessary obj
-rm(wineries)
-
-```
-
 ##  import and tidy xy suitability
 
 These scatter plots will be based on the suitability for the IVR points in both the global and regional_ensemble models. I have already calculated the xy suitability for the global model based on these points, using the function `scari::predict_xy_suitability()`. This function will not work for the regional_ensemble because it calls for a model object, which we did not use to predict the ensemble suitability. So, I will use `terra::extract()` to perform this action.
 
 I will load in the global model datasets and create the regional_ensemble datasets. I will also do some tidying of my datasets for the plots I will create.
+
+```{r load in original IVR locations dataset}
+
+IVR_locations <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
+
+```
 
 ```{r import global model suitability, message = FALSE}
 
@@ -213,7 +187,7 @@ xy_global_2055_585 <- read_csv(
 
 ```
 
-I need to add something I am calling a "join_col". These columns are simply the main coordinate data, but rounded to a higher decimal place. This is to account for a CRS in meters UTM, which involves a very specific number. When I join the datasets downstream, they will not join correctly downstream without rounding.
+I need to add something I am calling a join column (`join_col`). These columns are simply the main coordinate data, but rounded to a higher decimal place. This is to account for a CRS in meters UTM, which involves a very specific number. When I join the datasets downstream, they will not join correctly downstream without rounding.
 
 Additionally, I need to rename each coordinate column to reflect its column of origin. This way, I will not lose track of which column is from which data frame among a veritable mess of joins.
 
@@ -222,8 +196,8 @@ Additionally, I need to rename each coordinate column to reflect its column of o
 # add join columns to all datasets
 xy_global_1995 <- xy_global_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 3),
-      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
     ) %>%
   # rename original cols to keep straight during joins
   dplyr::rename(
@@ -233,8 +207,8 @@ xy_global_1995 <- xy_global_1995 %>%
 
 xy_global_2055_126 <- xy_global_2055_126 %>%
     dplyr::mutate(
-      join_col_x = round(x, 3),
-      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_126 = x,
@@ -245,8 +219,8 @@ xy_global_2055_126 <- xy_global_2055_126 %>%
 
 xy_global_2055_370 <- xy_global_2055_370 %>%
     dplyr::mutate(
-      join_col_x = round(x, 3),
-      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_370 = x,
@@ -256,8 +230,8 @@ xy_global_2055_370 <- xy_global_2055_370 %>%
 
 xy_global_2055_585 <- xy_global_2055_585 %>%
     dplyr::mutate(
-      join_col_x = round(x, 3),
-      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_global_2055_585 = x,
@@ -267,104 +241,34 @@ xy_global_2055_585 <- xy_global_2055_585 %>%
 
 ```
 
-I will need to create versions that are transformed to the the EPSG4326 CRS because coordinate cleaner does not work with ESRI:54017. I will also de-duplicate these datasets to ensure that there are no duplicate coordinates, which would cause problems with the `terra::extract()` function.
-
-```{r transform crs of pred dataset to epsg4326 and dedpulicate}
-
-# 1995 historical dataset
-# I need to transform this dataset to the correct crs
-xy_global_1995_sv <- terra::vect(xy_global_1995, geom = c("x_global_1995", "y_global_1995"), crs = "ESRI:54017") %>%
-    terra::project(y = "EPSG:4326") %>% # convert to UTM 33N
-# convert to geom, which gets coordinates of a spatVector
-    terra::geom()
-# convert back to data frame
-xy_global_1995_epsg4326 <- terra::as.data.frame(xy_global_1995_sv) %>%
-    dplyr::select(-c(geom, part, hole)) %>%
-    dplyr::rename("x_latlon" = "x", "y_latlon" = "y") 
-
-# bind OG data
-xy_global_1995_epsg4326 <- cbind(xy_global_1995_epsg4326, xy_global_1995) %>% 
-  dplyr::select(-c(x_global_1995, y_global_1995)) 
-
-rm(xy_global_1995_sv)
-
-
-
-# de-duplicate just to make sure
-xy_global_1995_epsg4326 <- xy_global_1995_epsg4326 %>%
-  dplyr::mutate(species = "Lycorma delicatula") %>%
-  CoordinateCleaner::clean_coordinates(
-    x = .,
-    lon = "x_latlon",
-    lat = "y_latlon",
-    species = "species",
-    tests = "duplicates",
-    value = "clean"
-  ) 
-
-
-
-rm(xy_global_1995_epsg4326)
-
-```
-
-The coordinates are the same across the other datasets (126, 370, 585), so we can assume they are all deduplicated.
-
-The xy_suitabilities for the global models also contain a few less records than the IVR regions. To ensure that I am retrieving the suitability values for the exact same vineyards in the regional_ensemble, I will perform a filtering join. The IVR dataset should now contain the same records as the global suitability values do.
-
-First, I need to transform the coordinates to the `ESRI:54017` CRS
-
-```{r transform CRS of IVR_locations dataset, warning = FALSE}
-
-# I need to transform this dataset to the correct crs
-IVR_locations_sv <- terra::vect(IVR_locations, geom = c("x", "y"), crs = "EPSG:4326") %>%
-    terra::project(y = "ESRI:54017") %>% # convert to UTM 33N
-# convert to geom, which gets coordinates of a spatVector
-    terra::geom()
-# convert back to data frame
-IVR_locations_UTM <- terra::as.data.frame(IVR_locations_sv) %>%
-    dplyr::select(-c(geom, part, hole)) %>%
-    dplyr::rename("x_utm" = "x", "y_utm" = "y") 
-
-# bind OG data
-IVR_locations_UTM <- cbind(IVR_locations_UTM, IVR_locations) %>% 
-  dplyr::select(-c(x, y)) %>% 
-  dplyr::rename("x" = "x_utm", "y" = "y_utm") 
-
-```
-
-Now, perform a filtering join and save
+I will do the same for the original IVR locations dataset. I will also need to join the `esri54017` IVR locations dataset, which was used to retrieve suitability information for each IVR location in vignettes 050-090, with the output from those functions, because a few points could not be resolved for suitability data. So, the predicted suitability files from my models have less points (1,074) than the original dataset (1,079), because some points did not have any data.
 
 ```{r join and save transformed IVR dataset}
 
 # edits to IVR dataset for rounding- create a join column
-IVR_locations_join <- IVR_locations_UTM %>%
+IVR_locations_join <- IVR_locations %>%
     dplyr::mutate(
-      join_col_x = round(x, 3),
-      join_col_y = round(y, 3) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data- this removes the 5 duplicates only
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) # rounding to the 4s place removes only 5 more records
     )
 # join col already in xy_global_1995
 
 # join with filtering join to keep least number of common records
 IVR_locations_join <- dplyr::semi_join(IVR_locations_join, xy_global_1995, by = c("join_col_x", "join_col_y")) 
-# this join worked, kept 1,072 records
+# this join worked, kept 1,074 records
 
 # add ID column
-IVR_locations_join <- IVR_locations_join %>%
-  # create ID col
-  dplyr::mutate(ID = row_number()) %>%
+IVR_locations_final <- IVR_locations_join %>%
   # remove join columns
-  dplyr::select(-c(join_col_x, join_col_y)) %>%
-  relocate(ID, x, y) 
+  dplyr::select(-c(join_col_x, join_col_y)) 
 
 # save transformation for future use
-readr::write_rds(x = IVR_locations_join, file = file.path(here::here(), "data", "wineries_esri54017_tidied.rds"))
+readr::write_rds(x = IVR_locations_final, file = file.path(here::here(), "data", "wineries_esri54017_tidied.rds"))
 
 # remove
 rm(IVR_locations)
-rm(IVR_locations_sv)
-rm(IVR_locations_UTM)
 rm(IVR_locations_join)
+rm(IVR_locations_final)
 
 ```
 
@@ -375,9 +279,11 @@ IVR_locations <- readr::read_rds(file.path(here::here(), "data", "wineries_esri5
 
 ```
 
+We end up with 1,074 globally important viticultural regions.
+
 ## take mean of global model ssp scenarios 
 
-I will take the mean of the suitability value within each of these predicted suitability datasets. These suitability values were taken from a 20km buffer around each viticultural area point to account for the potentially large size of these viticultural areas. We will keep the max values from those buffers. I will mean these values across ssp scenarios. 
+Now, I will join all of the suitability outputs for the IVRs from the models together. I will take the mean of the suitability value within each of these predicted suitability datasets. These suitability values were taken from a 20km buffer around each viticultural area point to account for the potentially large size of these viticultural areas. We will keep the max values from those buffers. I will mean these values across ssp scenarios. 
 
 ```{r mean global ssp predictions}
 
@@ -518,8 +424,8 @@ Perform the same edits as above for the global model
 # add join columns to all datasets
 xy_regional_ensemble_1995 <- xy_regional_ensemble_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   # rename original cols to keep straight during joins
   dplyr::rename(
@@ -529,8 +435,8 @@ xy_regional_ensemble_1995 <- xy_regional_ensemble_1995 %>%
 
 xy_regional_ensemble_2055_126 <- xy_regional_ensemble_2055_126 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_regional_ensemble_2055_126 = x,
@@ -541,8 +447,8 @@ xy_regional_ensemble_2055_126 <- xy_regional_ensemble_2055_126 %>%
 
 xy_regional_ensemble_2055_370 <- xy_regional_ensemble_2055_370 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_regional_ensemble_2055_370 = x,
@@ -552,8 +458,8 @@ xy_regional_ensemble_2055_370 <- xy_regional_ensemble_2055_370 %>%
 
 xy_regional_ensemble_2055_585 <- xy_regional_ensemble_2055_585 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
    dplyr::rename(
       x_regional_ensemble_2055_585 = x,
@@ -587,7 +493,7 @@ xy_regional_ensemble_2055_ssp_mean <- xy_regional_ensemble_2055_126 %>%
 
 write_csv(
   x = xy_regional_ensemble_2055_ssp_mean,
-  file = file.path(mypath, "slf_global_v5", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
+  file = file.path(mypath, "slf_regional_ensemble_v3", "regional_ensemble_wineries_2041-2070_GFDL_ssp_mean_xy_pred_suit.csv")
   )
 
 ```
@@ -820,29 +726,29 @@ We need a baseline for visualizing the trends in these scatter plots, so I will 
 # add join columns to all datasets
 xy_global_1995 <- xy_global_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_regional_ensemble_1995 <- xy_regional_ensemble_1995 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_global_2055 <- xy_global_2055 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
 xy_regional_ensemble_2055 <- xy_regional_ensemble_2055 %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) # temporarily drop x and y columns
 
@@ -940,35 +846,34 @@ xy_regional_ensemble_2055_rescaled_thresholds <- read_rds(file = file.path(here:
 
 ```
 
-
 ```{r join datasets- rescaled, eval = TRUE}
 
 # add join columns to all datasets
 xy_global_1995_rescaled <- xy_global_1995_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_regional_ensemble_1995_rescaled <- xy_regional_ensemble_1995_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_global_2055_rescaled <- xy_global_2055_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
 xy_regional_ensemble_2055_rescaled <- xy_regional_ensemble_2055_rescaled %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y)) #  drop x and y columns
 
@@ -1117,8 +1022,8 @@ I will create a summary table of the quadrant placement (and thus the level of r
 # edit IVR_locations first
 IVR_locations <- IVR_locations %>%
     dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     )
 
 # create dataset and tidy
@@ -1160,6 +1065,11 @@ n_records <- nrow(IVR_locations_risk)
 ```{r risk categories table, eval = TRUE}
 
 IVR_risk_table <- IVR_locations_risk %>%
+  # ensure columns are character
+  dplyr::mutate(
+    risk_1995 = as.character(risk_1995),
+    risk_2055 = as.character(risk_2055)
+  ) %>%
   # create counts and make into acrostic table
   dplyr::group_by(risk_1995, risk_2055) %>%
   dplyr::summarize(count = n()) %>%
@@ -1180,9 +1090,9 @@ IVR_risk_table <- IVR_locations_risk %>%
   if(!'low' %in% IVR_risk_table$risk_1995) IVR_risk_table <- IVR_risk_table %>% tibble::add_row(risk_1995 = "low", extreme = 0, high = 0, moderate = 0, low = 0)
 
 IVR_risk_table <- IVR_risk_table %>%
-  dplyr::rename("rows_1995_cols_2055" = "risk_1995") %>%
-  dplyr::relocate("rows_1995_cols_2055", "extreme", "high", "moderate") %>%
-  dplyr::arrange(factor(.$rows_1995_cols_2055, levels = risk_levels)) %>%
+  dplyr::rename("rows_present_cols_future" = "risk_1995") %>%
+  dplyr::relocate("rows_present_cols_future", "extreme", "high", "moderate") %>%
+  dplyr::arrange(factor(.$rows_present_cols_future, levels = risk_levels)) %>%
   # replace missing categories with 0
   replace(is.na(.), 0) 
 
@@ -1191,7 +1101,7 @@ IVR_risk_table <- IVR_risk_table %>%
   # add totals column
   tibble::add_column("total_present" = rowSums(.[, 2:5])) %>%
   # add row totals
-  tibble::add_row(rows_1995_cols_2055 = "total_2055", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = n_records) %>%
+  tibble::add_row(rows_present_cols_future = "total_future", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = n_records) %>%
   # convert to df
   as.data.frame()
 
@@ -1209,7 +1119,7 @@ We now have a table calculating the number of regions per quadrant, before and a
 
 I will create a table to sum the number of points in three different groups.  My goal is to understand how the regional model adds resolution to our calculation of risk. I will sum the number of points that are suitable in the global model only, unsuitable in the global model only, and unsuitable in the global model / suitable in the regional model. I will repeat this operation for both time periods.
 
-```{r create table of sums}
+```{r create table of sums, eval = TRUE}
 
 global_regional_risk_shift <- tibble(
   time_period = c(1995, 1995, 1995, 2055, 2055, 2055),
@@ -1234,7 +1144,7 @@ global_regional_risk_shift <- tibble(
 
 ```
 
-```{r add proportions and make specific calculations}
+```{r add proportions and make specific calculations, eval = TRUE}
 
 # total # IVRs
 total_IVR <- sum(global_regional_risk_shift[1:2, 5])
@@ -1254,29 +1164,21 @@ quad3_risk_prop <- tibble(
   )
 )
 
+```
 
+```{r display table results, eval = TRUE}
 
-# number and proportion of IVRs shifting with CC
-#global_regional_risk_shift_summary <- tibble(
-##  "risk_shift" = c("global_unsuit_shift_1995_2055", "quad3_high_shift_diff_1995_2055"),
-#  "IVR_region_change_count" = c(
-#    as.numeric(global_regional_risk_shift[2, 5]) - as.numeric(global_regional_risk_shift[5, 5]),
-#    as.numeric(global_regional_risk_shift[3, 5]) - as.numeric(global_regional_risk_shift[6, 5])
-#  ),
-#  "IVR_region_change_prop" = c(
-#    as.numeric(global_regional_risk_shift[2, 6]) - as.numeric(global_regional_risk_shift[5, 6]),
-#    as.numeric(global_regional_risk_shift[3, 6]) - as.numeric(global_regional_risk_shift[6, 6])
-#  )
-#) %>%
-  # make percentages and change signs
-#  mutate(
-#    IVR_region_change_count = abs(IVR_region_change_count),
- #   IVR_region_change_prop = scales::label_percent(accuracy = 0.01) (abs(IVR_region_change_prop))
-#    )
+global_regional_risk_shift
+
+quad3_risk_prop
+
+total_IVR
 
 ```
 
-With this analysis, I found that currently, 65.2% of the global IVRs are low risk according to the global model. However, 26% of the total IVRs are specifically in quadrant 3 (high risk). This means that the global model alone would label 693 of the 1074 IVRs as low risk, when in actuality 287 or about 41.4% of these are at high risk for SLF establishment (above the MTSS threshold) when we spatially segment the presence data into an ensemble of regional-scale models. After climate change, 893 of the 1063 IVRs (82%) would be unsuitable if the global model alone were used to describe the risk of SLF. However, 341 or 39.1% of these unsuitable IVRs are still suitable in regional_scale models and thus would be missed by an analysis of risk using only a global-scale model.
+With this analysis, I found that presently, ~40% (427 of 1,074) of the global IVRs are not at of SLF establishment risk according to the global model (table 1 above, row 2). However, 38% (160 of 427) of these points are presently in quadrant 3, "high risk" (table 1 above, row 3). This means that the global model alone would label these 160 IVRs as not at risk for establishment, when in actuality they are at high risk for SLF establishment (above the MTSS threshold) when we spatially segment the presence data into an ensemble of regional-scale models. See the quadrant plot at the beginning of this vignette for the template of the plot for these results.
+
+These results are similar under projected climate change scenarios. 47% (503 of 1,074) would be unsuitable if the global model alone were used to describe the risk of SLF. However, 36% (182 of 503) of these unsuitable IVRs are still suitable in regional_scale models and thus would be missed by an analysis of risk using only a global-scale model.
 
 This means that our regional-scale ensemble is adding resolution and nuance to our estimation of risk for SLF establishment.
 
@@ -1286,7 +1188,7 @@ This means that our regional-scale ensemble is adding resolution and nuance to o
 global_regional_risk_shift <- dplyr::mutate(global_regional_risk_shift, IVR_region_prop = scales::label_percent(accuracy = 0.01) (IVR_region_prop))
 
 # make kable
-global_regional_risk_shift <- kable(global_regional_risk_shift, "html", escape = FALSE) %>% 
+global_regional_risk_shift <- kable(global_regional_risk_shift, format = "html", escape = FALSE) %>% 
   kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
   # standardize col width
   kableExtra::column_spec(1:2, width_min = '4cm') %>%
@@ -1308,10 +1210,22 @@ webshot::webshot(
   file = file.path(here::here(), "vignette-outputs", "figures", "IVR_risk_plot_quadrant_props.jpg"),
   zoom = 2
 )
+
+# file.remove(file.path(here::here(), "vignette-outputs", "figures", "IVR_risk_plot_quadrant_props.html"))
+
+
+
+# save as latex
+global_regional_risk_shift_LX <- knitr::kable(x = global_regional_risk_shift, format = "latex", escape = FALSE) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+
+kableExtra::save_kable(
+  global_regional_risk_shift_LX, 
+  file = file.path(here::here(), "vignette-outputs", "figures", "IVR_risk_plot_quadrant_props.tex"),
+  self_contained = TRUE,
+  bs_theme = "simplex"
+  )
   
-file.remove(file.path(here::here(), "vignette-outputs", "figures", "IVR_risk_plot_quadrant_props.html"))
-
-
 ```
 
 # 6. Save wineries with pred suitability
@@ -1382,7 +1296,7 @@ We now have risk quadrant plots and tables that we can use to assess the level o
 
 2. Smith, T. 2021, August 11. Evaluating Invasion Stage with SDMs - plantarum.ca. <https://plantarum.ca/2021/08/11/invasion-stage/>.
 
-# <!--
+<!--
 
 # Appendix
 
@@ -1450,11 +1364,9 @@ xy_regional_ensemble_2055_unweighted <- terra::extract(
 IVR_coordinates <- dplyr::select(IVR_locations, ID, x, y)
 
 # perform join
-xy_regional_ensemble_1995_unweighted <- dplyr::left_join(xy_regional_ensemble_1995_unweighted, IVR_coordinates, by = "ID") %>%
-  dplyr::select(-ID)
+xy_regional_ensemble_1995_unweighted <- dplyr::left_join(xy_regional_ensemble_1995_unweighted, IVR_coordinates, by = "ID") 
 
-xy_regional_ensemble_2055_unweighted <- dplyr::left_join(xy_regional_ensemble_2055_unweighted, IVR_coordinates, by = "ID") %>%
-  dplyr::select(-ID)
+xy_regional_ensemble_2055_unweighted <- dplyr::left_join(xy_regional_ensemble_2055_unweighted, IVR_coordinates, by = "ID") 
 
 ```
 
@@ -1469,8 +1381,8 @@ xy_regional_ensemble_1995_unweighted <- xy_regional_ensemble_1995_unweighted %>%
   dplyr::filter(!is.na(xy_regional_ensemble_1995_unweighted)) %>%
   dplyr::relocate(x, y) %>%
   dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y))
 
@@ -1480,8 +1392,8 @@ xy_regional_ensemble_2055_unweighted <- xy_regional_ensemble_2055_unweighted %>%
   dplyr::filter(!is.na(xy_regional_ensemble_2055_unweighted)) %>%
   dplyr::relocate(x, y) %>%
   dplyr::mutate(
-      join_col_x = round(x, 5),
-      join_col_y = round(y, 4) # rounding to the 1000s (1km) place to prevent overly sensitive exclusions for UTM data
+      join_col_x = round(x, 4),
+      join_col_y = round(y, 4) 
     ) %>%
   dplyr::select(-c(x, y))
 
@@ -1494,13 +1406,13 @@ xy_regional_ensemble_2055_unweighted <- xy_regional_ensemble_2055_unweighted %>%
 ```{r join datasets 2}
 
 # join datasets for plotting
-xy_joined_unweighted <- dplyr::full_join(xy_global_1995, xy_regional_ensemble_1995_unweighted, by = c("join_col_x", "join_col_y")) %>%
+xy_joined_unweighted <- dplyr::full_join(xy_global_1995, xy_regional_ensemble_1995_unweighted, by = "ID") %>%
   # join CC datasets
-  dplyr::full_join(., xy_global_2055, by = c("join_col_x", "join_col_y")) %>%
-  dplyr::full_join(., xy_regional_ensemble_2055_unweighted, by = c("join_col_x", "join_col_y")) %>%
+  dplyr::full_join(., xy_global_2055, by = "ID") %>%
+  dplyr::full_join(., xy_regional_ensemble_2055_unweighted, by = "ID") %>%
+  dplyr::select(., -contains("join_col_")) %>%
   # order
-  dplyr::relocate(join_col_x, join_col_y, xy_global_1995, xy_global_2055) %>%
-  dplyr::select(-c(ID.x, ID.y))
+  dplyr::relocate(ID, xy_global_1995, xy_global_2055)
 
 ```
 

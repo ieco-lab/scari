@@ -665,7 +665,7 @@ scari::predict_xy_suitability(
 
 -->
 
-## 3.3 Predict suitability for IVR regions
+## 3.3 Predict suitability for IVR locations
 
 I will perform the same action as above, but for the locations of important wineries around the world.
 
@@ -676,9 +676,9 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_regional_invaded_asian_v4")
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
+IVR_locations <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
-IVR_regions <- IVR_regions %>%
+IVR_locations <- IVR_locations %>%
   dplyr::select(x, y)
 
 ```
@@ -686,8 +686,8 @@ IVR_regions <- IVR_regions %>%
 ```{r predictions for IVR coordinate data- historical}
 
 scari::predict_xy_suitability(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
@@ -705,8 +705,8 @@ Do the same for the SSP scenarios
 ```{r predictions for IVR coordinate data- ssp126}
 
 scari::predict_xy_suitability(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_126_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
@@ -720,8 +720,8 @@ scari::predict_xy_suitability(
 ```{r predictions for IVR coordinate data- ssp370}
 
 scari::predict_xy_suitability(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_370_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,
@@ -735,8 +735,8 @@ scari::predict_xy_suitability(
 ```{r predictions for IVR coordinate data- ssp585}
 
 scari::predict_xy_suitability(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_585_env_covariates,
   model.obj = regional_invaded_asian_model,
   mypath = mypath,

@@ -291,7 +291,7 @@ v2
 v3- re-created workflow according to vig 130_v2
 v4- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
 v5- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
-
+v6- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 
 ----------140_assess_response_curves.Rmd----------
@@ -305,6 +305,7 @@ This vignette plots the response curve outputs from SDMtune as ggplots and adds 
 v0- initial version
 v1- 2024-08-16- rework- updated SLF presence data and inclusion of other SSP scenarios
 v2- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+v3- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 
 ----------141_assess_AUC_confusion_matrix.Rmd----------
@@ -317,6 +318,7 @@ This vignette plots the ROC curve for all models, as well as calculates a table 
 
 v0- initial version
 v1- 2025-08-06- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
+v2- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 
 ----------142_assess_var_imp.Rmd----------
@@ -329,7 +331,7 @@ This vignette plots the variable importance for each model
 
 v0- initial version
 v1- 2025-08-07- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
-
+v2- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 
 ----------150_create_risk_report_countries_provinces.Rmd----------

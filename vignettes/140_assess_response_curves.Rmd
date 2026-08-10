@@ -3,7 +3,7 @@ title: "Analyze biological realism of model response curves"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-05"
+date: "2026-08-10"
 ---
 
 # Overview
@@ -65,11 +65,11 @@ Lastly, load in the model objects for plotting the curves.
 
 ```{r load model objects- regional ensemble, eval = TRUE, warning = FALSE, message = FALSE}
 
-regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model.rds"))
+regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v5", "regional_native_model.rds"))
 
-regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model.rds"))
+regional_invaded_n_american_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_n_american_v9", "regional_invaded_n_american_model.rds"))
 
-regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model.rds"))
+regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v4", "regional_invaded_asian_model.rds"))
 
 ```
 
@@ -133,8 +133,8 @@ regional_native_marginal_bio11 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio11 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio11 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio11",
   type = "cloglog",
   fun = mean,
@@ -163,7 +163,7 @@ regional_invaded_asian_marginal_bio11 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio11_max_activity_values <- c(
   native_bio_11 = regional_native_marginal_bio11$data[[1]][which.max(regional_native_marginal_bio11$data[[1]]$y), ]$x,
-  invaded_bio_11 = regional_invaded_marginal_bio11$data[[1]][which.max(regional_invaded_marginal_bio11$data[[1]]$y), ]$x,
+  invaded_n_american_bio_11 = regional_invaded_n_american_marginal_bio11$data[[1]][which.max(regional_invaded_n_american_marginal_bio11$data[[1]]$y), ]$x,
   invaded_asian_bio_11 = regional_invaded_asian_marginal_bio11$data[[1]][which.max(regional_invaded_asian_marginal_bio11$data[[1]]$y), ]$x
 )
 
@@ -174,22 +174,22 @@ bio11_max_activity_values <- c(
 bio11_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio11_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -236,8 +236,8 @@ regional_native_marginal_bio12 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio12 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio12 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio12",
   type = "cloglog",
   fun = mean,
@@ -266,7 +266,7 @@ regional_invaded_asian_marginal_bio12 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio12_max_activity_values <- c(
   native_bio_12 = regional_native_marginal_bio12$data[[1]][which.max(regional_native_marginal_bio12$data[[1]]$y), ]$x,
-  invaded_bio_12 = regional_invaded_marginal_bio12$data[[1]][which.max(regional_invaded_marginal_bio12$data[[1]]$y), ]$x,
+  invaded_n_american_bio_12 = regional_invaded_n_american_marginal_bio12$data[[1]][which.max(regional_invaded_n_american_marginal_bio12$data[[1]]$y), ]$x,
   invaded_asian_bio_12 = regional_invaded_asian_marginal_bio12$data[[1]][which.max(regional_invaded_asian_marginal_bio12$data[[1]]$y), ]$x
 )
 
@@ -277,22 +277,22 @@ bio12_max_activity_values <- c(
 bio12_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio12_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -339,8 +339,8 @@ regional_native_marginal_bio15 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio15 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio15 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio15",
   type = "cloglog",
   fun = mean,
@@ -369,7 +369,7 @@ regional_invaded_asian_marginal_bio15 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio15_max_activity_values <- c(
   native_bio_15 = regional_native_marginal_bio15$data[[1]][which.max(regional_native_marginal_bio15$data[[1]]$y), ]$x,
-  invaded_bio_15 = regional_invaded_marginal_bio15$data[[1]][which.max(regional_invaded_marginal_bio15$data[[1]]$y), ]$x,
+  invaded_n_american_bio_15 = regional_invaded_n_american_marginal_bio15$data[[1]][which.max(regional_invaded_n_american_marginal_bio15$data[[1]]$y), ]$x,
   invaded_asian_bio_15 = regional_invaded_asian_marginal_bio15$data[[1]][which.max(regional_invaded_asian_marginal_bio15$data[[1]]$y), ]$x
 )
 
@@ -380,22 +380,22 @@ bio15_max_activity_values <- c(
 bio15_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio15_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -442,8 +442,8 @@ regional_native_marginal_bio2 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio2 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio2 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio2",
   type = "cloglog",
   fun = mean,
@@ -472,7 +472,7 @@ regional_invaded_asian_marginal_bio2 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio2_max_activity_values <- c(
   native_bio_2 = regional_native_marginal_bio2$data[[1]][which.max(regional_native_marginal_bio2$data[[1]]$y), ]$x,
-  invaded_bio_2 = regional_invaded_marginal_bio2$data[[1]][which.max(regional_invaded_marginal_bio2$data[[1]]$y), ]$x,
+  invaded_n_american_bio_2 = regional_invaded_n_american_marginal_bio2$data[[1]][which.max(regional_invaded_n_american_marginal_bio2$data[[1]]$y), ]$x,
   invaded_asian_bio_2 = regional_invaded_asian_marginal_bio2$data[[1]][which.max(regional_invaded_asian_marginal_bio2$data[[1]]$y), ]$x
 )
 
@@ -483,22 +483,22 @@ bio2_max_activity_values <- c(
 bio2_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio2_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -583,8 +583,8 @@ regional_native_univar_bio11 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_univar_bio11 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_univar_bio11 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio11",
   type = "cloglog",
   fun = mean,
@@ -613,7 +613,7 @@ regional_invaded_asian_univar_bio11 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio11_univar_max_activity_values <- c(
   native_bio11 = regional_native_univar_bio11$data[[1]][which.max(regional_native_univar_bio11$data[[1]]$y), ]$x,
-  invaded_bio11 = regional_invaded_univar_bio11$data[[1]][which.max(regional_invaded_univar_bio11$data[[1]]$y), ]$x,
+  invaded_n_american_bio11 = regional_invaded_n_american_univar_bio11$data[[1]][which.max(regional_invaded_n_american_univar_bio11$data[[1]]$y), ]$x,
   invaded_asian_bio11 = regional_invaded_asian_univar_bio11$data[[1]][which.max(regional_invaded_asian_univar_bio11$data[[1]]$y), ]$x
 )
 
@@ -624,22 +624,22 @@ bio11_univar_max_activity_values <- c(
 bio11_univar_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_univar_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -687,8 +687,8 @@ regional_native_univar_bio12 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_univar_bio12 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_univar_bio12 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio12",
   type = "cloglog",
   fun = mean,
@@ -717,7 +717,7 @@ regional_invaded_asian_univar_bio12 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio12_univar_max_activity_values <- c(
   native_bio12 = regional_native_univar_bio12$data[[1]][which.max(regional_native_univar_bio12$data[[1]]$y), ]$x,
-  invaded_bio12 = regional_invaded_univar_bio12$data[[1]][which.max(regional_invaded_univar_bio12$data[[1]]$y), ]$x,
+  invaded_n_american_bio12 = regional_invaded_n_american_univar_bio12$data[[1]][which.max(regional_invaded_n_american_univar_bio12$data[[1]]$y), ]$x,
   invaded_asian_bio12 = regional_invaded_asian_univar_bio12$data[[1]][which.max(regional_invaded_asian_univar_bio12$data[[1]]$y), ]$x
 )
 
@@ -728,22 +728,22 @@ bio12_univar_max_activity_values <- c(
 bio12_univar_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_univar_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -791,8 +791,8 @@ regional_native_univar_bio15 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_univar_bio15 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_univar_bio15 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio15",
   type = "cloglog",
   fun = mean,
@@ -821,7 +821,7 @@ regional_invaded_asian_univar_bio15 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio15_univar_max_activity_values <- c(
   native_bio15 = regional_native_univar_bio15$data[[1]][which.max(regional_native_univar_bio15$data[[1]]$y), ]$x,
-  invaded_bio15 = regional_invaded_univar_bio15$data[[1]][which.max(regional_invaded_univar_bio15$data[[1]]$y), ]$x,
+  invaded_n_american_bio15 = regional_invaded_n_american_univar_bio15$data[[1]][which.max(regional_invaded_n_american_univar_bio15$data[[1]]$y), ]$x,
   invaded_asian_bio15 = regional_invaded_asian_univar_bio15$data[[1]][which.max(regional_invaded_asian_univar_bio15$data[[1]]$y), ]$x
 )
 
@@ -832,22 +832,22 @@ bio15_univar_max_activity_values <- c(
 bio15_univar_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_univar_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -895,8 +895,8 @@ regional_native_univar_bio2 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_univar_bio2 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_univar_bio2 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio2",
   type = "cloglog",
   fun = mean,
@@ -925,7 +925,7 @@ regional_invaded_asian_univar_bio2 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio2_univar_max_activity_values <- c(
   native_bio2 = regional_native_univar_bio2$data[[1]][which.max(regional_native_univar_bio2$data[[1]]$y), ]$x,
-  invaded_bio2 = regional_invaded_univar_bio2$data[[1]][which.max(regional_invaded_univar_bio2$data[[1]]$y), ]$x,
+  invaded_n_american_bio2 = regional_invaded_n_american_univar_bio2$data[[1]][which.max(regional_invaded_n_american_univar_bio2$data[[1]]$y), ]$x,
   invaded_asian_bio2 = regional_invaded_asian_univar_bio2$data[[1]][which.max(regional_invaded_asian_univar_bio2$data[[1]]$y), ]$x
 )
 
@@ -936,22 +936,22 @@ bio2_univar_max_activity_values <- c(
 bio2_univar_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_univar_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1006,7 +1006,7 @@ univar_plots_style_global <- list(
 
 ```{r load model objects- global, eval = TRUE, warning = FALSE, message = FALSE}
 
-global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
+global_model <- read_rds(file = file.path(mypath, "slf_global_v5", "global_model.rds"))
 
 ```
 
@@ -1503,8 +1503,8 @@ bio11_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio11$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # native model data
   geom_smooth(data = regional_native_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1512,7 +1512,7 @@ bio11_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio11_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio11_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
@@ -1520,8 +1520,8 @@ bio11_marginal_combined <- ggplot() +
   # global is just all presences so it does not need a rug plot
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1560,8 +1560,8 @@ bio12_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio12$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1569,15 +1569,15 @@ bio12_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio12_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio12_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1616,8 +1616,8 @@ bio15_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio15$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1625,15 +1625,15 @@ bio15_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio15_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1672,8 +1672,8 @@ bio2_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio2$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1681,15 +1681,15 @@ bio2_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio2_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio2_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1785,8 +1785,8 @@ bio11_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio11$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1794,15 +1794,15 @@ bio11_univar_combined <- ggplot() +
    geom_vline(aes(xintercept = bio11_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1841,8 +1841,8 @@ bio12_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio12$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1850,15 +1850,15 @@ bio12_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio12_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1897,8 +1897,8 @@ bio15_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio15$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # native model data
   geom_smooth(data = regional_native_univar_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1906,15 +1906,15 @@ bio15_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1953,8 +1953,8 @@ bio2_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio2$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1962,15 +1962,15 @@ bio2_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style

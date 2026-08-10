@@ -202,7 +202,7 @@ First, we have the summary of this report, which shows important data.
 
 ```{r analyze France report 1}
 
-france_slf_risk_report[["Report_info"]]
+france_L_delicatula_risk_report[["Report_info"]]
 
 ```
 
@@ -210,7 +210,7 @@ Next, we have a summary of the viticultural regions in France, which shows each 
 
 ```{r analyze France report 2}
 
-france_slf_risk_report[["viticultural_regions_list"]]
+france_L_delicatula_risk_report[["viticultural_regions_list"]]
 
 ```
 
@@ -225,9 +225,9 @@ Now, we will call up the risk maps, which depict the level of risk and the locat
 
 ```{r analyze France report 3, warning = FALSE}
 
-france_slf_risk_report[["risk_maps"]][["present_risk_map"]]
+france_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]]
 
-france_slf_risk_report[["risk_maps"]][["future_risk_map"]]
+france_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]]
 
 ```
 
@@ -235,7 +235,7 @@ Unfortunately, the map did not format well because France possesses some territo
 
 ```{r change view on maps 1, warning = FALSE}
 
-france_current <- france_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+france_current <- france_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4804640.544946612, 5695846.383707797)
 
@@ -245,7 +245,7 @@ france_current
 
 ```{r change view on maps 2, warning = FALSE}
 
-france_future <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+france_future <- france_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4804640.544946612, 5695846.383707797)
 
@@ -259,7 +259,7 @@ The next table shows the proportion of the map that is occupied by each risk lev
 
 ```{r analyze France report 4}
 
-france_slf_risk_report[["risk_maps_prop_area_table"]]
+france_L_delicatula_risk_report[["risk_maps_prop_area_table"]]
 
 ```
 
@@ -267,7 +267,7 @@ Next, we have the viticultural risk plot, which shows the risk level of each win
 
 ```{r analyze France report 5}
 
-france_slf_risk_report[["viticultural_risk_plot"]]
+france_L_delicatula_risk_report[["viticultural_risk_plot"]]
 
 ```
 
@@ -275,7 +275,7 @@ Next is the viticultural risk table, which shows a tally of the wineries at each
 
 ```{r analyze France report 6}
 
-france_slf_risk_report[["viticultural_risk_table"]]
+france_L_delicatula_risk_report[["viticultural_risk_table"]]
 
 ```
 
@@ -283,7 +283,7 @@ Next, we have a map of the shift in risk for SLF over time. Green areas will gai
 
 ```{r analyze France report 7, warning = FALSE}
 
-france_slf_risk_report[["range_shift_map"]]
+france_L_delicatula_risk_report[["range_shift_map"]]
 
 ```
 
@@ -291,7 +291,7 @@ We cannot see this map well either; lets change the view on it.
 
 ```{r change view on maps 3, warning = FALSE}
 
-france_shift <- france_slf_risk_report[["range_shift_map"]] +
+france_shift <- france_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4804640.544946612, 5695846.383707797)
 
@@ -303,7 +303,7 @@ Finally, we have a table which calculates the total area for each of the categor
 
 ```{r analyze France report 8}
 
-france_slf_risk_report[["range_shift_table"]]
+france_L_delicatula_risk_report[["range_shift_table"]]
 
 ```
 
@@ -355,7 +355,7 @@ bordeaux_slf_risk_report[["viticultural_risk_table"]]
 
 ```
 
-# Apply function to all possible countries
+# Apply function to all countries containing IVRs
 
 ## loop to apply function to wineries dataset
 

@@ -699,7 +699,7 @@ knitr::include_graphics(
 ```
 
 The predicted future data (2041-2070) under the ssp585 climate change scenario:
-```{r load suitability maps hssp585ist, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
+```{r load suitability maps ssp585, eval = TRUE, echo = FALSE, message = FALSE, warning = FALSE}
 
 # load in maps
 # ssp126 for 2041-2070 data
@@ -739,7 +739,7 @@ scari::predict_xy_suitability_CV(
   mypath = mypath,
   clamp.pred = TRUE, # clamp predictions
   buffer.pred = FALSE, # will not buffer for SLF occurrence data because this is more accurate than viticultural region data
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_slf_all_coords_1981-2010"
 )
 
@@ -756,7 +756,7 @@ scari::predict_xy_suitability_CV(
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_slf_all_coords_2041-2070_GFDL_ssp126"
 )
 
@@ -771,7 +771,7 @@ scari::predict_xy_suitability_CV(
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_slf_all_coords_2041-2070_GFDL_ssp370"
 )
 
@@ -786,13 +786,13 @@ scari::predict_xy_suitability_CV(
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_slf_all_coords_2041-2070_GFDL_ssp585"
 )
 
 ```
 
-## 3.3 Predict suitability for IVR regions
+## 3.3 Predict suitability for IVR locations
 
 I will perform the same action as above, but for the locations of over 1,000 important wineries around the world. I will use the buffered method of predicting suitability for this application. The buffered method creates a buffer zone around the point and considers all values within that buffer for predicting suitability. This is important because these points represent regions that are important to viticulture and are not exact geospatial coordinates, but are likely mapped to the centroid of areas with vast expanses of vineyards. So, using a buffer zone accounts for this lack of exact coordinates. I will take this maximum value from this buffer, but the mean, minimum and others can be used as well. I will use a buffer radial distance of 20,000m (the default, 20km) because the resolution of the predictions is at 10km, so this distance considers the two surrounding cells on any side.
 
@@ -803,9 +803,9 @@ mypath <- file.path(here::here() %>%
                      "maxent/models/slf_global_v5")
 
 # load in all IVR points
-IVR_regions <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
+IVR_locations <- readr::read_rds(file.path(here::here(), "data", "wineries_esri54017.rds"))
 
-IVR_regions <- IVR_regions %>%
+IVR_locations <- IVR_locations %>%
   dplyr::select(x, y)
 
 ```
@@ -813,32 +813,32 @@ IVR_regions <- IVR_regions %>%
 ```{r predict for IVR coordinate data- historical}
 
 scari::predict_xy_suitability_CV(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_hist_env_covariates,
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
   buffer.pred = TRUE, # 20km buffer around points
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_wineries_1981-2010"
 )
 
 ```
 
-I will repeat the same process for the CMIP6 data.
+This run dropped three records, likely due to inconsistencies between the rasters which I harmonized. I will repeat the same process for the CMIP6 data.
 
 ```{r predict for IVR coordinate data- ssp126}
 
 scari::predict_xy_suitability_CV(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_126_env_covariates,
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
   buffer.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_wineries_2041-2070_GFDL_ssp126"
 )
 
@@ -847,14 +847,14 @@ scari::predict_xy_suitability_CV(
 ```{r predict for IVR coordinate data- ssp370}
 
 scari::predict_xy_suitability_CV(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_370_env_covariates,
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
   buffer.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_wineries_2041-2070_GFDL_ssp370"
 )
 
@@ -863,14 +863,14 @@ scari::predict_xy_suitability_CV(
 ```{r predict for IVR coordinate data- ssp585}
 
 scari::predict_xy_suitability_CV(
-  xy.obj = IVR_regions,
-  xy.type = "IVR regions",
+  xy.obj = IVR_locations,
+  xy.type = "IVR locations",
   env.covar.obj = x_global_585_env_covariates,
   model.obj = global_model,
   mypath = mypath,
   clamp.pred = TRUE,
   buffer.pred = TRUE,
-  predict.type = c("cloglog", "logistic"),
+  predict.type = "cloglog",
   output.name = "global_wineries_2041-2070_GFDL_ssp585"
 )
 

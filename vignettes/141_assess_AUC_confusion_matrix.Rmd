@@ -3,7 +3,7 @@ title: "Assess model goodness of fit via AUC, TSS and confusion matrices"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-05"
+date: "2026-08-10"
 ---
 
 In this vignette, I will assess the fit of my models using a few different metrics: the TSS score, AUC score, and confusion matrices.
@@ -62,11 +62,11 @@ ensemble_colors <- c(
 
 ```{r load model objects}
 
-regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model.rds"))
+regional_native_model <- read_rds(file = file.path(mypath, "slf_regional_native_v5", "regional_native_model.rds"))
 
-regional_invaded_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model.rds"))
+regional_invaded_n_american_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_n_american_v9", "regional_invaded_n_american_model.rds"))
 
-regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model.rds"))
+regional_invaded_asian_model <- read_rds(file = file.path(mypath, "slf_regional_invaded_asian_v4", "regional_invaded_asian_model.rds"))
 
 ```
 
@@ -76,28 +76,28 @@ First, we will assess the TSS score for each model. The TSS score is a measure o
 
 ```{r import TSS scores, message = FALSE}
 
-regional_native_tss <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_model_eval_metrics.csv")) %>%
+regional_native_tss <- read_csv(file = file.path(mypath, "slf_regional_native_v5", "regional_native_model_eval_metrics.csv")) %>%
   # select test TSS
   dplyr::select(TSS) %>%
-  dplyr::slice_tail()
+  dplyr::slice(2)
 
-regional_invaded_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_model_eval_metrics.csv")) %>%
+regional_invaded_n_american_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_n_american_v9", "regional_invaded_n_american_model_eval_metrics.csv")) %>%
   dplyr::select(TSS) %>%
-  dplyr::slice_tail()
+  dplyr::slice(2)
 
-regional_invaded_asian_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_model_eval_metrics.csv")) %>%
+regional_invaded_asian_tss <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v4", "regional_invaded_asian_model_eval_metrics.csv")) %>%
   dplyr::select(TSS) %>%
-  dplyr::slice_tail()
+  dplyr::slice(2)
 
 ```
 
 ```{r display TSS scores}
 
 tss_scores <- tibble(
-  model = c("regional native", "regional invaded NAmerica", "regional invaded Asia"),
+  model = c("regional native", "regional invaded North American", "regional invaded Asian"),
   TSS = c(
     regional_native_tss$TSS,
-    regional_invaded_tss$TSS,
+    regional_invaded_n_american_tss$TSS,
     regional_invaded_asian_tss$TSS
   )
 )
@@ -106,9 +106,9 @@ tss_scores
 
 ```
 
-We can see that the native and invaded Asian models have excellent discriminating power, with TSS scores of 0.99 and 0.82, respectively. The invaded North American model has a TSS score of 0.29, indicating that it's discriminating power is poor. 
+We can see that the native and invaded Asian models have excellent discriminating power, with TSS scores of 0.99 and 0.58, respectively. The invaded North American model has a TSS score of 0.32, indicating that it's discriminating power is poor. 
 
-Despite the poor performance of some of our regional-scale models, we can have confidence in their performance. During the ensemble process (vignette 110), we took a weighted mean of each of the regional-scale models, which allowed us give higher weight to models that performed better according to the AUC metric, and lower weight to the lower performers. Indeed, the native model contributed 44% of the final model output, the invaded Asian model contributed 34% of the final output, and the invaded North American model only contributed 21% of the final weight. This correlates with our TSS scores.
+Despite the poor performance of some of our regional-scale models, we can have confidence in our ensembled mean model, which is composed of the three models put together using a weighted mean of each of the regional-scale models. This gave higher weight to models that performed better according to the AUC metric, and lower weight to the lower performers. Indeed, the native model contributed 46% of the final model output, the invaded Asian model contributed 31% of the final output, and the invaded North American model only contributed 24% of the final weight. This correlates with our TSS scores.
 
 # ROC regional ensemble
 
@@ -118,22 +118,22 @@ First, I will build the SWD objects required by `SDMtune::plotROC`
 
 ```{r load testing points datasets, message = FALSE}
 
-regional_native_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v4.csv"))
+regional_native_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_test_slf_presences_v5.csv"))
 
-regional_invaded_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_test_slf_presences_v8.csv"))
+regional_invaded_n_american_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_test_slf_presences_v9.csv"))
 
-regional_invaded_asian_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v3.csv"))
+regional_invaded_asian_test <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_test_slf_presences_v4.csv"))
 
 ```
 
 ```{r load in bg points datasets, message = FALSE}
 
 # background points
-a_regional_invaded_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_background_points_v8.csv"))
+a_regional_invaded_n_american_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_n_american_background_points_v9.csv"))
 
-a_regional_native_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v4.csv"))
+a_regional_native_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_native_background_points_v5.csv"))
 
-a_regional_invaded_asian_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v3.csv"))
+a_regional_invaded_asian_background_points <- read.csv(file.path(here::here(), "vignette-outputs", "data-tables", "regional_invaded_asian_background_points_v4.csv"))
 
 ```
 
@@ -206,12 +206,12 @@ regional_native_test_SWD <- SDMtune::prepareSWD(
   verbose = TRUE # print helpful messages
   )
 
-# regional invaded
-regional_invaded_test_SWD <- SDMtune::prepareSWD(
+# regional invaded_n_american
+regional_invaded_n_american_test_SWD <- SDMtune::prepareSWD(
   species = "Lycorma delicatula",
   env = x_global_hist_env_covariates, 
-  p = regional_invaded_test, 
-  a = a_regional_invaded_background_points,
+  p = regional_invaded_n_american_test, 
+  a = a_regional_invaded_n_american_background_points,
   verbose = TRUE # print helpful messages
   )
 
@@ -229,9 +229,9 @@ regional_native_ROC <- SDMtune::plotROC(
 ) %>%
   ggplot_build()
 
-regional_invaded_ROC <- SDMtune::plotROC(
-  model = regional_invaded_model,
-  test = regional_invaded_test_SWD
+regional_invaded_n_american_ROC <- SDMtune::plotROC(
+  model = regional_invaded_n_american_model,
+  test = regional_invaded_n_american_test_SWD
 ) %>%
   ggplot_build()
 
@@ -248,8 +248,8 @@ regional_invaded_asian_ROC <- SDMtune::plotROC(
 ROC_ensemble <- ggplot() +
   # native model data
   geom_line(data = regional_native_ROC$data[[1]], aes(x = x, y = y, color = "Rn (native)", group = group, linetype = as.factor(group)), linewidth = 0.8) +
-  # invaded model data
-  geom_line(data = regional_invaded_ROC$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica", group = group, linetype = as.factor(group)), linewidth = 0.8) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_ROC$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica", group = group, linetype = as.factor(group)), linewidth = 0.8) +
   # invaded_asian model data
   geom_line(data = regional_invaded_asian_ROC$data[[1]], aes(x = x, y = y, color = "Ri.Asia", group = group, linetype = as.factor(group)), linewidth = 0.8) +
   # midpoint line
@@ -295,7 +295,7 @@ ggsave(
 
 ```
 
-We see that the regional-scale model has the highest testing AUC (0.99), followed by the invaded Asian model (0.90) and finally the invaded North American model (0.51). The invaded North American model is only slightly better than random (0.5), which is consistent with its low TSS score (0.29). Thankfully, however, we have significantly downweighted this model in our ensemble, so it should not have a large impact on our final risk map.
+We see that the regional-scale model has the highest testing AUC (0.99), followed by the invaded Asian model (0.775) and finally the invaded North American model (0.543). The invaded North American model is only slightly better than random (0.5), which is consistent with its low TSS score (0.32). Thankfully, however, we have significantly downweighted this model in our ensemble, so it should not have a large impact on our final risk map.
 
 # Add global model to ROC plot
 
@@ -314,11 +314,11 @@ mypath <- file.path(here::here() %>%
 ```{r load data objects, message = FALSE}
 
 # model
-global_model <- read_rds(file = file.path(mypath, "slf_global_v4", "global_model.rds"))
+global_model <- read_rds(file = file.path(mypath, "slf_global_v5", "global_model.rds"))
 # background csv
-global_background <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v4.csv"))
+global_background <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "global_background_points_v5.csv"))
 # all 
-slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2025-07-07.rds")) %>%
+slf_points <- readr::read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) 
 
 ensemble_colors <- c(
@@ -371,8 +371,8 @@ ROC_ensemble_global <- ggplot() +
   geom_line(data = global_ROC$data[[1]], aes(x = x, y = y, color = "global", group = group, linetype = as.factor(group)), linewidth = 0.8) +
   # native model data
   geom_line(data = regional_native_ROC$data[[1]], aes(x = x, y = y, color = "Rn (native)", group = group, linetype = as.factor(group)), linewidth = 0.8) +
-  # invaded model data
-  geom_line(data = regional_invaded_ROC$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica", group = group, linetype = as.factor(group)), linewidth = 0.8) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_ROC$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica", group = group, linetype = as.factor(group)), linewidth = 0.8) +
   # invaded_asian model data
   geom_line(data = regional_invaded_asian_ROC$data[[1]], aes(x = x, y = y, color = "Ri.Asia", group = group, linetype = as.factor(group)), linewidth = 0.8) +
   # midpoint line
@@ -435,20 +435,20 @@ We calculate these according to the cloglog MTSS threshold per model
 ```{r import confusion matrices, message = FALSE, results = "hide"}
 
 # global
-global_conf_matr <- read_csv(file = file.path(mypath, "slf_global_v4", "global_thresh_confusion_matrix_all_iterations.csv")) %>%
+global_conf_matr <- read_csv(file = file.path(mypath, "slf_global_v5", "global_thresh_confusion_matrix_all_iterations.csv")) %>%
   # only MTSS threshold
   slice(7)
 
 
 # regional models
 # native
-regional_native_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_native_v4", "regional_native_thresh_confusion_matrix.csv")) %>%
+regional_native_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_native_v5", "regional_native_thresh_confusion_matrix.csv")) %>%
   slice(7)
 # invaded_asia
-regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v3", "regional_invaded_asian_thresh_confusion_matrix.csv")) %>%
+regional_invaded_asian_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_asian_v4", "regional_invaded_asian_thresh_confusion_matrix.csv")) %>%
   slice(7)
-# invaded_NAmerica
-regional_invaded_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_v8", "regional_invaded_thresh_confusion_matrix.csv")) %>%
+# invaded_n_american_NAmerica
+regional_invaded_n_american_conf_matr <- read_csv(file = file.path(mypath, "slf_regional_invaded_n_american_v9", "regional_invaded_n_american_thresh_confusion_matrix.csv")) %>%
   slice(7)
 
 ```
@@ -467,7 +467,7 @@ I will create some input datasets which contain the number of test positives per
 global_test_pos <- sum(global_test_SWD@pa == 1)
 # regional
 regional_native_test_pos <- nrow(regional_native_test)
-regional_invaded_test_pos <- nrow(regional_invaded_test)
+regional_invaded_n_american_test_pos <- nrow(regional_invaded_n_american_test)
 regional_invaded_asian_test_pos <- nrow(regional_invaded_asian_test)
 
 ```
@@ -480,22 +480,22 @@ model_sens_spec <- tibble(
     model = c(
     rep("global", 4),
     rep("regional native", 4),
-    rep("regional invaded NAmerica", 4),
-    rep("regional invaded Asia", 4)
+    rep("regional invaded North American", 4),
+    rep("regional invaded Asian", 4)
   ),
   # cloglog MTSS threshold
   thresh = "MTSS.cloglog",
   thresh_value = c(
     rep(global_conf_matr$threshold_value, 4), 
     rep(regional_native_conf_matr$threshold_value, 4), 
-    rep(regional_invaded_conf_matr$threshold_value, 4),
+    rep(regional_invaded_n_american_conf_matr$threshold_value, 4),
     rep(regional_invaded_asian_conf_matr$threshold_value, 4)
     ),
   # the number of test positives
   test_pos = c(
     rep(global_test_pos, 4), # global, this counts the number of positives in the model (the 1s in the training data)
     rep(regional_native_test_pos, 4),  # native
-    rep(regional_invaded_test_pos, 4), # invaded_NAmerica
+    rep(regional_invaded_n_american_test_pos, 4), # invaded_NAmerica
     rep(regional_invaded_asian_test_pos, 4) # invaded_Asia
   ),
   # the number of background points
@@ -515,10 +515,10 @@ model_sens_spec <- tibble(
     round(1 - (regional_native_conf_matr$tn / 10000), 4), 
     round((regional_native_conf_matr$fn / 10000), 4),
     # invaded_NAmerica
-    round(regional_invaded_conf_matr$tp / regional_invaded_test_pos, 4), 
-    round(regional_invaded_conf_matr$tn / 10000, 4), 
-    round(1 - (regional_invaded_conf_matr$tn / 10000), 4), 
-    round((regional_invaded_conf_matr$fn / 10000), 4),
+    round(regional_invaded_n_american_conf_matr$tp / regional_invaded_n_american_test_pos, 4), 
+    round(regional_invaded_n_american_conf_matr$tn / 10000, 4), 
+    round(1 - (regional_invaded_n_american_conf_matr$tn / 10000), 4), 
+    round((regional_invaded_n_american_conf_matr$fn / 10000), 4),
     # invaded_asia
     round(regional_invaded_asian_conf_matr$tp / regional_invaded_asian_test_pos, 4), 
     round(regional_invaded_asian_conf_matr$tn / 10000, 4), 
@@ -569,9 +569,18 @@ webshot::webshot(
   zoom = 2
 )
 
-file.remove(file.path(here::here(), "vignette-outputs", "figures", "model_sensitivity_specificity.html"))
+# file.remove(file.path(here::here(), "vignette-outputs", "figures", "model_sensitivity_specificity.html"))
 
-# model extents
+# convert to kable
+model_sens_spec_kable_LX <- knitr::kable(x = model_sens_spec, format = "latex", escape = FALSE) %>%
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = TRUE)
+# save as latex
+kableExtra::save_kable(
+  model_sens_spec_kable_LX, 
+  file = file.path(here::here(), "vignette-outputs", "figures", "model_sensitivity_specificity.tex"),
+  self_contained = TRUE,
+  bs_theme = "simplex"
+  )
 
 ```
 

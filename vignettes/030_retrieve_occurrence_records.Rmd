@@ -105,7 +105,7 @@ Most of this compendium and its functions are built on the `tidyverse` language.
 
 # Validation points- globally important viticultural regions
 
-First, I will visualize the points we will use to validate our future MaxEnt models. These were retrieved by Huron et al, 2022 and represent 1,074 of the most important global viticultural regions. I will also create a transformed version for use with the Behrmann CRS (ESRI:54017).
+First, I will visualize the points we will use to validate our future MaxEnt models. These were retrieved by Huron et al, 2022 and represent 1,086 of the most important global viticultural regions. I will create a transformed version for use with the Behrmann CRS (ESRI:54017). Before doing that, I will deduplicate these records to ensure they are ready for use. 
 
 ```{r ggplot object for map style, eval = TRUE}
 
@@ -135,12 +135,40 @@ mypath <- file.path(here::here() %>%
 global_bio2_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_global.asc")) %>%
   terra::as.data.frame(., xy = TRUE)
 
-
-
-# load wineries
+# wineries
 load(file.path(here::here(), "data-raw", "wineries.rda"))
 
-IVR_locations <- wineries
+```
+
+```{r deduplicate wineries}
+
+IVR_locations <- wineries %>%
+  # tidy
+  dplyr::select(-c(Latitude, Longitude)) %>%
+  dplyr::filter(
+    !is.na(x),
+    !is.na(y)
+    ) %>%
+  dplyr::mutate(record_type = "IVR_location")
+
+# remove duplicate coordinates
+IVR_locations <- IVR_locations %>%
+  CoordinateCleaner::clean_coordinates(
+    x = .,
+    lon = "x",
+    lat = "y",
+    species = "record_type",
+    tests = "duplicates",
+    value = "clean" # just return same df without duplicates
+  ) %>%
+  dplyr::select(., -record_type)
+
+```
+
+The tidying removed 7 duplicate records, leaving 1,079 total records.
+
+```{r convert to new projection}
+
 # I need to transform this dataset to the correct crs
 IVR_locations_sv <- terra::vect(IVR_locations, geom = c("x", "y"), crs = "EPSG:4326") %>%
     terra::project(y = "ESRI:54017") %>% # convert to UTM 33N
@@ -154,7 +182,10 @@ IVR_locations_UTM <- terra::as.data.frame(IVR_locations_sv) %>%
 # bind OG data
 IVR_locations_UTM <- cbind(IVR_locations_UTM, IVR_locations) %>% 
   dplyr::select(-c(x, y)) %>% 
-  dplyr::rename("x" = "x_utm", "y" = "y_utm") 
+  dplyr::rename("x" = "x_utm", "y" = "y_utm") %>%
+  # create ID col
+  dplyr::mutate(ID = row_number()) %>%
+  relocate(ID, x, y)
 
 # save transformation for future use
 readr::write_rds(x = IVR_locations_UTM, file = file.path(here::here(), "data", "wineries_esri54017.rds"))
