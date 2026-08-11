@@ -131,7 +131,9 @@ The internal dataset `sysdata.rda` is used for this function in the remainder of
 
 # Example usage for `create_risk_report()`: France
 
-I will now pull out a specific example of France to analyze and demonstrate usage of this function. I will use France as a case study. Here is an example of the code we could use to retrieve a report for France. We will work through each argument:
+I will now pull out a specific example of France to analyze and demonstrate usage of this function. I will use France as a case study. Here is an example of the code we could use to retrieve a report for France. We will work through each argument,
+
+The first thing I will need to do is to search for the correct [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) corresponding to our country of interest. France is "FRA", so I will enter that in `locality.iso`. I can also enter the name of the country for reporting purposes, but it is not required for countries (only states/provinces).
 
 ```{r generate a report for France, message = FALSE, results = "hide"}
 
@@ -309,13 +311,16 @@ france_L_delicatula_risk_report[["range_shift_table"]]
 
 ## Example of subsetting reports- Bordeaux region of France
 
-Looking back at the list of important viticultural regions we retrieved above, we can see that France has 70 total results for which we produced a report. It can be helpful to see the overall shift in risk due to climate change at the scale of the country, but you might find it difficult to discern particular regions of interest at this scale. One option you have is to refine the results at the state/provincial scale. To do this, simply set `locality.type = "state_province"` and enter the name of your province of interest into the `locality.name` argument. We will test this for the Bordeaux region of France.
+Looking back at the list of important viticultural regions we retrieved above, we can see that France has 70 total results for which we produced a report. It can be helpful to see the overall shift in risk due to climate change at the scale of the country, but you might find it difficult to discern particular regions of interest at this scale. One option you have is to refine the results at the state/provincial scale. To do this, simply set `locality.type = "state_province"` and enter the name of your province of interest into the `locality.name` argument. 
+
+We can see in the above report that there are many entries for a region referred to as "burgundy_bourgogne_burgundy" (of course, this includes some duplicate naming and multiple namings- but the data are still there). We will retrieve entries only for this region of interest. The `Region` column represents states and provinces (admin-1 groups). To retrieve records for this region, we will need the [ISO 3166-2 state/province code](https://en.wikipedia.org/wiki/ISO_3166-2) which corresponds to this region. If we click this link and France on the "Entry" column of the table, we find that "Burgundy" corresponds to the region of "Burgundy-Franche-Comté", which has the following iso code: "FR-BFC". We will enter the code into `locality.iso.2` and the name into `locality.name`.
 
 ```{r generate a report for France, message = FALSE, results = "hide"}
 
 scari::create_risk_report(
   locality.iso = "fra", # A3-iso
-  locality.name = "bordeaux", #name
+  locality.iso.2 = "FR-BFC",
+  locality.name = "Burgundy-Franche-Comté", #name
   locality.type = "state_province", # record type
   # saving output
   mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
@@ -337,7 +342,7 @@ Let's take a look at the number of results now:
 
 ```{r analyze Bordeaux report 1}
 
-bordeaux_slf_risk_report[["viticultural_regions_list"]]
+burgundy_franche_comté_L_delicatula_risk_report[["viticultural_regions_list"]]
 
 ```
 
@@ -345,15 +350,17 @@ Now analyze risk plot and table:
 
 ```{r analyze Bordeaux report 2}
 
-bordeaux_slf_risk_report[["viticultural_risk_plot"]]
+burgundy_franche_comté_L_delicatula_risk_report[["viticultural_risk_plot"]]
 
 ```
 
 ```{r analyze Bordeaux report 3}
 
-bordeaux_slf_risk_report[["viticultural_risk_table"]]
+burgundy_franche_comté_L_delicatula_risk_report[["viticultural_risk_table"]]
 
 ```
+
+From this analysis, we can see now that IVR's in the "Burgundy" region of France are all at extreme risk (suitable in both models) of SLF establishment presently, and this will not change under climate change.
 
 # Apply function to all countries containing IVRs
 

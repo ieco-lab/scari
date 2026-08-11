@@ -359,5 +359,6 @@ This vignette formats risk tables from vignettes 130 and 131 by adding colors an
 v0- initial version
 v1- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
 v2- changeed name from format_risk_tables to generate_format_figures- combined with generate_extra_plots (161)
+v3- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 

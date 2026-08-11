@@ -5,15 +5,17 @@
 #'data outputs from this R package analysis, including present and future risk maps,
 #'range shift maps, risk plots and risk tables.
 #'
-#'@param locality.iso The [alpha-3 ISO code](https://www.iso.org/obp/ui/#search)
-#'corresponding to the country of interest. If the desired locality is a state
-#'or province, please still enter the ISO code and supply the name of that
-#'province in `locality.name`.
+#'@param locality.iso Please enter the correct [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3)
+#'corresponding to your country of interest. If a state or province, this must
+#'still be entered, in addition to `locality.iso.2`, which is the ISO 3166-2 state/province code.
+#'
+#'@param locality.iso.2 Enter only if area of interest is a state or province
+#'Lists of accepted codes may be found at [ISO 3166-2 state/province code](https://en.wikipedia.org/wiki/ISO_3166-2)
+#'by clicking the proper county under the "Entry" column on the table.
 #'
 #'@param locality.name The name of the country, state or province for which to
-#'generate the report. This is optional if the report is for a country, but
-#'required if the report is for a state/province. Avoid special characters,
-#'but please include those used used in the ethnic naming (ex: Côte d'Ivoire).
+#'generate the report. Avoid special characters, but please include those used
+#'in the ethnic naming (ex: Côte d'Ivoire).
 #'
 #'@param locality.type One of "country" or "state_province". If you do
 #'not know the state or province you are looking for, you might create a report
@@ -173,7 +175,7 @@
 #'```
 #'
 #'@export
-create_risk_report <- function(locality.iso, locality.name = locality.iso, locality.type, focal.species = "L_delicatula", crs = "ESRI:54017", period.present = "1981-2010", period.projected = "2041-2070", model.projected = "GFDL-ESM4", ssp.projected = "ssp_126_370_585", save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
+create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name = locality.iso, locality.type, focal.species = "L_delicatula", crs = "ESRI:54017", period.present = "1981-2010", period.projected = "2041-2070", model.projected = "GFDL-ESM4", ssp.projected = "ssp_126_370_585", save.report = FALSE, mypath = NA, raster.path = file.path(here::here(), "vignette-outputs", "rasters"), create.dir = FALSE, map.style = NA, buffer.dist = NA) {
 
   # Error checks----------------------------------------------------------------
 
@@ -241,6 +243,10 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     stop()
   }
 
+  if (locality.type == "state_province" & is.na(locality.iso.2) == TRUE) {
+    cli::cli_abort("Parameter 'locality.iso.2' must be provided for states/provinces. See [ISO 3166-2 state/province code](https://en.wikipedia.org/wiki/ISO_3166-2).")
+    stop()
+  }
 
 
   ## Create sub directory for files---------------------------------------------
@@ -315,14 +321,20 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # locality.iso
   locality_iso_internal <- locality.iso %>%
     toupper() %>%
-    gsub(pattern = " ", replacement = "")
+    stringr::str_remove_all(., pattern = " ") %>% # all these symbols
+    stringr::str_replace_all(., pattern = " |_", replacement = "-") # add dashes for if the code is a region code
+
+  # locality.iso
+  locality_iso_2_internal <- locality.iso.2 %>%
+    toupper() %>%
+    stringr::str_remove_all(., pattern = " ") %>% # all these symbols
+    stringr::str_replace_all(., pattern = " |_", replacement = "-") # add dashes for if the code is a region code
 
   # locality.name
   locality_name_internal <- locality.name %>%
     tolower() %>%
-    gsub(pattern = " ", replacement = "_") %>%
-    gsub(pattern = "-", replacement = "_") %>%
-    gsub(pattern = ".", replacement = "", fixed = TRUE)
+    stringr::str_replace_all(., pattern = " |-", replacement = "_") %>%
+    stringr::str_remove_all(., pattern = "['/.()]") # all these symbols
 
 
 
@@ -409,35 +421,43 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   countries_sf <- sf::st_transform(countries_sf, crs = crs)
   states_provinces_sf <- sf::st_transform(states_provinces_sf, crs = crs)
 
-  # harmonize naming
+  # harmonize naming of names, abbreviations and iso-3 codes
   countries_sf <- countries_sf %>%
     dplyr::mutate(
       NAME_LONG = tolower(NAME_LONG),
-      NAME_LONG = gsub(NAME_LONG, pattern = " |-", replacement = "_", fixed = TRUE),
-      NAME_LONG = gsub(NAME_LONG, pattern = "/|.", replacement = "", fixed = TRUE),
-      # alpha-3 iso used to isolate sf
-      ADM0_A3 = toupper(ADM0_A3),
-      ADM0_A3 = gsub(ADM0_A3, pattern = " ", replacement = ""),
-      # also tidy abbreviations
       ABBREV = toupper(ABBREV),
-      ABBREV = gsub(ABBREV, pattern = "/", replacement = ""),
-      ABBREV = gsub(ABBREV, pattern = "-", replacement = "_"),
-      ABBREV = gsub(ABBREV, pattern = ".", replacement = "", fixed = TRUE)
+      ADM0_A3 = toupper(ADM0_A3), # alpha-3 iso used to isolate sf
+      # replacements
+      NAME_LONG = stringr::str_replace_all(NAME_LONG, pattern = " |-", replacement = "_"),
+      ABBREV = stringr::str_replace_all(ABBREV, pattern = " |-", replacement = "_"),
+      # removals
+      ADM0_A3 = stringr::str_remove_all(ADM0_A3, pattern = " "),
+      ABBREV = stringr::str_remove_all(ABBREV, pattern = "['/.()]"), # also tidy abbreviations
+      NAME_LONG = stringr::str_remove_all(NAME_LONG, pattern = "['/.()]") # all these symbols
     )
 
+
+  # define a list of words to remove from all datasets- mention of wine regions, states or provinces, other words
+  words_to_remove <- c("and", "area", "autonomous", "both", "city", "community", "continental", "department", "disputed", "grapes", "in", "including", "of", "prefecture", "province", "region", "republic", "since", "state", "surrounding", "territory", "the", "village", "wine")
+  words_to_remove_match <- str_c(words_to_remove, collapse = "|")
+
+  # tidy iso-3 codes and names in english
   states_provinces_sf <- states_provinces_sf %>%
     dplyr::mutate(
-      # names of states
-      name = tolower(name),
-      name = gsub(name, pattern = " |-", replacement = "_", fixed = TRUE), # replace these with an underscore
-      name = gsub(name, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
-      name = gsub(name, pattern = ")|(", replacement = "", fixed = TRUE), # remove these
-      name = gsub(name, pattern = "wine|region|state|province|and|surrounding|area|of|villiage|continental|grapes|territory|disputed|community|both|in|lima|since|including", replacement = ""), # a specific instance of some regions being referred to as "wine regions"
-      # alpha-3 iso used to isolate sf
-      adm0_a3 = toupper(adm0_a3),
-      adm0_a3 = gsub(adm0_a3, pattern = " ", replacement = "")
+      name_en = tolower(name_en), # names of states
+      adm0_a3 = toupper(adm0_a3), # admin iso-3 codes
+      iso_3166_2 = toupper(iso_3166_2), # iso3116-2 codes for states
+      # replacements
+      name_en = stringr::str_replace_all(name_en, pattern = " |-", replacement = "_"),
+      # removals
+      name_en = stringr::str_remove_all(name_en, pattern = "['/.()]"), # all these symbols
+      name_en = stringr::str_remove_all(name_en, words_to_remove_match), # all words
+      name_en = stringr::str_remove_all(name_en, pattern = "^_+|_$"), # hanging underscores at beginning or end
+      adm0_a3 = stringr::str_remove_all(adm0_a3, pattern = " "),
+      iso_3166_2 = stringr::str_remove_all(iso_3166_2, pattern = " "),
+      # final removal needs to be last
+      name_en = stringr::str_replace_all(name_en, "_+", "_"), # replace sequences of underscores with just one
     )
-
 
   # tidy IVR dataset------------------------------------------------------------
 
@@ -445,24 +465,18 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
     dplyr::mutate(
       # country
       Country = tolower(Country),
-      Country = gsub(Country, pattern = " |-", replacement = "_", fixed = TRUE), # replace these with an underscore
-      Country = gsub(Country, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
-      Country = gsub(Country, pattern = ")|(", replacement = "", fixed = TRUE) # remove these
-
-    )
-
-  # now remove specific words
-  IVR_locations <- IVR_locations %>%
-    dplyr::mutate(
-      # subregion
       Region = tolower(Region),
-      Region = gsub(Region, pattern = "/|.", replacement = "", fixed = TRUE), # remove these
-      Region = gsub(Region, pattern = ")|(", replacement = "", fixed = TRUE), # remove these
-      Region = gsub(Region, pattern = "–", replacement = "", fixed = TRUE),
-      # specific words- mention of wine regions, states or provinces, other words
-      Region = gsub(Region, pattern = "wine|region|state|province|and|surrounding|area|of|villiage|continental|grapes|territory|disputed|community|both|in|lima|since|including", replacement = ""), # a specific instance of some regions being referred to as "wine regions"
-      Region = gsub(Region, pattern = "[0-9]+", replacement = "", fixed = TRUE), # remove all numbers
-      Region = gsub("\\b([[:alpha:]]+)\\b(?:[_[:space:]-]+\\1\\b)+", "\\1", Region, ignore.case = TRUE) # remove all duplicates of words separated by some character
+      # replacements
+      Country = stringr::str_replace_all(Country, pattern = " |-", replacement = "_"),
+      Region = stringr::str_replace_all(Region, pattern = " |-", replacement = "_"),
+      # removals
+      Country = stringr::str_remove_all(Country, pattern = "['/.()]"), # all these symbols
+      Region = stringr::str_remove_all(Region, words_to_remove_match), # all words
+      Region = stringr::str_remove_all(Region, pattern = "^_+|_$"), # hanging underscores at beginning or end
+      Region = stringr::str_remove_all(Region, pattern = "['/.()–]"), # all these symbols
+      Region = stringr::str_remove_all(Region, pattern = "[0-9]+"), # all numbers
+      # final removal needs to be last
+      Region = stringr::str_replace_all(Region, "_+", "_") # replace sequences of underscores with just one
     )
 
   # add join cols
@@ -478,12 +492,13 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # the check if the locality is a country
   if(locality.type == "country") {
 
+    # keep only rows containing that exact iso-3
     country.name.check <- countries_sf %>%
-      dplyr::filter(ADM0_A3 == locality_iso_internal)
+      dplyr::filter(stringr::str_detect(string = ADM0_A3, pattern = locality_iso_internal), na.rm = TRUE)
 
       # if at least 1 record, success
     if(nrow(country.name.check) > 0) {
-      cli::cli_alert_success("Data exist for locality")
+      cli::cli_alert_success("Data exist for locality.")
 
       # if no records, warn
     } else if(nrow(country.name.check) == 0) {
@@ -494,12 +509,14 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # the check if the locality is a state or province
   } else if(locality.type == "state_province") {
+
+    # keep only rows containing target locality name
     state.name.check <- states_provinces_sf %>%
-      dplyr::filter(name %in% locality_name_internal)
+      dplyr::filter(stringr::str_detect(string = iso_3166_2, pattern = locality_iso_2_internal))
 
     # if at least 1 record, success
     if(nrow(state.name.check) > 0) {
-      cli::cli_alert_success("Data exist for locality")
+      cli::cli_alert_success("Data exist for locality.")
 
       # if no records, warn
     } else if(nrow(state.name.check) == 0) {
@@ -521,6 +538,7 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
   # if a country, import country sf
   if(locality.type == "country") {
     locality_sf <- countries_sf %>%
+
       dplyr::filter(ADM0_A3 == locality_iso_internal, na.rm = TRUE)
 
     # if the locality is a country, I will also map the provinces on top
@@ -529,8 +547,9 @@ create_risk_report <- function(locality.iso, locality.name = locality.iso, local
 
     # if a state, import state sf
   } else if(locality.type == "state_province") {
+
     locality_sf <- states_provinces_sf %>%
-      dplyr::filter(name == locality_name_internal, na.rm = TRUE)
+      dplyr::filter(stringr::str_detect(string = iso_3166_2, pattern = locality_iso_2_internal), na.rm = TRUE)
 
   }
 

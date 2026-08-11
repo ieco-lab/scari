@@ -6,6 +6,7 @@
 \usage{
 create_risk_report(
   locality.iso,
+  locality.iso.2 = NA,
   locality.name = locality.iso,
   locality.type,
   focal.species = "L_delicatula",
@@ -23,15 +24,17 @@ create_risk_report(
 )
 }
 \arguments{
-\item{locality.iso}{The \href{https://www.iso.org/obp/ui/#search}{alpha-3 ISO code}
-corresponding to the country of interest. If the desired locality is a state
-or province, please still enter the ISO code and supply the name of that
-province in \code{locality.name}.}
+\item{locality.iso}{Please enter the correct \href{https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3}{ISO 3166-1 country code}
+corresponding to your country of interest. If a state or province, this must
+still be entered, in addition to \code{locality.iso.2}, which is the ISO 3166-2 state/province code.}
+
+\item{locality.iso.2}{Enter only if area of interest is a state or province
+Lists of accepted codes may be found at \href{https://en.wikipedia.org/wiki/ISO_3166-2}{ISO 3166-2 state/province code}
+by clicking the proper county under the "Entry" column on the table.}
 
 \item{locality.name}{The name of the country, state or province for which to
-generate the report. This is optional if the report is for a country, but
-required if the report is for a state/province. Avoid special characters,
-but please include those used used in the ethnic naming (ex: Côte d'Ivoire).}
+generate the report. Avoid special characters, but please include those used
+in the ethnic naming (ex: Côte d'Ivoire).}
 
 \item{locality.type}{One of "country" or "state_province". If you do
 not know the state or province you are looking for, you might create a report

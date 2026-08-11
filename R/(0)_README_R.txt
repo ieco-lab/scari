@@ -120,7 +120,7 @@ v1-
 v2-
 v3-
 v4- 2024-08-29- added functionality to calculate totals of predicted SLF risk categories from risk maps
-v5- 2026-08-06- removed usage of SLF terminology to make documentation more general
+v5- 2026-08-06- removed usage of SLF terminology to make documentation more general, improved detection of states/provinces & bug fixes.
 
 
 ----------import_chelsa_v2.1.R----------

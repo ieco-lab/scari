@@ -48,7 +48,7 @@ Our function recreates major data sets that we provide in our main analysis, inc
 
 Here is an example of a workflow for creating a localized risk map and how this might be applied. I will give an example of how I might interpret the risk for *Lycorma delicatula* establishment in the United States, and then I will show how to narrow its scope to a more localized region, Washington State. 
 
-I might begin by creating a report at the national level. To create this, you will need the alpha-3 iso country code.
+I might begin by creating a report at the national level. To create this, you will need the correct [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3). This one comes out to be "USA", which should be entered for `locality.iso`.
 
 ```{r generate report for USA, message = FALSE, warning = FALSE, results = "hide"}
 
@@ -72,7 +72,7 @@ First, we observe the risk map, which depicts the risk of SLF establishment usin
 
 ```{r retrieve current risk map for USA, message = FALSE, warning = FALSE}
 
-USA_current <- usa_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+USA_current <- usa_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   # you may need to crop the map due to outlying territories, as we have done here
   xlim(-12060785.03, -6271608.22) + # the boundaries in UTM
   ylim(3091555.56, 5614050.10)
@@ -85,7 +85,7 @@ USA_current
 
 ```{r retrieve projected future risk map for USA, message = FALSE, warning = FALSE}
 
-USA_future <- usa_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+USA_future <- usa_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   # you may need to crop the map due to outlying territories, as we have done here
   xlim(-12060785.03, -6271608.22) + # the boundaries in UTM
   ylim(3091555.56, 5614050.10)
@@ -98,9 +98,9 @@ USA_future
 
 The points on the map represent key viticultural regions. We have extracted the suitability of each viticultural region and depicted its quantitative shift in risk on our second output, the viticultural risk quadrant plot. This plot quantifies the level of risk along both modeled scales, both presently (light purple) and in the future (dark purple) under a predicted climate change shift (arrows):
 
-```{r retrieve risk plot USA, echo = FALSE, message = FALSE, warning = FALSE}
+```{r retrieve risk plot USA, message = FALSE, warning = FALSE}
 
-USA_risk_plot <- usa_slf_risk_report[["viticultural_risk_plot"]] +
+USA_risk_plot <- usa_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   labs(
     title = element_blank(),
     subtitle = element_blank(),
@@ -118,26 +118,29 @@ The accompanying table provides a list of key viticultural regions and their geo
 
 **Table 1:** List of viticultural regions and their projected risk
 
-```{r retrieve risk table USA, echo = FALSE, message = FALSE, warning = FALSE, results = "hide"}
+```{r retrieve risk table USA, message = FALSE, warning = FALSE, results = "hide"}
 
 # use this if you want to run this vignette locally
-#USA_viticultural_regions <- usa_slf_risk_report[["viticultural_regions_list"]]
+USA_viticultural_regions <- usa_L_delicatula_risk_report[["viticultural_regions_list"]]
 
-# I generated the figure this way so as to show the table in the vignette
-USA_viticultural_regions <- read_csv(file = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_L_delicatula_report_viticultural_regions_list.csv")) %>%
-  dplyr::slice(208:223)
+# load from file optionally
+# USA_viticultural_regions <- read_csv(file = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_L_delicatula_report_viticultural_regions_list.csv")) %>%
+ # dplyr::slice(208:223)
 
 USA_viticultural_regions
 
 ```
 
 
-You may begin to notice that a particular region has many records, like we can see is the case for Washington State. You could then produce a report only for that region, to get a better idea of the overall trend of risk shift due to climate change. We will produce a report for Washington State alone, to better visualize this trend:
+You may begin to notice that a particular region has many records, like we can see is the case for Washington State, under the `Region` column of our risk table above. You could then produce a report only for that region, to get a better idea of the overall trend of risk shift due to climate change. We will produce a report for Washington State alone, to better visualize this trend.
+
+The `Region` column represents states and provinces (admin-1 groups). To retrieve records for this region, we will need the [ISO 3166-2 state/province code](https://en.wikipedia.org/wiki/ISO_3166-2) which corresponds to this region. If we click this link and "USA" on the "Entry" column of the table, we find that Washington has the following iso code: "US-WA". We will enter the code into `locality.iso.2` and the name into `locality.name`.
 
 ```{r generate report for washington USA, message = FALSE, warning = FALSE, results = "hide"}
 
 scari::create_risk_report(
   locality.iso = "usa", # the country iso is still required
+  locality.iso.2 = "US-WA", # the admin-1 state iso code
   locality.name = "washington", # the name must be specified
   locality.type = "state_province", # we have changed the report type
   buffer.dist = 20000, # in meters
@@ -151,7 +154,7 @@ We can see that most of Washington is at some level of SLF risk presently. Under
 
 ```{r retrieve current risk map for washington USA, message = FALSE, warning = FALSE, echo = FALSE}
 
-washington_current <- washington_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+washington_current <- washington_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   labs(
     title = element_blank(),
     subtitle = element_blank(),
@@ -167,7 +170,7 @@ washington_current
 
 ```{r retrieve projected future risk map for washington USA, message = FALSE, warning = FALSE, echo = FALSE}
 
-washington_future <- washington_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+washington_future <- washington_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(
     title = element_blank(),
     subtitle = element_blank(),
@@ -187,7 +190,7 @@ Based on the viticultural risk quadrant plot, we can now see that Washington sta
 
 ```{r retrieve risk plot washington USA, echo = FALSE, message = FALSE, warning = FALSE}
 
-washington_risk_plot <- washington_slf_risk_report[["viticultural_risk_plot"]] +
+washington_risk_plot <- washington_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   labs(
     title = element_blank(),
     subtitle = element_blank(),
@@ -212,7 +215,7 @@ First, let's look at the risk map area table:
 
 ```{r retrieve prop area table for washington USA, echo = FALSE, message = FALSE, warning = FALSE}
 
-washington_prop_area <- washington_slf_risk_report[["risk_maps_prop_area_table"]]
+washington_prop_area <- washington_L_delicatula_risk_report[["risk_maps_prop_area_table"]]
 
 washington_prop_area
 
@@ -226,7 +229,7 @@ Next, lets look at the viticultural risk table:
 
 ```{r retrieve risk table for washington USA, echo = FALSE, message = FALSE, warning = FALSE}
 
-washington_risk_table <- washington_slf_risk_report[["viticultural_risk_table"]]
+washington_risk_table <- washington_L_delicatula_risk_report[["viticultural_risk_table"]]
 
 washington_risk_table
 
@@ -257,7 +260,7 @@ usethis::edit_r_environ()
 
 Save and close the document, and restart R. Now I will search for species occurrence records using GBIF.
 
-```{r retrieve SLF records using rgbif}
+```{r retrieve SLF records using rgbif, eval = FALSE}
 
 slf_id <- rgbif::occ_search(scientificName = "Lycorma delicatula")[["data"]]
 
@@ -288,7 +291,7 @@ Once the input data have been adapted to the user's needs, the regional-scale mo
 ```{r import SLF presence data, echo = FALSE}
 
 # note these data have been tidied between the download and here- see vig 020 for details
-presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-06-23.rds")) %>%
+presence_data <- read_rds(file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30.rds")) %>%
   dplyr::select(-species) %>%
   sf::st_as_sf(coords = c("x", "y"), crs = "ESRI:54017")
 
