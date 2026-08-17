@@ -6,10 +6,12 @@
 #' which quadrant a suitability value will fall into on an xy-scatter.
 #'
 #'@param suit.x Suitability values comprising the x-axis. Global-scale model is
-#'usually placed along the x-axis.
+#'usually placed along the x-axis. Should be a vector of values or the column
+#'in a data frame/tibble.
 #'
 #'@param suit.y Suitability values comprising the y-axis. Regional-scale ensemble
-#'model is usually placed along the x-axis.
+#'model is usually placed along the x-axis. Should be a vector of values or the column
+#'in a data frame/tibble.
 #'
 #'@param thresh.x The threshold for suitability accompanying the x-axis model
 #'values.
@@ -73,18 +75,20 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
 
   # suit.x
   if (is.character(suit.x)) {
-    suit_x <- read.csv(suit.x) # read as csv
+    suit_x <- read.csv(suit.x) %>% # read as csv
+      as.vector()
 
   } else {
-    suit_x <- as.data.frame(suit.x) # make data frame
+    suit_x <- as.vector(suit.x) # make data frame
   }
 
   # suit.y
   if (is.character(suit.y)) {
-    suit_y <- read.csv(suit.y) # read as csv
+    suit_y <- read.csv(suit.y) %>% # read as csv
+      as.vector()
 
   } else {
-    suit_y <- as.data.frame(suit.y) # make data frame
+    suit_y <- as.vector(suit.y) # make data frame
   }
 
 

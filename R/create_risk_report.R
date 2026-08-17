@@ -40,8 +40,8 @@
 #'climate conditions. This is used to name the output files. Default is "GFDL-ESM4".
 #'
 #'@param ssp.projected Character string. The ssp scenarios used for projections of future
-#'climate conditions. This is used to name the output files. Separate names with underscores.
-#'Default is "ssp_126_370_585".
+#'climate conditions. This is used to import the correct file and to name the output files.
+#'Options include: "ssp_126", "ssp_370", "ssp_585" or "ssp_126_370_585" (default).
 #'
 #'@param save.report Logical. Should the report be saved to file? File location
 #'specified by `mypath`. Note, this requires the use of Google Chrome.
@@ -130,6 +130,7 @@
 #'
 #'# EXAMPLE USAGE---------------------------------------------------------------
 #'
+#'# A simple example
 #'```R
 #'scari::create_risk_report(
 #' locality.iso = "aus",
@@ -138,8 +139,29 @@
 #' mypath = file.path(here::here(), "vignette-outputs", "reports", "Australia"),
 #' create.dir = FALSE,
 #' save.report = FALSE,
-#' buffer.dist = 20000 # this is only used for buffered predictions, default is NA for simple predictions.
+#' buffer.dist = 20000 # this is only used for buffered predictions, default is undefined (NA), for simple predictions.
 #')
+#'
+#'# A more complex example for a state/province
+#' scari::create_risk_report(
+#' # required arguments
+#' locality.iso = "fra", # A3-iso
+#' locality.iso.2 = "FR-BFC",
+#' locality.name = "Burgundy-Franche-Comté", #name
+#' locality.type = "state_province", # record type (country or state)
+#' # file pathing
+#' mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
+#' create.dir = FALSE, # not saving so not necessary
+#' save.report = FALSE, # dont save, this is an example
+#' raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters required for function, see "details"
+#' # aesthetics- dont necessarily need to be specified
+#' buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
+#' period.present = "1981-2010", # time period for graphs
+#' period.projected = "2041-2070", # time period for graphs
+#' model.projected = "GFDL-ESM4", # more descriptors
+#' ssp.projected = "ssp_126_370_585",
+#' crs = "ESRI:54017"
+#' )
 #'
 #'```
 #'
@@ -249,25 +271,40 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   }
 
 
-  ## Create sub directory for files---------------------------------------------
+  ## Create sub directory for files and save------------------------------------
 
-  if (create.dir == FALSE) {
+  # if report saving is false, alert
+  if (save.report == FALSE) {
 
     # print message
-    cli::cli_alert_info("proceeding without creating report output subdirectory folder")
+    cli::cli_alert_danger("Report output will not be saved.")
 
-  } else if (create.dir == TRUE) {
 
-    # check if directory exists
-    if(dir.exists(mypath) == FALSE) {
 
-      cli::cli_alert_danger(paste0("Report output will not be saved because directory does not exist:\n", mypath))
-    }
+    # if report saving is true & create.dir =  TRUE, create path for save
+  } else if (save.report == TRUE & create.dir == TRUE) {
 
     # create sub directory from ending of mypath object
     dir.create(path = file.path(mypath))
     # print message
     cli::cli_alert_info(paste0("sub directory for files created at:\n", mypath))
+
+    # check if directory exists
+    if(dir.exists(mypath) == FALSE) {
+
+      cli::cli_alert_danger(paste0("Report output cannot be saved because directory does not exist:\n", mypath))
+      stop()
+    }
+
+
+
+
+    # if save report is true but create.dir == FALSE, warn
+  } else if (save.report == TRUE & create.dir == FALSE) {
+
+    cli::cli_alert_danger(paste0("Report output cannot be saved create.dir == FALSE"))
+    stop()
+
 
   } else {
     cli::cli_abort("'create.dir' must be of type 'logical'")
@@ -275,17 +312,49 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
 
   }
 
-
-
   # Data and argument import----------------------------------------------------
+
+  # ssp.projected
+  ssp.projected <- ssp.projected %>%
+    stringr::str_replace_all(., pattern = " |-", replacement = "_")
+
+  # conditionally add detection of ssp phrase
+  # if ssp is already there, import
+  if(stringr::str_detect(ssp.projected, pattern = "ssp") == TRUE) {
+    ssp.projected <- ssp.projected
+
+    # if not, add at beginning
+  } else if(stringr::str_detect(ssp.projected, pattern = "ssp") == FALSE) {
+    ssp.projected <- stringr::str_c("ssp_", ssp.projected)
+
+  } else {
+
+    cli::cli_abort("'ssp.projected' must be one of: 'ssp_126' | 'ssp_370' | 'ssp_585' | 'ssp_126_370_585'")
+    stop()
+  }
+
+  # import ssp.projected argument
+  if(ssp.projected == "ssp_126_370_585") {
+
+    ssp.projected_import <- "ssp_mean"
+    ssp.projected_internal <- ssp.projected
+
+  } else {
+
+    ssp.projected_import <- ssp.projected
+    ssp.projected_internal <- ssp.projected
+
+    }
+
+
 
   # dataset generated in vignette 160
   load(file.path(here::here(), "R", "sysdata.rda"))
 
   # import rasters
-  binarized_hist <- terra::rast(file.path(raster.path, "slf_binarized_summed_1981-2010.asc"))
-  binarized_future <- terra::rast(file.path(raster.path, "slf_binarized_summed_2041-2070_ssp_mean_GFDL.asc"))
-  range_shift <- terra::rast(file.path(raster.path, "slf_range_shift_summed_ssp_mean_GFDL.asc"))
+  binarized_hist <- terra::rast(file.path(raster.path, paste0("slf_binarized_summed_", period.present, ".asc")))
+  binarized_future <- terra::rast(file.path(raster.path, paste0("slf_binarized_summed_", period.projected, "_", ssp.projected_import, "_GFDL.asc")))
+  range_shift <- terra::rast(file.path(raster.path, paste0("slf_range_shift_summed_", ssp.projected_import, "_GFDL.asc")))
 
   # map.style
   # if it is not changed from NA, import default style
@@ -346,6 +415,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   # axis labels
   labels <- c(0, 2, 4, 6, 8, 10)
 
+  # factoring objects
   risk_levels <- c("extreme", "high", "moderate", "low")
 
   # import shapefiles (locality)------------------------------------------------
@@ -592,7 +662,6 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   if (is.na(buffer.dist)) {
     # alert
     cli::cli_alert_info("Suitability prediction type for IVR regions: simple")
-
 
 
     # if buffer zones, use buffer style predictions
@@ -856,7 +925,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
       # other stuff
       labs(
         title = "Projected risk of Lycorma delicatula establishment under climate change",
-        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected, "|", model.projected),
+        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected_internal, "|", model.projected),
         caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
       ) +
       coord_sf(
@@ -923,7 +992,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
       # other stuff
       labs(
         title = "Projected risk of Lycorma delicatula establishment under climate change",
-        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected, "|", model.projected),
+        subtitle = paste(stringr::str_to_title(locality_name_internal), "|", period.projected, "| mean of", ssp.projected_internal, "|", model.projected),
         caption = ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), "")
       ) +
       coord_sf(
@@ -1215,11 +1284,11 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
       crosses_threshold =  dplyr::case_when(
         # conditional for starting and ending points that overlap a the threshold
         # x-axis
-        xy_global_hist_rescaled > global_MTSS & xy_global_future_rescaled < global_MTSS ~ "crosses",
-        xy_global_hist_rescaled < global_MTSS & xy_global_future_rescaled > global_MTSS ~ "crosses",
+        .$xy_global_hist_rescaled > global_MTSS & .$xy_global_future_rescaled < global_MTSS ~ "crosses",
+        .$xy_global_hist_rescaled < global_MTSS & .$xy_global_future_rescaled > global_MTSS ~ "crosses",
         # y-axis
-        xy_regional_ensemble_hist_rescaled > regional_ensemble_MTSS_future & xy_regional_ensemble_future_rescaled < regional_ensemble_MTSS_future ~ "crosses",
-        xy_regional_ensemble_hist_rescaled < regional_ensemble_MTSS_future & xy_regional_ensemble_future_rescaled > regional_ensemble_MTSS_future ~ "crosses",
+        .$xy_regional_ensemble_hist_rescaled > regional_ensemble_MTSS_future & .$xy_regional_ensemble_future_rescaled < regional_ensemble_MTSS_future ~ "crosses",
+        .$xy_regional_ensemble_hist_rescaled < regional_ensemble_MTSS_future & .$xy_regional_ensemble_future_rescaled > regional_ensemble_MTSS_future ~ "crosses",
         # else
         .default = "does not cross"
       )
@@ -1264,7 +1333,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
      ) +
      # future data
      geom_point(
-       aes(x = xy_global_future_rescaled, y = xy_regional_ensemble_future_rescaled, shape = paste0("Future | ", model.projected, "\nmean of ", ssp.projected)),
+       aes(x = xy_global_future_rescaled, y = xy_regional_ensemble_future_rescaled, shape = paste0("Future | ", model.projected, "\nmean of ", ssp.projected_internal)),
        size = 2, stroke = 0.7, color = "black", fill = "purple3"
      ) +
      # axes scaling
@@ -1440,13 +1509,25 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     ) # terra expanse tends to tell me that the UTM projections dont work when they do, so I silenced this warning
 
   # future
-  model_prop_table_future_ssp_mean <- suppressWarnings(
+  model_prop_table_future <- suppressWarnings(
     terra::expanse(
       x = binarized_future,
       unit = "km",
       byValue = TRUE
     )
     )
+
+  # conditionally add rows that dont exist
+  ## hist
+  if(!5 %in% model_prop_table_hist$value) model_prop_table_hist <- model_prop_table_hist %>% tibble::add_row(layer = 1, value = 5, area = 0)
+  if(!6 %in% model_prop_table_hist$value) model_prop_table_hist <- model_prop_table_hist %>% tibble::add_row(layer = 1, value = 6, area = 0)
+  if(!9 %in% model_prop_table_hist$value) model_prop_table_hist <- model_prop_table_hist %>% tibble::add_row(layer = 1, value = 9, area = 0)
+  if(!10 %in% model_prop_table_hist$value) model_prop_table_hist <- model_prop_table_hist %>% tibble::add_row(layer = 1, value = 10, area = 0)
+  ## future
+  if(!5 %in% model_prop_table_future$value) model_prop_table_future <- model_prop_table_future %>% tibble::add_row(layer = 1, value = 5, area = 0)
+  if(!6 %in% model_prop_table_future$value) model_prop_table_future <- model_prop_table_future %>% tibble::add_row(layer = 1, value = 6, area = 0)
+  if(!9 %in% model_prop_table_future$value) model_prop_table_future <- model_prop_table_future %>% tibble::add_row(layer = 1, value = 9, area = 0)
+  if(!10 %in% model_prop_table_future$value) model_prop_table_future <- model_prop_table_future %>% tibble::add_row(layer = 1, value = 10, area = 0)
 
   # create object to help join risk levels with terra expanse
   categories.obj <- tibble::tibble(
@@ -1455,7 +1536,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   )
 
   # join
-  model_prop_table_joined <- dplyr::left_join(model_prop_table_hist, model_prop_table_future_ssp_mean, by = c("value", "layer")) %>%
+  model_prop_table_joined <- dplyr::left_join(model_prop_table_hist, model_prop_table_future, by = c("value", "layer")) %>%
     # add labels
     dplyr::left_join(., categories.obj, by = "value")
 
@@ -1479,7 +1560,9 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     dplyr::rename(
       "prop_area_future" = "prop_total_area_future",
       "prop_area_present" = "prop_total_area_hist"
-    )
+    ) %>%
+    # arrange columns
+    dplyr::arrange(factor(.$model_suitability, levels = categories.obj$model_suitability))
 
   # add superscript
   colnames(model_prop_table_joined)[2] <- paste0("area_km", common::supsc("2"), "_present")
@@ -1653,7 +1736,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     # tibble of info on the report
     "Report_info" = tibble::tibble(
       "Report_data" = c("Report prepared for species:", "Locality Name:", "Locality Type:", "Time period of present risk based on historical data:", "Time period of future risk projection:", "CMIP6 model used for future risk projection:", "SSP scenarios included:"),
-      "value" = c(focal.species, stringr::str_to_title(locality_name_internal), stringr::str_to_title(locality.type), period.present, period.projected, model.projected, ssp.projected)
+      "value" = c(focal.species, stringr::str_to_title(locality_name_internal), stringr::str_to_title(locality.type), period.present, period.projected, model.projected, ssp.projected_internal)
     ),
     "viticultural_regions_list" = IVR_locations_output_kable,
     "risk_maps" = list(
@@ -1679,14 +1762,9 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
 
   if(save.report == TRUE) {
 
-    # check if directory exists
-    if(dir.exists(mypath) == FALSE) {
-
-      cli::cli_abort(paste0("Report output could not be saved because directory does not exist:\n", mypath))
-      stop()
-    }
-
     # save files
+    ## save risk report object
+    readr::write_rds(risk_report, file = file.path(mypath, paste0(locality_name_internal, "_", focal.species , "_risk_report.rds")))
 
     ## IVR list
     readr::write_csv(IVR_locations_output, file = file.path(mypath, paste0(locality_name_internal, "_", focal.species , "_report_viticultural_regions_list.csv")))
@@ -1702,7 +1780,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     ))
     suppressWarnings(ggsave(
       binarized_future_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_risk_map_", period.projected, "_", ssp.projected_internal, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,
@@ -1712,7 +1790,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     # range shift map-----------------------------------------------------------
     suppressWarnings(ggsave(
       range_shift_plot,
-      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_map_", period.projected, "_", ssp.projected, "_", model.projected, ".jpg")),
+      filename = file.path(mypath, paste0(locality_name_internal, "_", focal.species, "_report_range_shift_map_", period.projected, "_", ssp.projected_internal, "_", model.projected, ".jpg")),
       height = 8,
       width = 10,
       device = jpeg,

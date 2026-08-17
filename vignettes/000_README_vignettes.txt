@@ -33,7 +33,7 @@ This file creates appendix S2 (tables and figures) and outputs it to a word docu
 
 ## Changelog
 
-v0- creates v2 of appendix S2.
+v0- 2026-07-29- creates v2 of appendix S2.
 
 ----------initialize_site_pkgdown.R----------
 
@@ -334,11 +334,12 @@ v1- 2025-08-07- rerun for model versions (global v4, invaded v8, invaded asian v
 v2- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 
-----------150_create_risk_report_countries_provinces.Rmd----------
+----------150_create_risk_report_example_usage.Rmd----------
 
 ## About
 
-This vignette contains example usage for the function "generate_risk_report.R", which creates a risk report for the SLF based on model outputs.
+This vignette contains example usage for the function "create_risk_report.R", which creates a risk report for the SLF based on model outputs.
+It applies the function to the country and provinces of France.
 
 ## changelog
 
@@ -346,6 +347,29 @@ v0- initial version
 v1- 2024-08-16- rework- updated SLF presence data and inclusion of other SSP scenarios
 v2- 2025-08-05- rerun for model versions (global v4, invaded v8, invaded asian v3, native v4)
 
+
+----------151_create_risk_report_countries_provinces.Rmd----------
+
+## About
+
+This vignette contains example usage for the function "create_risk_report.R", which creates a risk report for the SLF based on model outputs.
+It applies this function to create reports for global countries and provinces.
+
+## changelog
+
+v0- 2026-08-12- initial version
+
+
+----------152_create_risk_report_countries_provinces.Rmd----------
+
+## About
+
+This vignette contains example usage for the function "create_risk_report.R", which creates a risk report for the SLF based on model outputs.
+It applies this function to create reports specifically for the USA and states of interest.
+
+## changelog
+
+v0- 2026-08-12- initial version
 
 
 ----------160_generate_format_figures.Rmd----------
@@ -359,6 +383,6 @@ This vignette formats risk tables from vignettes 130 and 131 by adding colors an
 v0- initial version
 v1- 2024-08-14- rework- updated SLF presence data and inclusion of other SSP scenarios
 v2- changeed name from format_risk_tables to generate_format_figures- combined with generate_extra_plots (161)
-v3- 2026-08-10- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
+v3- 2026-08-11- rerun for model versions (global v5, invaded n america v9, invaded asian v4, native v5)
 
 

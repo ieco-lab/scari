@@ -59,8 +59,8 @@ under climate change. This is used to name the output files. Default is period o
 climate conditions. This is used to name the output files. Default is "GFDL-ESM4".}
 
 \item{ssp.projected}{Character string. The ssp scenarios used for projections of future
-climate conditions. This is used to name the output files. Separate names with underscores.
-Default is "ssp_126_370_585".}
+climate conditions. This is used to import the correct file and to name the output files.
+Options include: "ssp_126", "ssp_370", "ssp_585" or "ssp_126_370_585" (default).}
 
 \item{save.report}{Logical. Should the report be saved to file? File location
 specified by \code{mypath}. Note, this requires the use of Google Chrome.}
@@ -155,6 +155,7 @@ Additionally, \code{root/vignette-outputs/rasters} is the default path for the \
 
 # EXAMPLE USAGE---------------------------------------------------------------
 
+# A simple example
 ```R
 scari::create_risk_report(
 locality.iso = "aus",
@@ -163,7 +164,28 @@ locality.type = "country",
 mypath = file.path(here::here(), "vignette-outputs", "reports", "Australia"),
 create.dir = FALSE,
 save.report = FALSE,
-buffer.dist = 20000 # this is only used for buffered predictions, default is NA for simple predictions.
+buffer.dist = 20000 # this is only used for buffered predictions, default is undefined (NA), for simple predictions.
+)
+
+# A more complex example for a state/province
+scari::create_risk_report(
+# required arguments
+locality.iso = "fra", # A3-iso
+locality.iso.2 = "FR-BFC",
+locality.name = "Burgundy-Franche-Comté", #name
+locality.type = "state_province", # record type (country or state)
+# file pathing
+mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
+create.dir = FALSE, # not saving so not necessary
+save.report = FALSE, # dont save, this is an example
+raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters required for function, see "details"
+# aesthetics- dont necessarily need to be specified
+buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
+period.present = "1981-2010", # time period for graphs
+period.projected = "2041-2070", # time period for graphs
+model.projected = "GFDL-ESM4", # more descriptors
+ssp.projected = "ssp_126_370_585",
+crs = "ESRI:54017"
 )
 
 ```

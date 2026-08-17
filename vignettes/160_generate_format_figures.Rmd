@@ -386,7 +386,7 @@ kableExtra::save_kable(
 
 ```
 
-# <!--
+<!--
 
 For the remainder of this vignette, I will format an assortment of tables and figures for publication:
 
@@ -449,12 +449,21 @@ unique(slf_populations_geocoded$country_code)
 
 # filter out presences with no country code
 slf_populations_geocoded_tidy <- slf_populations_geocoded %>%
-  dplyr::filter(!country_code %in% c("", "NA"), !is.na(country_code)) %>%
+  dplyr::filter(
+    !country_code %in% c("", "NA"), 
+    !is.na(country_code)
+    ) %>%
   dplyr::select(x, y, country_code) %>% # we only need these
   dplyr::mutate(
+    # there was one canadian point, but it is within 1km of the border between US and Canada- attribute to US
+    country_code = stringr::str_replace_all(country_code, pattern = "CA", replacement = "US"), 
     Species = "Lycorma delicatula", # add species column
     country_code = toupper(country_code) # made uppercase
     ) 
+
+# use this if necessary to replace entry
+# slf_populations_geocoded_tidy[678,3] <- "US"
+unique(slf_populations_geocoded_tidy$country_code)
 
 # add A3-iso
 slf_populations_geocoded_tidy <- slf_populations_geocoded_tidy %>%
@@ -470,20 +479,43 @@ slf_populations_geocoded_tidy <- slf_populations_geocoded_tidy %>%
   dplyr::rename("country_code_a2iso" = "country_code") %>%
   dplyr::relocate(Species, x, y, country_code_a2iso)
 
-nrow(slf_populations_geocoded_tidy)
+nrow(slf_populations_geocoded_tidy) 
 # we lost no records!
+
+# convert to new CRS
+# transform CRS of downloaded data
+slf_populations_geocoded_tidy_crs <- terra::vect(slf_populations_geocoded_tidy, geom = c("x", "y"), crs = "EPSG:4326") %>%
+  terra::project(y = "ESRI:54017") %>% # convert to UTM 33N
+# convert to geom, which gets coordinates of a spatVector
+  terra::geom() 
+# convert back to data frame
+slf_populations_geocoded_tidy_crs2 <- terra::as.data.frame(slf_populations_geocoded_tidy_crs) %>%
+  dplyr::select(-c(geom, part, hole)) %>%
+  dplyr::rename("UTM_northing" = "y", "UTM_easting" = "x") %>%
+  # join original dataset back for data
+  cbind(., slf_populations_geocoded_tidy) %>%
+  # remove lat long and other edits
+  dplyr::select(-c(x, y)) %>%
+  dplyr::relocate(Species) %>%
+  # change naming back
+  dplyr::rename("y" = "UTM_northing", "x" = "UTM_easting") 
+
 
 # save
 write_csv(
-  x = slf_populations_geocoded_tidy, 
+  x = slf_populations_geocoded_tidy_crs2, 
   file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_all_coords_final_2026-07-30_withCountries.csv")
   )
 
 # also write to rds
 readr::write_rds(
-  x = slf_populations_geocoded_tidy, 
+  x = slf_populations_geocoded_tidy_crs2, 
   file = file.path(here::here(), "data", "slf_all_coords_final_2026-07-30_withCountries.rds")
 )
+
+# remove objects
+rm(slf_populations_geocoded_tidy_crs)
+rm(slf_populations_geocoded_tidy_crs2)
 
 ```
 
@@ -501,7 +533,7 @@ slf_populations_geocoded_table <- slf_populations_geocoded_tidy %>%
   dplyr::group_by(country_code_a3iso) %>%
   dplyr::summarize(slf_record_count = n()) %>%
   dplyr::arrange(desc(slf_record_count)) %>%
-  dplyr::mutate(country_name = c("United_States", "China", "South_Korea", "Japan", "India", "North_Korea")) %>%
+  dplyr::mutate(country_name = c("United_States", "China", "South_Korea", "Japan", "North_Korea", "India")) %>%
   dplyr::relocate(country_code_a3iso, country_name) %>%
   tibble::add_row(country_code_a3iso = "Total", country_name = "-", slf_record_count = sum(.$slf_record_count))
 
@@ -509,7 +541,7 @@ slf_populations_geocoded_table <- slf_populations_geocoded_tidy %>%
 
 ```{r kable of slf records per country}
   
-slf_populations_geocoded_table[6, 1] <- cell_spec(slf_populations_geocoded_table[6, 1], format = "html", bold = TRUE, escape = FALSE)
+slf_populations_geocoded_table[7, 1] <- cell_spec(slf_populations_geocoded_table[7, 1], format = "html", bold = TRUE, escape = FALSE)
 
 # make kable
 slf_populations_geocoded_kable <- knitr::kable(slf_populations_geocoded_table, "html", escape = FALSE) %>% 
@@ -657,8 +689,8 @@ for(i in unique(slf_populations_geocoded_tidy$country_code_a3iso)) {
   
   # filter out only records from country using join
   xy_joined_rescaled_internal <- xy_joined_rescaled %>%
-    right_join(., slf_populations_internal, join_by(join_col_x, join_col_y)) %>%
-    dplyr::select(join_col_x, join_col_y)
+    right_join(., slf_populations_internal, join_by(join_col_x, join_col_y))%>%
+    dplyr::select(-c(Species.x, Species.y))
   
   ## boundary crossing arrows 
   
@@ -668,11 +700,11 @@ for(i in unique(slf_populations_geocoded_tidy$country_code_a3iso)) {
       crosses_threshold = dplyr::case_when(
         # conditional for starting and ending points that overlap a the threshold
         # x-axis
-        xy_global_1995_rescaled > global_MTSS & xy_global_2055_rescaled < global_MTSS ~ "crosses",
-        xy_global_1995_rescaled < global_MTSS & xy_global_2055_rescaled > global_MTSS ~ "crosses",
+        .$xy_global_1995_rescaled > global_MTSS & .$xy_global_2055_rescaled < global_MTSS ~ "crosses",
+        .$xy_global_1995_rescaled < global_MTSS & .$xy_global_2055_rescaled > global_MTSS ~ "crosses",
         # y-axis
-        xy_regional_ensemble_1995_rescaled > regional_ensemble_MTSS_2055 & xy_regional_ensemble_2055_rescaled < regional_ensemble_MTSS_2055 ~ "crosses",
-         xy_regional_ensemble_1995_rescaled < regional_ensemble_MTSS_2055 & xy_regional_ensemble_2055_rescaled > regional_ensemble_MTSS_2055 ~ "crosses",
+        .$xy_regional_ensemble_1995_rescaled > regional_ensemble_MTSS_2055 & .$xy_regional_ensemble_2055_rescaled < regional_ensemble_MTSS_2055 ~ "crosses",
+         .$xy_regional_ensemble_1995_rescaled < regional_ensemble_MTSS_2055 & .$xy_regional_ensemble_2055_rescaled > regional_ensemble_MTSS_2055 ~ "crosses",
         # else
         .default = "does not cross"
       )
@@ -785,7 +817,7 @@ USA_risk_plot <- ggplot_gtable(USA_risk_plot) %>%
   patchwork::wrap_ggplot_grob()
 
 
-# france
+# CHN
 CHN_risk_plot <- slf_plots_output[["CHN"]] +
   theme(
     plot.title = element_blank(),
@@ -844,7 +876,7 @@ JPN_risk_plot <- ggplot_gtable(JPN_risk_plot) %>%
   patchwork::wrap_ggplot_grob()
 
 
-# italy
+# SK
 KOR_risk_plot <- slf_plots_output[["KOR"]] +
   theme(
     plot.title = element_blank(),
@@ -872,6 +904,64 @@ KOR_risk_plot$data[[5]]$size <- 1.5
 KOR_risk_plot <- ggplot_gtable(KOR_risk_plot) %>%
   patchwork::wrap_ggplot_grob()
   
+
+# PRK
+PRK_risk_plot <- slf_plots_output[["PRK"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank()
+    ) +
+  labs(tag = "E") +
+  theme(
+    legend.position = "none", 
+    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    plot.tag.position = c(0.2, 0.9),
+    plot.tag = element_text(face = "bold", size = 20)
+    )
+
+PRK_risk_plot <- PRK_risk_plot %>%
+  gginnards::delete_layers(match_type = "GeomLabel") %>%
+  ggplot_build()
+# edit point size
+PRK_risk_plot$data[[4]]$size <- 1.5
+PRK_risk_plot$data[[5]]$size <- 1.5
+# edit linewidth
+#PRK_risk_plot$data[[3]]$linewidth <- 0.1
+
+PRK_risk_plot <- ggplot_gtable(PRK_risk_plot) %>%
+  patchwork::wrap_ggplot_grob()
+
+
+# IND
+# PRK
+IND_risk_plot <- slf_plots_output[["IND"]] +
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    axis.title = element_blank()
+    ) +
+  labs(tag = "F") +
+  theme(
+    legend.position = "none", 
+    panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
+    plot.tag.position = c(0.2, 0.9),
+    plot.tag = element_text(face = "bold", size = 20)
+    )
+
+IND_risk_plot <- IND_risk_plot %>%
+  gginnards::delete_layers(match_type = "GeomLabel") %>%
+  ggplot_build()
+# edit point size
+IND_risk_plot$data[[4]]$size <- 1.5
+IND_risk_plot$data[[5]]$size <- 1.5
+# edit linewidth
+#IND_risk_plot$data[[3]]$linewidth <- 0.1
+
+IND_risk_plot <- ggplot_gtable(IND_risk_plot) %>%
+  patchwork::wrap_ggplot_grob()
   
 ```
 
@@ -880,14 +970,15 @@ KOR_risk_plot <- ggplot_gtable(KOR_risk_plot) %>%
 
 slf_plot_patchwork <- (
   USA_risk_plot + plot_spacer() + CHN_risk_plot +
-  JPN_risk_plot + plot_spacer() + KOR_risk_plot 
+  JPN_risk_plot + plot_spacer() + KOR_risk_plot +
+  PRK_risk_plot + plot_spacer() + IND_risk_plot
   ) +
   # annotation
   plot_annotation(
     title = "SLF risk plots by country",
-    subtitle = "USA | CHN | JPN | KOR"
+    subtitle = "A) USA | B) CHN | C) JPN | D) KOR | E) PRK | F) IND"
     ) +
-  plot_layout(ncol = 3, nrow = 2, widths = unit(c(5.5, 1, 5.5), "cm"), heights = unit(5.5, "cm"))
+  plot_layout(ncol = 3, nrow = 3, widths = unit(c(5.5, 1, 5.5), "cm"), heights = unit(5.5, "cm"))
 
 
 ```
@@ -897,12 +988,192 @@ slf_plot_patchwork <- (
 ggsave(
   slf_plot_patchwork, 
   filename = file.path(here::here(), "vignette-outputs", "figures", "slf_risk_plots_by_country.jpg"),
-  height = 8, 
+  height = 10, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
+```
+
+## create risk table for china
+
+China is displaying some interesting activity we want to examine closer. Lets create a risk table for this
+
+```{r summary slf populations, eval = TRUE}
+
+slf_populations_CN <- slf_populations_geocoded_tidy %>%
+    dplyr::filter(country_code_a3iso == "CHN")
+  
+  # filter out only records from country using join
+  xy_joined_rescaled_CN <- xy_joined_rescaled %>%
+    right_join(., slf_populations_CN, join_by(join_col_x, join_col_y))%>%
+    dplyr::select(-c(Species.x, Species.y))
+  
+# calculate risk quadrants
+slf_populations_risk_CN <- xy_joined_rescaled_CN %>%
+  dplyr::mutate(
+    risk_1995 = scari::calculate_risk_quadrant(
+      suit.x = xy_joined_rescaled_CN$xy_global_1995_rescaled,
+      suit.y = xy_joined_rescaled_CN$xy_regional_ensemble_1995_rescaled,
+      thresh.x = global_MTSS, # this threshold remains the same
+      thresh.y = regional_ensemble_MTSS_1995
+    ),
+    risk_2055 = scari::calculate_risk_quadrant(
+      suit.x = xy_joined_rescaled_CN$xy_global_2055_rescaled,
+      suit.y = xy_joined_rescaled_CN$xy_regional_ensemble_2055_rescaled,
+      thresh.x = global_MTSS,
+      thresh.y = regional_ensemble_MTSS_2055
+    ),
+    risk_shift = stringr::str_c(risk_1995, risk_2055, sep = "-")
+  )
+
+```
+
+```{r factor ordering of risk, eval = TRUE}
+
+# factor levels for risk categories
+risk_levels <- c("extreme", "high", "moderate", "low")
+
+# number of records
+n_records <- nrow(slf_populations_risk_CN)
+
+```
+
+```{r risk categories table, eval = TRUE}
+
+slf_populations_table_CN <- slf_populations_risk_CN %>%
+  # ensure columns are character
+  dplyr::mutate(
+    risk_1995 = as.character(risk_1995),
+    risk_2055 = as.character(risk_2055)
+  ) %>%
+  dplyr::filter(!is.na(xy_global_1995_rescaled)) %>% # we somehow got 2 NAs- filter out
+  # create counts and make into acrostic table
+  dplyr::group_by(risk_1995, risk_2055) %>%
+  dplyr::summarize(count = n()) %>%
+  pivot_wider(names_from = risk_2055, values_from = count) %>%
+  # tidy
+  ungroup()
+
+# add columns that do not exist
+  if(!'extreme' %in% names(slf_populations_table_CN)) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_column(extreme = 0)
+  if(!'high' %in% names(slf_populations_table_CN)) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_column(high = 0)
+  if(!'moderate' %in% names(slf_populations_table_CN)) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_column(moderate = 0)
+  if(!'low' %in% names(slf_populations_table_CN)) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_column(low = 0)
+
+  # ensure all combinations of risk exist
+  if(!'extreme' %in% slf_populations_table_CN$risk_1995) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_row(risk_1995 = "extreme", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'high' %in% slf_populations_table_CN$risk_1995) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_row(risk_1995 = "high", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'moderate' %in% slf_populations_table_CN$risk_1995) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_row(risk_1995 = "moderate", extreme = 0, high = 0, moderate = 0, low = 0)
+  if(!'low' %in% slf_populations_table_CN$risk_1995) slf_populations_table_CN <- slf_populations_table_CN %>% tibble::add_row(risk_1995 = "low", extreme = 0, high = 0, moderate = 0, low = 0)
+
+
+slf_populations_table_CN <- slf_populations_table_CN %>%
+  dplyr::rename("rows_present_cols_future" = "risk_1995") %>%
+  dplyr::relocate("rows_present_cols_future", "extreme", "high", "moderate") %>%
+  dplyr::arrange(factor(.$rows_present_cols_future, levels = risk_levels)) %>%
+  # replace missing categories with 0
+  dplyr::mutate(
+    dplyr::across(where(is.numeric), ~ tidyr::replace_na(.x, 0))
+  )
+
+# tidy
+slf_populations_table_CN <- slf_populations_table_CN %>%
+  # add totals column
+  tibble::add_column("total_present" = rowSums(.[, 2:5])) %>%
+  # add row totals
+  tibble::add_row(rows_present_cols_future = "total_future", extreme = colSums(dplyr::select(., 2)), high = colSums(dplyr::select(., 3)), moderate = colSums(dplyr::select(., 4)), low = colSums(dplyr::select(., 5)), total_present = n_records) 
+
+```
+
+```{r export table}
+
+write_csv(
+  slf_populations_table_CN, 
+  file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_risk_table_CHN.csv")
+  )
+
+```
+
+
+### make kable
+```{r kable styling CHN, eval = FALSE}
+
+#  convert top half (above diagonal) to negative numbers
+slf_populations_table_CN[1, 2] <- -(slf_populations_table_CN[1, 2])
+slf_populations_table_CN[1:2, 3] <- -(slf_populations_table_CN[1:2, 3])
+slf_populations_table_CN[1:3, 4] <- -(slf_populations_table_CN[1:3, 4])
+
+# add positive sign to bottom half
+slf_populations_table_CN[2:4, 2] <- sprintf("%+.0f", slf_populations_table_CN[2:4, 2])
+slf_populations_table_CN[3:4, 3] <- sprintf("%+.0f", slf_populations_table_CN[3:4, 3])
+slf_populations_table_CN[4, 4] <- sprintf("%+.0f", slf_populations_table_CN[4, 4])
+
+# add color formatting to totals
+# extreme risk
+slf_populations_table_CN[1, 5] <- cell_spec(slf_populations_table_CN[1, 5], format = "html", bold = TRUE, escape = FALSE, color = "darkred")
+slf_populations_table_CN[5, 1] <- cell_spec(slf_populations_table_CN[5, 1], format = "html", bold = TRUE, escape = FALSE, color = "darkred")
+# high risk
+slf_populations_table_CN[2, 5] <- cell_spec(slf_populations_table_CN[2, 5], format = "html", bold = TRUE, escape = FALSE, color = "darkorange")
+slf_populations_table_CN[5, 2] <- cell_spec(slf_populations_table_CN[5, 2], format = "html", bold = TRUE, escape = FALSE, color = "darkorange")
+# moderate risk
+slf_populations_table_CN[3, 5] <- cell_spec(slf_populations_table_CN[3, 5], format = "html", bold = TRUE, escape = FALSE, color = "gold")
+slf_populations_table_CN[5, 3] <- cell_spec(slf_populations_table_CN[5, 3], format = "html", bold = TRUE, escape = FALSE, color = "gold")
+# low risk
+slf_populations_table_CN[4, 5] <- cell_spec(slf_populations_table_CN[4, 5], format = "html", bold = TRUE, escape = FALSE, color = "darkgrey")
+slf_populations_table_CN[5, 4] <- cell_spec(slf_populations_table_CN[5, 4], format = "html", bold = TRUE, escape = FALSE, color = "darkgrey")
+
+# bold total
+slf_populations_table_CN[5, 5] <- cell_spec(slf_populations_table_CN[5, 5], format = "html", bold = TRUE, escape = FALSE)
+
+# print table, e.g., in html format
+slf_populations_kable_CN <- kable(slf_populations_table_CN, "html", escape = FALSE) %>% 
+  kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  # standardize col width
+  kableExtra::column_spec(1:5, width_min = '4cm') %>%
+  # add footnotes
+  kableExtra::add_footnote("number signs indicate whether climate change is increasing (+) or decreasing (-) risk", notation = "alphabet") %>%
+  kableExtra::add_footnote("future risk calculated for period 2041-2070", notation = "alphabet") %>%
+  kableExtra::add_footnote("present risk calculated for period 1981-2010", notation = "alphabet") %>%
+  # add header
+  add_header_above(., header = c("Shifts in predicted suitability for established SLF populations- China" = 6), bold = TRUE)
+```
+
+
+```{r save CHN table from above, if desired- IVR prop plot, include = FALSE}
+
+# save as .html
+kableExtra::save_kable(
+  slf_populations_kable_CN, 
+  file = file.path(here::here(), "vignette-outputs", "figures", "slf_risk_table_CHN.html"),
+  self_contained = TRUE
+  )
+
+# initialize webshot by 
+# webshot::install_phantomjs()
+# convert to pdf
+webshot::webshot(
+  url = file.path(here::here(), "vignette-outputs", "figures", "slf_risk_table_CHN.html"),
+  file = file.path(here::here(), "vignette-outputs", "figures", "slf_risk_table_CHN.jpg"),
+  zoom = 4
+)
+
+# rm html
+# file.remove(file.path(here::here(), "vignette-outputs", "figures", "slf_risk_table_CHN.html"))
+
+# also convert to latex
+slf_populations_kable_CN_LX <- knitr::kable(slf_populations_kable_CN, "latex", escape = FALSE) %>% 
+  kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE) %>%
+  # standardize col width
+  kableExtra::column_spec(1:2, width_min = '4cm') %>%
+  kableExtra::add_header_above(., header = c("Shifts in predicted suitability for established SLF populations- China" = 6), bold = TRUE)
+# save
+kableExtra::save_kable(
+  slf_populations_kable_CN_LX, 
+  file = file.path(here::here(), "vignette-outputs", "figures", "slf_populations_kable_CN.tex"),
+  self_contained = TRUE
+  )
 ```
 
 # Plot bioclim variables

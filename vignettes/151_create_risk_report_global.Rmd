@@ -3,7 +3,7 @@ title: "Create risk reports for global countries and provinces"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-07"
+date: "2026-08-12"
 ---
 
 VIGNETTE UNDER CONSTRUCTION
@@ -69,6 +69,7 @@ scari::create_risk_report(
 # this report should have 2 IVR points
 scari::create_risk_report(
   locality.iso = "chn",
+  locality.iso.2 = "CN-SD",
   locality.name = "shandong",
   locality.type = "state_province",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "China"),
@@ -80,6 +81,7 @@ scari::create_risk_report(
 # this report should have no IVR records
 scari::create_risk_report(
   locality.iso = "chn",
+  locality.iso.2 = "CN-YN",
   locality.name = "yunnan",
   locality.type = "state_province",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "China"),
@@ -90,7 +92,7 @@ scari::create_risk_report(
 # it worked still so thats good
 
 # save report for other uses
-# readr::write_rds(china_slf_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "China", "china_slf_risk_report.rds"))
+# readr::write_rds(china_L_delicatula_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "China", "china_L_delicatula_risk_report.rds"))
 
 ```
 
@@ -160,10 +162,10 @@ scari::create_risk_report(
   buffer.dist = 20000
 )
 
-# türkiye
+# turkey
 scari::create_risk_report(
   locality.iso = "tur",
-  locality.name = "türkiye",
+  locality.name = "turkey",
   locality.type = "country",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Turkey"),
   create.dir = FALSE,
@@ -203,15 +205,15 @@ scari::create_risk_report(
 # The map is zoomed very far out because of some territories belonging to spain.
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
-spain_current <- spain_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+spain_current <- spain_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-964862.802508965, 482431.4012544825) +
   ylim(4198673.820940024, 5088510.34806054)
 
-spain_future <- spain_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+spain_future <- spain_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-964862.802508965, 482431.4012544825) +
   ylim(4198673.820940024, 5088510.34806054)
 
-spain_shift <- spain_slf_risk_report[["range_shift_map"]] +
+spain_shift <- spain_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-964862.802508965, 482431.4012544825) +
   ylim(4198673.820940024, 5088510.34806054)
 
@@ -223,7 +225,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -232,7 +234,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -241,21 +243,21 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 # the canary islands also have a number of vineyards so I will create maps of just those
-canary_current <- spain_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+canary_current <- spain_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-1833239.3247670338, -1254321.6432616548) +
   ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
 
-canary_future <- spain_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+canary_future <- spain_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-1833239.3247670338, -1254321.6432616548) +
   ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
 
-canary_shift <- spain_slf_risk_report[["range_shift_map"]] +
+canary_shift <- spain_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-1833239.3247670338, -1254321.6432616548) +
   ylim(3321459.358225577, 3658789.3248550068) +
   labs(subtitle = "Spain: canary islands")
@@ -268,7 +270,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -277,7 +279,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -286,7 +288,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 
@@ -298,15 +300,15 @@ ggsave(
 # The map is zoomed very far out because of some territories belonging to spain.
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
-portugal_current <- portugal_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+portugal_current <- portugal_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-1100000, -600000) +
   ylim(4400000, 4900750.206464033)
 
-portugal_future <- portugal_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+portugal_future <- portugal_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-1100000, -600000) +
   ylim(4400000, 4900750.206464033)
 
-portugal_shift <- portugal_slf_risk_report[["range_shift_map"]] +
+portugal_shift <- portugal_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-1100000, -600000) +
   ylim(4400000, 4900750.206464033)
 
@@ -318,7 +320,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -327,7 +329,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -336,7 +338,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
@@ -344,15 +346,15 @@ ggsave(
 ```{r edit south_africa maps}
 
 
-south_africa_current <- south_africa_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+south_africa_current <- south_africa_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(1447294.2037634475, 3377019.808781378) +
   ylim(-4198673.820940021, -2739869.8684837967)
 
-south_africa_future <- south_africa_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+south_africa_future <- south_africa_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(1447294.2037634475, 3377019.808781378) +
   ylim(-4198673.820940021, -2739869.8684837967)
 
-south_africa_shift <- south_africa_slf_risk_report[["range_shift_map"]] +
+south_africa_shift <- south_africa_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(1447294.2037634475, 3377019.808781378) +
   ylim(-4198673.820940021, -2739869.8684837967)
 
@@ -364,7 +366,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -373,7 +375,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -382,7 +384,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
@@ -443,15 +445,15 @@ scari::create_risk_report(
 # The map is zoomed very far out because of some territories belonging to spain.
 # I will try to limiting the x and y coordinates of the plot to zoom in.
 
-new_zealand_current <- new_zealand_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+new_zealand_current <- new_zealand_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(15920236.241397923, 17367530.445161372) +
   ylim(-5445383.869156103, -4093085.6280890987)
 
-new_zealand_future <- new_zealand_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+new_zealand_future <- new_zealand_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(15920236.241397923, 17367530.445161372) +
   ylim(-5445383.869156103, -4093085.6280890987)
 
-new_zealand_shift <- new_zealand_slf_risk_report[["range_shift_map"]] +
+new_zealand_shift <- new_zealand_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(15920236.241397923, 17367530.445161372) +
   ylim(-5445383.869156103, -4093085.6280890987)
 
@@ -463,7 +465,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -472,7 +474,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -481,7 +483,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
@@ -516,11 +518,12 @@ scari::create_risk_report(
 # tasmania
 scari::create_risk_report(
   locality.iso = "aus",
+  locality.iso.2 = "AU-TAS",
   locality.name = "tasmania",
   locality.type = "state_province",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "Australia"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
@@ -574,15 +577,15 @@ scari::create_risk_report(
 
 ```{r edit australia maps}
 
-australia_current <- australia_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+australia_current <- australia_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(10613490.827598616, 14955373.438888958) +
   ylim(5088510.348060536, 1269436.7435378374)
 
-australia_future <- australia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+australia_future <- australia_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(10613490.827598616, 14955373.438888958) +
   ylim(5088510.348060536, 1269436.7435378374)
 
-australia_shift <- australia_slf_risk_report[["range_shift_map"]] +
+australia_shift <- australia_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(10613490.827598616, 14955373.438888958) +
   ylim(5088510.348060536, 1269436.7435378374)
 
@@ -596,7 +599,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -605,7 +608,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -614,22 +617,22 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
 
 ```{r edit russia maps}
 
-russia_current <- russia_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+russia_current <- russia_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(3029725.60501793, 17367530.445161372) +
   ylim(4000000, 8000000)
 
-russia_future <- russia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+russia_future <- russia_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(3029725.60501793, 17367530.445161372) +
   ylim(4000000, 8000000) 
 
-russia_shift <- russia_slf_risk_report[["range_shift_map"]] +
+russia_shift <- russia_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(3029725.60501793, 17367530.445161372) +
   ylim(4000000, 8000000)
 
@@ -641,7 +644,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -650,7 +653,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -659,20 +662,20 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
 
 ```{r edit chile maps}
 
-chile_current <- chile_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+chile_current <- chile_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-7525929.859569928, -6271608.216308273) 
 
-chile_future <- chile_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+chile_future <- chile_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-7525929.859569928, -6271608.216308273) 
 
-chile_shift <- chile_slf_risk_report[["range_shift_map"]] +
+chile_shift <- chile_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-7525929.859569928, -6271608.216308273) 
 
 
@@ -683,7 +686,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -692,7 +695,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -701,14 +704,14 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
 
 ## other areas of CC interest
 
-These areas experienced a significant increase in SLF risk on the main global maps.
+These areas experienced a significant increase in L_delicatula risk on the main global maps.
 
 ```{r other areas}
 
@@ -766,15 +769,15 @@ scari::create_risk_report(
 
 ```{r edit france maps}
 
-france_current <- france_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+france_current <- france_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4800000, 5695846.383707797)
 
-france_future <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+france_future <- france_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4800000, 5695846.383707797)
 
-france_shift <- france_slf_risk_report[["range_shift_map"]] +
+france_shift <- france_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-482431.4012544825, 964862.802508965) +
   ylim(4800000, 5695846.383707797)
 
@@ -786,7 +789,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -795,7 +798,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -804,7 +807,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ```
@@ -847,12 +850,12 @@ scari::create_risk_report(
   buffer.dist = 20000
 )
 
-# czech republic (Czechia)
+# czech republic (czech_republic)
 scari::create_risk_report(
   locality.iso = "CZE",
-  locality.name = "Czechia",
+  locality.name = "czech_republic",
   locality.type = "country",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "Czechia"),
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "czech_republic"),
   create.dir = FALSE,
   save.report = FALSE,
   buffer.dist = 20000
@@ -1004,9 +1007,9 @@ scari::create_risk_report(
 
 
 # save reports for other uses
-readr::write_rds(japan_slf_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "Japan", "japan_slf_risk_report.rds"))
+readr::write_rds(japan_L_delicatula_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "Japan", "japan_L_delicatula_risk_report.rds"))
 
-readr::write_rds(south_korea_slf_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "Republic of Korea", "south_korea_slf_risk_report.rds"))
+readr::write_rds(republic_of_korea_L_delicatula_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "Republic of Korea", "republic_of_korea_L_delicatula_risk_report.rds"))
 
 ```
 
@@ -1019,6 +1022,7 @@ readr::write_rds(south_korea_slf_risk_report, file = file.path(here::here(), "vi
 # New zealand
 scari::create_risk_report(
   locality.iso = "nzl",
+  locality.iso.2 = "NZ-MBH",
   locality.name = "marlborough",
   locality.type = "state_province",
   mypath = file.path(here::here(), "vignette-outputs", "reports", "New Zealand"),
@@ -1068,7 +1072,7 @@ scari::create_risk_report(
 
 ```{r example countries}
 
-romania_risk_plot <- romania_slf_risk_report[["viticultural_risk_plot"]] +
+romania_risk_plot <- romania_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1099,7 +1103,7 @@ romania_risk_plot <- ggplot_gtable(romania_risk_plot) %>%
 
 
 
-united_states_risk_plot <- united_states_slf_risk_report[["viticultural_risk_plot"]] +
+united_states_risk_plot <- united_states_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1128,7 +1132,7 @@ united_states_risk_plot <- ggplot_gtable(united_states_risk_plot) %>%
 
   
 
-spain_risk_plot <- spain_slf_risk_report[["viticultural_risk_plot"]] +
+spain_risk_plot <- spain_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1158,7 +1162,7 @@ spain_risk_plot <- ggplot_gtable(spain_risk_plot) %>%
 
   # edit maps
 
-romania_risk_map <- romania_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+romania_risk_map <- romania_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1170,7 +1174,7 @@ romania_risk_map <- romania_slf_risk_report[["risk_maps"]][["future_risk_map"]] 
   labs(tag = "B") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0.03, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1184,7 +1188,7 @@ romania_risk_map <- ggplot_gtable(romania_risk_map) %>%
 
 
 
-USA_risk_map <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+USA_risk_map <- united_states_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1196,7 +1200,7 @@ USA_risk_map <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]
   labs(tag = "D") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.035, 0.9),
+    plot.tag.position = c(0.03, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     ) +
   xlim(-12060785.031362064, -6271608.216308273) + # the boundaries in UTM
@@ -1223,7 +1227,7 @@ spain_risk_map <- spain_future +
   labs(tag = "F") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0.03, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
@@ -1279,7 +1283,7 @@ ggsave(
 
 ```{r Oceania}
 
-new_zealand_risk_plot <- new_zealand_slf_risk_report[["viticultural_risk_plot"]] +
+new_zealand_risk_plot <- new_zealand_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1310,7 +1314,7 @@ new_zealand_risk_plot <- ggplot_gtable(new_zealand_risk_plot) %>%
 
 
 # australia
-australia_risk_plot <- australia_slf_risk_report[["viticultural_risk_plot"]] +
+australia_risk_plot <- australia_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1342,7 +1346,7 @@ australia_risk_plot <- ggplot_gtable(australia_risk_plot) %>%
 
 
 # tasmania
-tasmania_risk_plot <- tasmania_slf_risk_report[["viticultural_risk_plot"]] +
+tasmania_risk_plot <- tasmania_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1399,7 +1403,7 @@ new_zealand_risk_map <- ggplot_gtable(new_zealand_risk_map) %>%
 
 
 # australia
-australia_risk_map <- australia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+australia_risk_map <- australia_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1425,7 +1429,7 @@ australia_risk_map <- ggplot_gtable(australia_risk_map) %>%
 
 
 # tasmania
-tasmania_risk_map <- tasmania_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+tasmania_risk_map <- tasmania_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1479,7 +1483,7 @@ ggsave(
   height = 10, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -1488,7 +1492,7 @@ ggsave(
 
 ```{r South America}
 
-chile_risk_plot <- chile_slf_risk_report[["viticultural_risk_plot"]] +
+chile_risk_plot <- chile_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1518,7 +1522,7 @@ chile_risk_plot <- ggplot_gtable(chile_risk_plot) %>%
   wrap_ggplot_grob()
 
 
-argentina_risk_plot <- argentina_slf_risk_report[["viticultural_risk_plot"]] +
+argentina_risk_plot <- argentina_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1573,7 +1577,7 @@ chile_risk_map <- ggplot_gtable(chile_risk_map) %>%
   wrap_ggplot_grob()
 
 
-argentina_risk_map <- argentina_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+argentina_risk_map <- argentina_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1624,7 +1628,7 @@ ggsave(
   height = 8, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -1634,7 +1638,7 @@ ggsave(
 ```{r Western Europe}
 
 # portugal
-portugal_risk_plot <- portugal_slf_risk_report[["viticultural_risk_plot"]] +
+portugal_risk_plot <- portugal_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1645,7 +1649,7 @@ portugal_risk_plot <- portugal_slf_risk_report[["viticultural_risk_plot"]] +
   theme(
     legend.position = "none", 
     panel.border = element_rect(size = 1, linetype = "solid", color = "black"), 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0.2, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1665,7 +1669,7 @@ portugal_risk_plot <- ggplot_gtable(portugal_risk_plot) %>%
 
 
 # france
-france_risk_plot <- france_slf_risk_report[["viticultural_risk_plot"]] +
+france_risk_plot <- france_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1695,7 +1699,7 @@ france_risk_plot <- ggplot_gtable(france_risk_plot) %>%
   wrap_ggplot_grob()
 
 # germany
-germany_risk_plot <- germany_slf_risk_report[["viticultural_risk_plot"]] +
+germany_risk_plot <- germany_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   
   theme(
     plot.title = element_blank(),
@@ -1725,7 +1729,7 @@ germany_risk_plot <- ggplot_gtable(germany_risk_plot) %>%
 
 
 # italy
-italy_risk_plot <- italy_slf_risk_report[["viticultural_risk_plot"]] +
+italy_risk_plot <- italy_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1767,7 +1771,7 @@ portugal_risk_map <- portugal_future +
   labs(tag = "B") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0, 0.9),
+    plot.tag.position = c(0.1, 0.9),
     plot.tag = element_text(face = "bold", size = 20)
     )
 
@@ -1782,7 +1786,7 @@ portugal_risk_map <- ggplot_gtable(portugal_risk_map) %>%
 
 
 # france
-france_risk_map <- france_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+france_risk_map <- france_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-642431.4012544825, 964862.802508965) +
   ylim(4800000, 5695846.383707797) +
   theme(
@@ -1809,7 +1813,7 @@ france_risk_map <- ggplot_gtable(france_risk_map) %>%
   wrap_ggplot_grob()
 
 # germany map
-germany_risk_map <- germany_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+germany_risk_map <- germany_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(550000, 1450000) + # the boundaries in UTM
   ylim(5300000, 6000000) +
   theme(
@@ -1835,7 +1839,7 @@ germany_risk_map <- ggplot_gtable(germany_risk_map) %>%
   wrap_ggplot_grob()
   
 # italy map
-italy_risk_map <- italy_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+italy_risk_map <- italy_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1847,7 +1851,7 @@ italy_risk_map <- italy_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
   labs(tag = "H") +
   theme(
     legend.position = "none", 
-    plot.tag.position = c(0.1, 0.9),
+    plot.tag.position = c(0.1, 1),
     plot.tag = element_text(face = "bold", size = 20)
     )
   
@@ -1887,7 +1891,7 @@ ggsave(
   height = 12, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -1897,7 +1901,7 @@ ggsave(
 ```{r Eastern Europe}
 
 # portugal
-austria_risk_plot <- austria_slf_risk_report[["viticultural_risk_plot"]] +
+austria_risk_plot <- austria_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1928,7 +1932,7 @@ austria_risk_plot <- ggplot_gtable(austria_risk_plot) %>%
 
 
 # france
-hungary_risk_plot <- hungary_slf_risk_report[["viticultural_risk_plot"]] +
+hungary_risk_plot <- hungary_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1957,8 +1961,8 @@ hungary_risk_plot$data[[5]]$size <- 1.5
 hungary_risk_plot <- ggplot_gtable(hungary_risk_plot) %>%
   wrap_ggplot_grob()
 
-# czechia
-czechia_risk_plot <- czechia_slf_risk_report[["viticultural_risk_plot"]] +
+# czech_republic
+czech_republic_risk_plot <- czech_republic_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -1973,21 +1977,21 @@ czechia_risk_plot <- czechia_slf_risk_report[["viticultural_risk_plot"]] +
     plot.tag = element_text(face = "bold", size = 20)
     )
 
-czechia_risk_plot <- czechia_risk_plot %>%
+czech_republic_risk_plot <- czech_republic_risk_plot %>%
   gginnards::delete_layers(match_type = "GeomLabel") %>%
   ggplot_build()
 # edit point size
-czechia_risk_plot$data[[4]]$size <- 1.5
-czechia_risk_plot$data[[5]]$size <- 1.5
+czech_republic_risk_plot$data[[4]]$size <- 1.5
+czech_republic_risk_plot$data[[5]]$size <- 1.5
 # edit linewidth
-#czechia_risk_plot$data[[3]]$linewidth <- 0.1
+#czech_republic_risk_plot$data[[3]]$linewidth <- 0.1
 
-czechia_risk_plot <- ggplot_gtable(czechia_risk_plot) %>%
+czech_republic_risk_plot <- ggplot_gtable(czech_republic_risk_plot) %>%
   wrap_ggplot_grob()
 
 
 # italy
-greece_risk_plot <- greece_slf_risk_report[["viticultural_risk_plot"]] +
+greece_risk_plot <- greece_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2017,7 +2021,7 @@ greece_risk_plot <- ggplot_gtable(greece_risk_plot) %>%
 
 # edit maps
 # hungary
-austria_risk_map <- austria_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+austria_risk_map <- austria_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2044,7 +2048,7 @@ austria_risk_map <- ggplot_gtable(austria_risk_map) %>%
 
 
 # hungary
-hungary_risk_map <- hungary_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+hungary_risk_map <- hungary_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2068,8 +2072,8 @@ hungary_risk_map$data[[3]]$size <- 1.5
 hungary_risk_map <- ggplot_gtable(hungary_risk_map) %>%
   wrap_ggplot_grob()
 
-# czechia map
-czechia_risk_map <- czechia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+# czech_republic map
+czech_republic_risk_map <- czech_republic_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2085,15 +2089,15 @@ czechia_risk_map <- czechia_slf_risk_report[["risk_maps"]][["future_risk_map"]] 
     plot.tag = element_text(face = "bold", size = 20)
     )
   
-czechia_risk_map <- ggplot_build(czechia_risk_map)
+czech_republic_risk_map <- ggplot_build(czech_republic_risk_map)
 # edit point size
-czechia_risk_map$data[[3]]$size <- 1.5
+czech_republic_risk_map$data[[3]]$size <- 1.5
 # rebuild plot
-czechia_risk_map <- ggplot_gtable(czechia_risk_map) %>%
+czech_republic_risk_map <- ggplot_gtable(czech_republic_risk_map) %>%
   wrap_ggplot_grob()
   
 # greece map
-greece_risk_map <- greece_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+greece_risk_map <- greece_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2124,7 +2128,7 @@ greece_risk_map <- ggplot_gtable(greece_risk_map) %>%
 east_europe_patchwork <- (
   austria_risk_plot + plot_spacer() + austria_risk_map +
   hungary_risk_plot + plot_spacer() + hungary_risk_map +
-  czechia_risk_plot + plot_spacer() + czechia_risk_map +
+  czech_republic_risk_plot + plot_spacer() + czech_republic_risk_map +
   greece_risk_plot + plot_spacer() + greece_risk_map 
   ) +
   # annotation
@@ -2145,7 +2149,7 @@ ggsave(
   height = 12, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -2155,7 +2159,7 @@ ggsave(
 ```{r viticulturally important Africa}
 
 # south_africa
-south_africa_risk_plot <- south_africa_slf_risk_report[["viticultural_risk_plot"]] +
+south_africa_risk_plot <- south_africa_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2186,7 +2190,7 @@ south_africa_risk_plot <- ggplot_gtable(south_africa_risk_plot) %>%
 
 
 # algeria
-algeria_risk_plot <- algeria_slf_risk_report[["viticultural_risk_plot"]] +
+algeria_risk_plot <- algeria_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2244,7 +2248,7 @@ south_africa_risk_map <- ggplot_gtable(south_africa_risk_map) %>%
 
 
 # algeria
-algeria_risk_map <- algeria_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+algeria_risk_map <- algeria_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2294,7 +2298,7 @@ ggsave(
   height = 8, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -2304,7 +2308,7 @@ ggsave(
 ```{r North America}
 
 # canada
-canada_risk_plot <- canada_slf_risk_report[["viticultural_risk_plot"]] +
+canada_risk_plot <- canada_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2336,7 +2340,7 @@ canada_risk_plot <- ggplot_gtable(canada_risk_plot) %>%
 
 
 # mexico
-mexico_risk_plot <- mexico_slf_risk_report[["viticultural_risk_plot"]] +
+mexico_risk_plot <- mexico_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2368,7 +2372,7 @@ mexico_risk_plot <- ggplot_gtable(mexico_risk_plot) %>%
 
 # edit maps
 # canada
-canada_risk_map <- canada_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+canada_risk_map <- canada_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2394,7 +2398,7 @@ canada_risk_map <- ggplot_gtable(canada_risk_map) %>%
 
 
 # mexico
-mexico_risk_map <- mexico_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+mexico_risk_map <- mexico_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2445,7 +2449,7 @@ ggsave(
   height = 8, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -2454,8 +2458,8 @@ ggsave(
 
 ```{r West Asia}
 
-# türkiye
-türkiye_risk_plot <- türkiye_slf_risk_report[["viticultural_risk_plot"]] +
+# turkey
+turkey_risk_plot <- turkey_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2472,22 +2476,22 @@ türkiye_risk_plot <- türkiye_slf_risk_report[["viticultural_risk_plot"]] +
 
 # edits
 # remove geom_text
-türkiye_risk_plot <- türkiye_risk_plot %>%
+turkey_risk_plot <- turkey_risk_plot %>%
   gginnards::delete_layers(match_type = "GeomLabel") %>%
   ggplot_build()
 # edit point size
-türkiye_risk_plot$data[[4]]$size <- 1.5
-türkiye_risk_plot$data[[5]]$size <- 1.5
+turkey_risk_plot$data[[4]]$size <- 1.5
+turkey_risk_plot$data[[5]]$size <- 1.5
 # edit linewidth
-#türkiye_risk_plot$data[[3]]$linewidth <- 0.1
+#turkey_risk_plot$data[[3]]$linewidth <- 0.1
 
-türkiye_risk_plot <- ggplot_gtable(türkiye_risk_plot) %>%
+turkey_risk_plot <- ggplot_gtable(turkey_risk_plot) %>%
   wrap_ggplot_grob()
 
 
 
 # georgia
-georgia_risk_plot <- georgia_slf_risk_report[["viticultural_risk_plot"]] +
+georgia_risk_plot <- georgia_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2518,8 +2522,8 @@ georgia_risk_plot <- ggplot_gtable(georgia_risk_plot) %>%
 
 
 # edit maps
-# türkiye
-türkiye_risk_map <- türkiye_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+# turkey
+turkey_risk_map <- turkey_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2536,16 +2540,16 @@ türkiye_risk_map <- türkiye_slf_risk_report[["risk_maps"]][["future_risk_map"]
     )
 
 
-türkiye_risk_map <- ggplot_build(türkiye_risk_map)
+turkey_risk_map <- ggplot_build(turkey_risk_map)
 # edit point size
-türkiye_risk_map$data[[3]]$size <- 1.5
+turkey_risk_map$data[[3]]$size <- 1.5
 
-türkiye_risk_map <- ggplot_gtable(türkiye_risk_map) %>%
+turkey_risk_map <- ggplot_gtable(turkey_risk_map) %>%
   wrap_ggplot_grob()
 
 
 # georgia
-georgia_risk_map <- georgia_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+georgia_risk_map <- georgia_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2575,7 +2579,7 @@ georgia_risk_map <- ggplot_gtable(georgia_risk_map) %>%
 ```{r West Asia- patchwork}
 
 west_asia_patchwork <- (
-    türkiye_risk_plot + plot_spacer() + türkiye_risk_map +
+    turkey_risk_plot + plot_spacer() + turkey_risk_map +
     georgia_risk_plot + plot_spacer() + georgia_risk_map
   ) +
   # annotation
@@ -2596,7 +2600,7 @@ ggsave(
   height = 8, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -2606,7 +2610,7 @@ ggsave(
 ```{r East Asia}
 
 # china
-china_risk_plot <- china_slf_risk_report[["viticultural_risk_plot"]] +
+china_risk_plot <- china_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2636,8 +2640,8 @@ china_risk_plot <- ggplot_gtable(china_risk_plot) %>%
   wrap_ggplot_grob()
 
 
-# south_korea
-south_korea_risk_plot <- south_korea_slf_risk_report[["viticultural_risk_plot"]] +
+# republic_of_korea
+republic_of_korea_risk_plot <- republic_of_korea_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2654,22 +2658,22 @@ south_korea_risk_plot <- south_korea_slf_risk_report[["viticultural_risk_plot"]]
 
 # edits
 # remove geom_text
-south_korea_risk_plot <- south_korea_risk_plot %>%
+republic_of_korea_risk_plot <- republic_of_korea_risk_plot %>%
   gginnards::delete_layers(match_type = "GeomLabel") %>%
   ggplot_build()
 # edit point size
-south_korea_risk_plot$data[[4]]$size <- 1.5
-south_korea_risk_plot$data[[5]]$size <- 1.5
+republic_of_korea_risk_plot$data[[4]]$size <- 1.5
+republic_of_korea_risk_plot$data[[5]]$size <- 1.5
 # edit linewidth
-#south_korea_risk_plot$data[[3]]$linewidth <- 0.1
+#republic_of_korea_risk_plot$data[[3]]$linewidth <- 0.1
 
-south_korea_risk_plot <- ggplot_gtable(south_korea_risk_plot) %>%
+republic_of_korea_risk_plot <- ggplot_gtable(republic_of_korea_risk_plot) %>%
   wrap_ggplot_grob()
 
 
 
 # japan
-japan_risk_plot <- japan_slf_risk_report[["viticultural_risk_plot"]] +
+japan_risk_plot <- japan_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2699,7 +2703,7 @@ japan_risk_plot <- ggplot_gtable(japan_risk_plot) %>%
 
   # edit maps
 # new zealand
-china_risk_map <- china_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+china_risk_map <- china_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2725,8 +2729,8 @@ china_risk_map <- ggplot_gtable(china_risk_map) %>%
 
 
 
-# south_korea
-south_korea_risk_map <- south_korea_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+# republic_of_korea
+republic_of_korea_risk_map <- republic_of_korea_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2743,16 +2747,16 @@ south_korea_risk_map <- south_korea_slf_risk_report[["risk_maps"]][["future_risk
     )
 
 
-south_korea_risk_map <- ggplot_build(south_korea_risk_map)
+republic_of_korea_risk_map <- ggplot_build(republic_of_korea_risk_map)
 # edit point size
-south_korea_risk_map$data[[3]]$size <- 1.5
+republic_of_korea_risk_map$data[[3]]$size <- 1.5
 
-south_korea_risk_map <- ggplot_gtable(south_korea_risk_map) %>%
+republic_of_korea_risk_map <- ggplot_gtable(republic_of_korea_risk_map) %>%
   wrap_ggplot_grob()
 
 
 # japan
-japan_risk_map <- japan_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+japan_risk_map <- japan_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -2783,8 +2787,8 @@ japan_risk_map <- ggplot_gtable(japan_risk_map) %>%
 east_asia_patchwork <- (
   # china top row
   china_risk_plot + plot_spacer() + china_risk_map + 
-  # south_korea
-  south_korea_risk_plot + plot_spacer() + south_korea_risk_map +
+  # republic_of_korea
+  republic_of_korea_risk_plot + plot_spacer() + republic_of_korea_risk_map +
   # japan bottom row
   japan_risk_plot + plot_spacer() + japan_risk_map
   ) +
@@ -2806,7 +2810,7 @@ ggsave(
   height = 10, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```

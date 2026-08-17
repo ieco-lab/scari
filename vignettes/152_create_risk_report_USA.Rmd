@@ -3,7 +3,7 @@ title: "Create risk reports for the USA nationally and per state"
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-07"
+date: "2026-08-12"
 ---
 
 VIGNETTE UNDER CONSTRUCTION
@@ -71,15 +71,15 @@ scari::create_risk_report(
 ### USA
 # the USA map usually comes including Alaska and hawaii, which we do not want
 
-USA_current <- united_states_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+USA_current <- united_states_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   xlim(-12060785.031362064, -6271608.216308273) + # the boundaries in UTM
   ylim(3091555.5611515422, 5614050.1030608015)
 
-USA_future <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+USA_future <- united_states_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   xlim(-12060785.031362064, -6271608.216308273) +
   ylim(3091555.5611515422, 5614050.1030608015)
 
-USA_shift <- united_states_slf_risk_report[["range_shift_map"]] +
+USA_shift <- united_states_L_delicatula_risk_report[["range_shift_map"]] +
   xlim(-12060785.031362064, -6271608.216308273) +
   ylim(3091555.5611515422, 5614050.1030608015)
 
@@ -91,7 +91,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -100,7 +100,7 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 ggsave(
@@ -109,11 +109,11 @@ ggsave(
   height = 8,
   width = 10,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
 )
 
 # save USA report for other uses
-readr::write_rds(united_states_slf_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_slf_risk_report.rds"))
+readr::write_rds(united_states_L_delicatula_risk_report, file = file.path(here::here(), "vignette-outputs", "reports", "United States", "united_states_L_delicatula_risk_report.rds"))
 
 ```
 
@@ -124,21 +124,23 @@ readr::write_rds(united_states_slf_risk_report, file = file.path(here::here(), "
 # try state level
 scari::create_risk_report(
   locality.iso = "usa",
+  locality.iso.2 = "US-CA",
   locality.name = "california",
   locality.type = "state_province",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States", "California"),
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
 scari::create_risk_report(
   locality.iso = "usa",
+  locality.iso.2 = "US-PA",
   locality.name = "pennsylvania",
   locality.type = "state_province",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States", "Pennsylvania"),
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
@@ -156,33 +158,36 @@ The following areas may increase in suitability due to warming winter temperatur
 # michigan
 scari::create_risk_report(
   locality.iso = "usa",
+  locality.iso.2 = "US-MI",
   locality.name = "michigan",
   locality.type = "state_province",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States", "Michigan"),
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
 # oregon
 scari::create_risk_report(
   locality.iso = "usa",
+  locality.iso.2 = "US-OR",
   locality.name = "oregon",
   locality.type = "state_province",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States", "Oregon"),
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
 # washington
 scari::create_risk_report(
   locality.iso = "usa",
+  locality.iso.2 = "US-WA",
   locality.name = "washington",
   locality.type = "state_province",
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States"),
-  create.dir = FALSE,
-  save.report = FALSE,
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "United States", "Washington"),
+  create.dir = TRUE,
+  save.report = TRUE,
   buffer.dist = 20000
 )
 
@@ -190,7 +195,7 @@ scari::create_risk_report(
 
 ```{r US states, eval = FALSE}
 
-washington_risk_plot <- washington_slf_risk_report[["viticultural_risk_plot"]] +
+washington_risk_plot <- washington_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -221,7 +226,7 @@ washington_risk_plot <- ggplot_gtable(washington_risk_plot) %>%
 
 
 
-oregon_risk_plot <- oregon_slf_risk_report[["viticultural_risk_plot"]] +
+oregon_risk_plot <- oregon_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -250,7 +255,7 @@ oregon_risk_plot <- ggplot_gtable(oregon_risk_plot) %>%
 
   
 
-michigan_risk_plot <- michigan_slf_risk_report[["viticultural_risk_plot"]] +
+michigan_risk_plot <- michigan_L_delicatula_risk_report[["viticultural_risk_plot"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -280,7 +285,7 @@ michigan_risk_plot <- ggplot_gtable(michigan_risk_plot) %>%
 
   # edit maps
 
-washington_risk_map <- washington_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+washington_risk_map <- washington_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -306,7 +311,7 @@ washington_risk_map <- ggplot_gtable(washington_risk_map) %>%
 
 
 
-oregon_risk_map <-  oregon_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+oregon_risk_map <-  oregon_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -331,7 +336,7 @@ oregon_risk_map <- ggplot_gtable(oregon_risk_map) %>%
  
 
 
-michigan_risk_map <- michigan_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+michigan_risk_map <- michigan_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -391,7 +396,7 @@ ggsave(
 
 ```{r USA}
 
-USA_risk_map_present <- united_states_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+USA_risk_map_present <- united_states_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -416,7 +421,7 @@ USA_risk_map_present <- ggplot_gtable(USA_risk_map_present) %>%
  
 
 
-USA_risk_map_future <- united_states_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+USA_risk_map_future <- united_states_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -463,7 +468,7 @@ ggsave(
   height = 10, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```
@@ -472,7 +477,7 @@ ggsave(
 
 ```{r washington, eval = FALSE}
 
-WA_risk_map_present <-  washington_slf_risk_report[["risk_maps"]][["present_risk_map"]] +
+WA_risk_map_present <-  washington_L_delicatula_risk_report[["risk_maps"]][["present_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -495,7 +500,7 @@ WA_risk_map_present <- ggplot_gtable(WA_risk_map_present) %>%
  
 
 
-WA_risk_map_future <-  washington_slf_risk_report[["risk_maps"]][["future_risk_map"]] +
+WA_risk_map_future <-  washington_L_delicatula_risk_report[["risk_maps"]][["future_risk_map"]] +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
@@ -538,7 +543,7 @@ ggsave(
   height = 10, 
   width = 8,
   device = jpeg,
-  dpi = "retina"
+  dpi = 500
   )
 
 ```

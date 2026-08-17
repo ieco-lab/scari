@@ -121,6 +121,8 @@ v2-
 v3-
 v4- 2024-08-29- added functionality to calculate totals of predicted SLF risk categories from risk maps
 v5- 2026-08-06- removed usage of SLF terminology to make documentation more general, improved detection of states/provinces & bug fixes.
+v6-
+v7- 2026-08-17- attempt to fix bugs related to simple method for IVR suitability predictions
 
 
 ----------import_chelsa_v2.1.R----------

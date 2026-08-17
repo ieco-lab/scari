@@ -378,7 +378,13 @@ n_distinct(IVR_locations$Country)
 # there are 64 unique countries on the list
 
 # get iso codes using rnaturalearth data
-admin_0_countries <- read_sf(dsn = file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.shp")) %>%
+admin_0_countries <- rnaturalearth::ne_load(
+      scale = 10,
+      type = "admin_0_countries",
+      category = "cultural",
+      destdir = file.path(here::here(), "data-raw", "ne_countries"),
+      returnclass = "sf"
+    ) %>%
   dplyr::select(ADMIN, ADM0_A3)
 
 # replace names in sf
@@ -413,7 +419,7 @@ unique_name <- IVR_locations_iso %>%
 
 ```
 
-```{r test loop}
+```{r test loop, eval = FALSE}
 
 for (i in seq_along(unique_iso)){
   print(c(unique_name[i],unique_iso[i]))
@@ -446,3 +452,20 @@ for (a in seq_along(unique_iso)) {
 ```
 
 Some of these maps might need to be edited to zoom in on the countries, because some countries have geographically separated territories that are not relevant to the analysis. The code to zoom in on those plots will be in the following section.
+
+```{r unique name loop, eval = FALSE, include = FALSE}
+
+# deprecated loop to save reports 
+
+unique_name_loop <- unique_name %>%
+    tolower() %>%
+    stringr::str_replace_all(., pattern = " |-", replacement = "_") %>%
+    stringr::str_remove_all(., pattern = "['/.()]") # all these symbols
+
+for (i in seq_along(unique_name_loop)) {
+  
+    readr::write_rds(get(paste0(unique_name_loop[i], "_L_delicatula_risk_report")), file = file.path(here::here(), "vignette-outputs", "reports", unique_name[i], paste0(unique_name_loop[i], "_L_delicatula_risk_report.rds")))
+                                                                                     
+}
+
+```

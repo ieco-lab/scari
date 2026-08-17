@@ -45,7 +45,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 I will create the folders where the outputs of this package will be saved. Note that a set of these folders will be 1 level above the root folder for the package (so it will go on your file system in the same folder as this package).
 
-```{r necessary folders, eval = TRUE, message = FALSE, warning = FALSE}
+```{r necessary folders}
 
 # data folder
 dir.create(file.path(here::here(), "data"))
@@ -78,7 +78,7 @@ Run this chunk to set a GitHub PAT (Personal Access Token) in your R session, al
 
 https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens 
 
-```{r set gitcreds PAT, eval = TRUE}
+```{r set gitcreds PAT}
 
 # you may need to enter your github credentials into the .Renviron or log into github for this to work:
 usethis::edit_r_environ()
@@ -94,7 +94,7 @@ gitcreds::gitcreds_set()
 
 Run this chunk to see the dependencies for the scari package.
 
-```{r get dependencies list, eval = TRUE}
+```{r get dependencies list}
 
 packages <- renv::dependencies() %>%
   # select unique package names
@@ -106,7 +106,7 @@ packages <- renv::dependencies() %>%
 
 I created this section to initialize the renv package for the first time ONLY. **Prior to running this chunk, you should build and install the scari package internally.**
 
-```{r one-time initialization, eval = TRUE}
+```{r one-time initialization}
 
 # ensure that developer packages are installed prior to activation
 remotes::install_github("ieco-lab/lydemapr", build_vignettes = FALSE)

@@ -8,10 +8,12 @@ calculate_risk_quadrant(suit.x, suit.y, thresh.x, thresh.y)
 }
 \arguments{
 \item{suit.x}{Suitability values comprising the x-axis. Global-scale model is
-usually placed along the x-axis.}
+usually placed along the x-axis. Should be a vector of values or the column
+in a data frame/tibble.}
 
 \item{suit.y}{Suitability values comprising the y-axis. Regional-scale ensemble
-model is usually placed along the x-axis.}
+model is usually placed along the x-axis. Should be a vector of values or the column
+in a data frame/tibble.}
 
 \item{thresh.x}{The threshold for suitability accompanying the x-axis model
 values.}
