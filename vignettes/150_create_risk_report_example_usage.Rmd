@@ -3,7 +3,7 @@ title: "Example usage of create_risk_report(), applied to create reports for Fre
 output: rmarkdown::html_document
 author: 
     - "Samuel M. Owens^[Temple University, sam.owens@temple.edu, [ORCID](https://orcid.org/0009-0001-2338-7928)]"
-date: "2025-08-07"
+date: "2026-08-07"
 ---
 
 # Overview
@@ -135,7 +135,7 @@ I will now pull out a specific example of France to analyze and demonstrate usag
 
 The first thing I will need to do is to search for the correct [ISO 3166-1 country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) corresponding to our country of interest. France is "FRA", so I will enter that in `locality.iso`. I can also enter the name of the country for reporting purposes, but it is not required for countries (only states/provinces).
 
-```{r generate a report for France, message = FALSE, results = "hide"}
+```{r generate a report for France, message = FALSE, results = "hide", warning = FALSE}
 
 scari::create_risk_report(
   locality.iso = "fra", # A3-iso
@@ -146,13 +146,13 @@ scari::create_risk_report(
   create.dir = FALSE, # not saving so not necessary
   save.report = FALSE, # dont save, this is an example
   raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters
-  # aesthetics- dont necessarily need to be specified
+  # aesthetics for plots/tables- dont necessarily need to be specified
   buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
   period.present = "1981-2010",
   period.projected = "2041-2070",
   model.projected = "GFDL-ESM4",
   ssp.projected = "ssp_126_370_585",
-  crs = "ESRI:54017"
+  crs = "ESRI:54017" # the name of the crs used for the input data
 )
 
 ```
@@ -315,20 +315,20 @@ Looking back at the list of important viticultural regions we retrieved above, w
 
 We can see in the above report that there are many entries for a region referred to as "burgundy_bourgogne_burgundy" (of course, this includes some duplicate naming and multiple namings- but the data are still there). We will retrieve entries only for this region of interest. The `Region` column represents states and provinces (admin-1 groups). To retrieve records for this region, we will need the [ISO 3166-2 state/province code](https://en.wikipedia.org/wiki/ISO_3166-2) which corresponds to this region. If we click this link and France on the "Entry" column of the table, we find that "Burgundy" corresponds to the region of "Burgundy-Franche-Comté", which has the following iso code: "FR-BFC". We will enter the code into `locality.iso.2` and the name into `locality.name`.
 
-```{r generate a report for France, message = FALSE, results = "hide"}
+```{r generate a report for French region of Burgundy, message = FALSE, results = "hide", warning = FALSE}
 
 scari::create_risk_report(
-  locality.iso = "fra", # A3-iso
-  locality.iso.2 = "FR-BFC",
-  locality.name = "Burgundy-Franche-Comté", #name
+  locality.iso = "fra", 
+  locality.iso.2 = "FR-BFC", # the ISO-3166-2 for the state or province
+  locality.name = "Burgundy-Franche-Comté", 
   locality.type = "state_province", # record type
   # saving output
-  mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), # the output location
-  create.dir = FALSE, # not saving so not necessary
-  save.report = FALSE, # dont save, this is an example
+  mypath = file.path(here::here(), "vignette-outputs", "reports", "France"), 
+  create.dir = FALSE, 
+  save.report = FALSE, 
   raster.path = file.path(here::here(), "vignette-outputs", "rasters"), # path to rasters
   # aesthetics- dont necessarily need to be specified
-  buffer.dist = 20000, # 20km, this is the distance at which buffers should be drawn on maps to indicate IVR suitability predictions
+  buffer.dist = 20000, 
   period.present = "1981-2010",
   period.projected = "2041-2070",
   model.projected = "GFDL-ESM4",

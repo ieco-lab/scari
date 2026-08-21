@@ -302,8 +302,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     # if save report is true but create.dir == FALSE, warn
   } else if (save.report == TRUE & create.dir == FALSE) {
 
-    cli::cli_alert_danger(paste0("Report output cannot be saved create.dir == FALSE"))
-    stop()
+    cli::cli_alert_danger(paste0("Directory will not be created because create.dir == FALSE"))
 
 
   } else {
@@ -425,7 +424,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   rnaturalearth::check_rnaturalearthhires()
 
   # import countries, first checking if the file already exists
-  if(file.exists(file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.shp")) == TRUE) {
+  if(file.exists(file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.gpkg")) == TRUE) {
 
     countries_sf <- rnaturalearth::ne_load(
       scale = 10,
@@ -438,7 +437,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     cli::cli_alert_info(paste0("Importing shapefiles from: ", file.path(here::here(), "data-raw")))
 
     # if it doesnt exist, create directories and download it
-  } else if (file.exists(file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.shp")) == FALSE) {
+  } else if (file.exists(file.path(here::here(), "data-raw", "ne_countries", "ne_10m_admin_0_countries.gpkg")) == FALSE) {
 
     # create directories for shapefiles
     dir.create(path = file.path(here::here(), "data-raw", "ne_countries"))
@@ -457,7 +456,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
 
 
   # import states and provinces
-  if(file.exists(file.path(here::here(), "data-raw", "ne_states_provinces", "ne_10m_admin_1_states_provinces.shp")) == TRUE) {
+  if(file.exists(file.path(here::here(), "data-raw", "ne_states_provinces", "ne_10m_admin_1_states_provinces.gpkg")) == TRUE) {
 
     states_provinces_sf <- rnaturalearth::ne_load(
       scale = 10,
@@ -468,7 +467,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     )
 
     # if it doesnt exist, download it
-  } else if (file.exists(file.path(here::here(), "data-raw", "ne_states_provinces", "ne_10m_admin_1_states_provinces.shp")) == FALSE) {
+  } else if (file.exists(file.path(here::here(), "data-raw", "ne_states_provinces", "ne_10m_admin_1_states_provinces.gpkg")) == FALSE) {
 
     # create directory for file
     dir.create(path = file.path(here::here(), "data-raw", "ne_states_provinces"))
@@ -1489,8 +1488,6 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     kableExtra::add_header_above(., header = c("Risk of L delicatula establishment for important viticultural regions" = 6), bold = TRUE)  %>%
     # conditional addition of footnote about buffer area
     kableExtra::add_footnote(ifelse(!is.na(buffer.dist), paste0(buffer.dist, "m buffer used for suitability of viticultural areas"), ""), notation = "alphabet")
-
-
 
   # success message
   cli::cli_alert_success("Viticultural regions list created")

@@ -74,29 +74,55 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
   ## import settings------------------------------------------------------------
 
   # suit.x
-  if (is.character(suit.x)) {
-    suit_x <- read.csv(suit.x) %>% # read as csv
-      as.vector()
-
-  } else {
-    suit_x <- as.vector(suit.x) # make data frame
+  if (is.character(suit.x) && length(suit.x) == 1 && file.exists(suit.x)) {
+    suit_x <- read.csv(suit.x, stringsAsFactors = FALSE)
   }
+  if (is.data.frame(suit.x)) {
+    # if one column, use it; otherwise flatten all columns
+    if (ncol(suit.x) == 1) suit_x <- suit.x[[1]] else suit_x <- unlist(suit.x, use.names = FALSE)
+  }
+
+  as.numeric(suit_x)
+
 
   # suit.y
-  if (is.character(suit.y)) {
-    suit_y <- read.csv(suit.y) %>% # read as csv
-      as.vector()
-
-  } else {
-    suit_y <- as.vector(suit.y) # make data frame
+  if (is.character(suit.y) && length(suit.y) == 1 && file.exists(suit.y)) {
+    suit_y <- read.csv(suit.y, stringsAsFactors = FALSE)
   }
+  if (is.data.frame(suit.y)) {
+    # if one column, use it; otherwise flatten all columns
+    if (ncol(suit.y) == 1) suit_y <- suit.y[[1]] else suit_y <- unlist(suit.y, use.names = FALSE)
+  }
+
+  as.numeric(suit_y)
+
+
+
+
+  # suit.x
+  #if (is.character(suit.x)) {
+  #  suit_x <- read.csv(suit.x) %>% # read as csv
+   #   as.vector()
+#
+ # } else {
+ #   suit_x <- as.vector(suit.x) # make data frame
+ # }
+
+  # suit.y
+#  if (is.character(suit.y)) {
+ #   suit_y <- read.csv(suit.y) %>% # read as csv
+ #     as.vector()
+
+#  } else {
+#    suit_y <- as.vector(suit.y) # make data frame
+#  }
 
 
   ## function-------------------------------------------------------------------
 
   # unlist first for input into case_when
-  suit_x <- unlist(suit_x, use.names = FALSE)
-  suit_y <- unlist(suit_y, use.names = FALSE)
+  #suit_x <- unlist(suit_x, use.names = FALSE)
+  #suit_y <- unlist(suit_y, use.names = FALSE)
 
   # apply case_when
   risk_output <- dplyr::case_when(

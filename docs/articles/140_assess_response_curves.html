@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analyze biological realism of model response curves">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scari</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-08-05</h4>
+            <h4 data-toc-skip class="date">2026-08-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/140_assess_response_curves.Rmd" class="external-link"><code>vignettes/140_assess_response_curves.Rmd</code></a></small>
       <div class="d-none name"><code>140_assess_response_curves.Rmd</code></div>
@@ -105,7 +105,7 @@ directory, and defining some style objects for the plots.</p>
 <span><span class="co"># SDMtune and dependencies</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://consbiol-unibern.github.io/SDMtune/" class="external-link">SDMtune</a></span><span class="op">)</span> <span class="co"># main package used to run SDMs</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster/sdm/" class="external-link">dismo</a></span><span class="op">)</span> <span class="co"># package underneath SDMtune</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span> <span class="co"># plots ROCs</span></span>
 <span></span>
 <span><span class="co"># spatial data handling</span></span>
@@ -129,11 +129,11 @@ regional_ensemble</p>
 <span>                     <span class="st">"maxent/models"</span><span class="op">)</span></span></code></pre></div>
 <p>Lastly, load in the model objects for plotting the curves.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">regional_native_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v4"</span>, <span class="st">"regional_native_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">regional_native_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v5"</span>, <span class="st">"regional_native_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_v8"</span>, <span class="st">"regional_invaded_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">regional_invaded_n_american_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_n_american_v9"</span>, <span class="st">"regional_invaded_n_american_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_asian_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v3"</span>, <span class="st">"regional_invaded_asian_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">regional_invaded_asian_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v4"</span>, <span class="st">"regional_invaded_asian_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This vignette contains 3 main types of code chunks, which can be
 discerned by the title:</p>
 <ol style="list-style-type: decimal">
@@ -204,8 +204,8 @@ regional_native_marginal_bio11 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio11 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio11 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio11",
   type = "cloglog",
   fun = mean,
@@ -232,7 +232,7 @@ regional_invaded_asian_marginal_bio11 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio11_max_activity_values <- c(
   native_bio_11 = regional_native_marginal_bio11$data[[1]][which.max(regional_native_marginal_bio11$data[[1]]$y), ]$x,
-  invaded_bio_11 = regional_invaded_marginal_bio11$data[[1]][which.max(regional_invaded_marginal_bio11$data[[1]]$y), ]$x,
+  invaded_n_american_bio_11 = regional_invaded_n_american_marginal_bio11$data[[1]][which.max(regional_invaded_n_american_marginal_bio11$data[[1]]$y), ]$x,
   invaded_asian_bio_11 = regional_invaded_asian_marginal_bio11$data[[1]][which.max(regional_invaded_asian_marginal_bio11$data[[1]]$y), ]$x
 )
 ```
@@ -242,22 +242,22 @@ bio11_max_activity_values <- c(
 bio11_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio11_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -289,8 +289,8 @@ regional_native_marginal_bio12 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio12 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio12 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio12",
   type = "cloglog",
   fun = mean,
@@ -317,7 +317,7 @@ regional_invaded_asian_marginal_bio12 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio12_max_activity_values <- c(
   native_bio_12 = regional_native_marginal_bio12$data[[1]][which.max(regional_native_marginal_bio12$data[[1]]$y), ]$x,
-  invaded_bio_12 = regional_invaded_marginal_bio12$data[[1]][which.max(regional_invaded_marginal_bio12$data[[1]]$y), ]$x,
+  invaded_n_american_bio_12 = regional_invaded_n_american_marginal_bio12$data[[1]][which.max(regional_invaded_n_american_marginal_bio12$data[[1]]$y), ]$x,
   invaded_asian_bio_12 = regional_invaded_asian_marginal_bio12$data[[1]][which.max(regional_invaded_asian_marginal_bio12$data[[1]]$y), ]$x
 )
 ```
@@ -327,22 +327,22 @@ bio12_max_activity_values <- c(
 bio12_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio12_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -374,8 +374,8 @@ regional_native_marginal_bio15 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio15 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio15 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio15",
   type = "cloglog",
   fun = mean,
@@ -402,7 +402,7 @@ regional_invaded_asian_marginal_bio15 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio15_max_activity_values <- c(
   native_bio_15 = regional_native_marginal_bio15$data[[1]][which.max(regional_native_marginal_bio15$data[[1]]$y), ]$x,
-  invaded_bio_15 = regional_invaded_marginal_bio15$data[[1]][which.max(regional_invaded_marginal_bio15$data[[1]]$y), ]$x,
+  invaded_n_american_bio_15 = regional_invaded_n_american_marginal_bio15$data[[1]][which.max(regional_invaded_n_american_marginal_bio15$data[[1]]$y), ]$x,
   invaded_asian_bio_15 = regional_invaded_asian_marginal_bio15$data[[1]][which.max(regional_invaded_asian_marginal_bio15$data[[1]]$y), ]$x
 )
 ```
@@ -412,22 +412,22 @@ bio15_max_activity_values <- c(
 bio15_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio15_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -459,8 +459,8 @@ regional_native_marginal_bio2 <- SDMtune::plotResponse(
   ggplot_build()
 
 
-regional_invaded_marginal_bio2 <- SDMtune::plotResponse(
-  model = regional_invaded_model,
+regional_invaded_n_american_marginal_bio2 <- SDMtune::plotResponse(
+  model = regional_invaded_n_american_model,
   var = "bio2",
   type = "cloglog",
   fun = mean,
@@ -487,7 +487,7 @@ regional_invaded_asian_marginal_bio2 <- SDMtune::plotResponse(
 # peak y trendline object 
 bio2_max_activity_values <- c(
   native_bio_2 = regional_native_marginal_bio2$data[[1]][which.max(regional_native_marginal_bio2$data[[1]]$y), ]$x,
-  invaded_bio_2 = regional_invaded_marginal_bio2$data[[1]][which.max(regional_invaded_marginal_bio2$data[[1]]$y), ]$x,
+  invaded_n_american_bio_2 = regional_invaded_n_american_marginal_bio2$data[[1]][which.max(regional_invaded_n_american_marginal_bio2$data[[1]]$y), ]$x,
   invaded_asian_bio_2 = regional_invaded_asian_marginal_bio2$data[[1]][which.max(regional_invaded_asian_marginal_bio2$data[[1]]$y), ]$x
 )
 ```
@@ -497,22 +497,22 @@ bio2_max_activity_values <- c(
 bio2_marginal_combined <- ggplot() +
   # native model data
   geom_smooth(data = regional_native_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # invaded_asian model data
   geom_smooth(data = regional_invaded_asian_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
   # Rn (native)
   geom_vline(aes(xintercept = bio2_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -579,8 +579,8 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">regional_invaded_univar_bio11</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">regional_invaded_model</span>,</span>
+<span><span class="va">regional_invaded_n_american_univar_bio11</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">regional_invaded_n_american_model</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"bio11"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">mean</span>,</span>
@@ -604,29 +604,29 @@ multiplier of 1.5.</p>
 <code class="sourceCode R"><span><span class="co"># peak y trendline object </span></span>
 <span><span class="va">bio11_univar_max_activity_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  native_bio11 <span class="op">=</span> <span class="va">regional_native_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_native_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>  invaded_bio11 <span class="op">=</span> <span class="va">regional_invaded_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  invaded_n_american_bio11 <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  invaded_asian_bio11 <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_asian_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio11_univar_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot peak trendline and labels</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio11_univar_max_activity_values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio11_univar_max_activity_values</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio11_univar_max_activity_values</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot rug plots</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_native_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio11</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># default style</span></span>
@@ -640,7 +640,7 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span> </span>
 <span>  </span>
 <span><span class="va">bio11_univar_combined</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2011%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2011%20univar-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="bio-12--annual-precipitation">Bio 12- Annual Precipitation<a class="anchor" aria-label="anchor" href="#bio-12--annual-precipitation"></a>
@@ -658,8 +658,8 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">regional_invaded_univar_bio12</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">regional_invaded_model</span>,</span>
+<span><span class="va">regional_invaded_n_american_univar_bio12</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">regional_invaded_n_american_model</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"bio12"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">mean</span>,</span>
@@ -683,29 +683,29 @@ multiplier of 1.5.</p>
 <code class="sourceCode R"><span><span class="co"># peak y trendline object </span></span>
 <span><span class="va">bio12_univar_max_activity_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  native_bio12 <span class="op">=</span> <span class="va">regional_native_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_native_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>  invaded_bio12 <span class="op">=</span> <span class="va">regional_invaded_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  invaded_n_american_bio12 <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  invaded_asian_bio12 <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_asian_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio12_univar_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># invaded_asian model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot peak trendline and labels</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio12_univar_max_activity_values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio12_univar_max_activity_values</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio12_univar_max_activity_values</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot rug plots</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_native_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># default style</span></span>
@@ -719,7 +719,7 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4250</span><span class="op">)</span> </span>
 <span>  </span>
 <span><span class="va">bio12_univar_combined</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2012%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2012%20univar-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="bio-15--precipitation-seasonality">Bio 15- Precipitation Seasonality<a class="anchor" aria-label="anchor" href="#bio-15--precipitation-seasonality"></a>
@@ -737,8 +737,8 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">regional_invaded_univar_bio15</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">regional_invaded_model</span>,</span>
+<span><span class="va">regional_invaded_n_american_univar_bio15</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">regional_invaded_n_american_model</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"bio15"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">mean</span>,</span>
@@ -762,29 +762,29 @@ multiplier of 1.5.</p>
 <code class="sourceCode R"><span><span class="co"># peak y trendline object </span></span>
 <span><span class="va">bio15_univar_max_activity_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  native_bio15 <span class="op">=</span> <span class="va">regional_native_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_native_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>  invaded_bio15 <span class="op">=</span> <span class="va">regional_invaded_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  invaded_n_american_bio15 <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  invaded_asian_bio15 <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_asian_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio15_univar_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># invaded_asian model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot peak trendline and labels</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio15_univar_max_activity_values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio15_univar_max_activity_values</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio15_univar_max_activity_values</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot rug plots</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_native_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># default style</span></span>
@@ -798,7 +798,7 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">120</span><span class="op">)</span> </span>
 <span>  </span>
 <span><span class="va">bio15_univar_combined</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2015%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%2015%20univar-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="bio-2--mean-daily-diurnal-temperature-range">Bio 2- Mean Daily Diurnal Temperature Range<a class="anchor" aria-label="anchor" href="#bio-2--mean-daily-diurnal-temperature-range"></a>
@@ -816,8 +816,8 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">regional_invaded_univar_bio2</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">regional_invaded_model</span>,</span>
+<span><span class="va">regional_invaded_n_american_univar_bio2</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotResponse.html" class="external-link">plotResponse</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">regional_invaded_n_american_model</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">"bio2"</span>,</span>
 <span>  type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  fun <span class="op">=</span> <span class="va">mean</span>,</span>
@@ -841,29 +841,29 @@ multiplier of 1.5.</p>
 <code class="sourceCode R"><span><span class="co"># peak y trendline object </span></span>
 <span><span class="va">bio2_univar_max_activity_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  native_bio2 <span class="op">=</span> <span class="va">regional_native_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_native_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
-<span>  invaded_bio2 <span class="op">=</span> <span class="va">regional_invaded_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  invaded_n_american_bio2 <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  invaded_asian_bio2 <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">regional_invaded_asian_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span><span class="op">$</span><span class="va">x</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio2_univar_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot peak trendline and labels</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio2_univar_max_activity_values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio2_univar_max_activity_values</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">bio2_univar_max_activity_values</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># plot rug plots</span></span>
 <span>  <span class="co"># Rn (native)</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_native_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_n_american_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># Ri.Asia</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">regional_invaded_asian_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span><span class="op">)</span>, sides <span class="op">=</span> <span class="st">"t"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># default style</span></span>
@@ -877,7 +877,7 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span> </span>
 <span>  </span>
 <span><span class="va">bio2_univar_combined</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%202%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/combine%20plots-%20bio%202%20univar-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -900,7 +900,7 @@ multiplier of 1.5.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"black"</span>, linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> </span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v5"</span>, <span class="st">"global_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <!--
 
 ## Create marginal plots 
@@ -1191,9 +1191,9 @@ ggsave(
 <pre><code><span><span class="co">## `geom_smooth()` using formula = 'y ~ s(x, bs = "cs")'</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: Removed 58 rows containing non-finite outside the scale range</span></span>
 <span><span class="co">## (`stat_smooth()`).</span></span></code></pre>
-<pre><code><span><span class="co">## Warning: Removed 15 rows containing missing values or values outside the scale range</span></span>
+<pre><code><span><span class="co">## Warning: Removed 23 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">## (`geom_smooth()`).</span></span></code></pre>
-<p><img src="140_assess_response_curves_files/figure-html/bio11%20plot-%20global%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/bio11%20plot-%20global%20univar-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio12_univar_global</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">global_univar_bio12</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orangered2"</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1213,7 +1213,7 @@ ggsave(
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4250</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bio12_univar_global</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/bio12%20plot-%20global%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/bio12%20plot-%20global%20univar-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio15_univar_global</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">global_univar_bio15</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orangered2"</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1232,7 +1232,7 @@ ggsave(
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">120</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">bio15_univar_global</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/bio15%20plot-%20global%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/bio15%20plot-%20global%20univar-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bio2_univar_global</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">global_univar_bio2</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orangered2"</span>, se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1251,7 +1251,7 @@ ggsave(
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">bio2_univar_global</span></span></code></pre></div>
-<p><img src="140_assess_response_curves_files/figure-html/bio2%20plot-%20global%20univar-1.png" width="700"></p>
+<p><img src="140_assess_response_curves_files/figure-html/bio2%20plot-%20global%20univar-1.png" class="r-plt" alt="" width="700"></p>
 <!--
 
 # Combine ensemble and global models
@@ -1297,8 +1297,8 @@ bio11_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio11$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # native model data
   geom_smooth(data = regional_native_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1306,7 +1306,7 @@ bio11_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio11_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio11_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
@@ -1314,8 +1314,8 @@ bio11_marginal_combined <- ggplot() +
   # global is just all presences so it does not need a rug plot
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1352,8 +1352,8 @@ bio12_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio12$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1361,15 +1361,15 @@ bio12_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio12_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio12_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1406,8 +1406,8 @@ bio15_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio15$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1415,15 +1415,15 @@ bio15_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio15_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1460,8 +1460,8 @@ bio2_marginal_combined <- ggplot() +
   geom_smooth(data = global_marginal_bio2$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_marginal_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1469,15 +1469,15 @@ bio2_marginal_combined <- ggplot() +
   geom_vline(aes(xintercept = bio2_marginal_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio2_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_marginal_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_marginal_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_marginal_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1570,8 +1570,8 @@ bio11_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio11$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1579,15 +1579,15 @@ bio11_univar_combined <- ggplot() +
    geom_vline(aes(xintercept = bio11_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio11_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1624,8 +1624,8 @@ bio12_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio12$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1633,15 +1633,15 @@ bio12_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio12_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio12_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1678,8 +1678,8 @@ bio15_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio15$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # native model data
   geom_smooth(data = regional_native_univar_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1687,15 +1687,15 @@ bio15_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio15_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1732,8 +1732,8 @@ bio2_univar_combined <- ggplot() +
   geom_smooth(data = global_univar_bio2$data[[1]], aes(x = x, y = y, color = "global"), se = FALSE, method = "gam") +
   # Rn (native) model data
   geom_smooth(data = regional_native_univar_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)"), se = FALSE, method = "gam") +
-  # invaded model data
-  geom_smooth(data = regional_invaded_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
+  # invaded_n_american model data
+  geom_smooth(data = regional_invaded_n_american_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica"), se = FALSE, method = "gam") +
   # Ri.Asia model data
   geom_smooth(data = regional_invaded_asian_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia"), se = FALSE, method = "gam") +
   # plot peak trendline and labels
@@ -1741,15 +1741,15 @@ bio2_univar_combined <- ggplot() +
   geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
   # Rn (native)
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
-  # invaded
+  # invaded_n_american
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
   # Ri.Asia
   geom_vline(aes(xintercept = bio2_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
   # plot rug plots
   # Rn (native)
   geom_rug(aes(x = regional_native_univar_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
-  # invaded
-  geom_rug(aes(x = regional_invaded_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
   # Ri.Asia
   geom_rug(aes(x = regional_invaded_asian_univar_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
   # default style
@@ -1799,6 +1799,160 @@ write_rds(
   bio2_univar_combined,
   file = file.path(here::here(), "vignette-outputs", "figures", "figures-rds", "regional_ensemble_global_bio2_univar_resp_curve_cloglog.rds")
 )
+```
+
+### unsmoothed versions
+
+
+``` r
+bio11_univar_combined_uns <- ggplot() +
+  # global
+  geom_line(data = global_univar_bio11$data[[1]], aes(x = x, y = y, color = "global")) +
+  # Rn (native) model data
+  geom_line(data = regional_native_univar_bio11$data[[1]], aes(x = x, y = y, color = "Rn (native)")) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica")) +
+  # Ri.Asia model data
+  geom_line(data = regional_invaded_asian_univar_bio11$data[[1]], aes(x = x, y = y, color = "Ri.Asia")) +
+  # plot peak trendline and labels
+  # global
+   geom_vline(aes(xintercept = bio11_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
+  # Rn (native)
+  geom_vline(aes(xintercept = bio11_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
+  # invaded_n_american
+  geom_vline(aes(xintercept = bio11_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
+  # Ri.Asia
+  geom_vline(aes(xintercept = bio11_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
+  # plot rug plots
+  # Rn (native)
+  geom_rug(aes(x = regional_native_univar_bio11$data[[2]]$x, color = "Rn (native)"), sides = "t") +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio11$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # Ri.Asia
+  geom_rug(aes(x = regional_invaded_asian_univar_bio11$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
+  # default style
+  univar_plots_style +
+  # labels
+  labs(
+    subtitle = "Bio 11 (mean temperature of the coldest quarter)",
+    x = "Bio 11: mean temperature of the coldest quarter (C)"
+    ) +
+  # aesthetics
+  xlim(-20, 20) 
+```
+
+
+``` r
+bio12_univar_combined_uns <- ggplot() +
+  # global
+  geom_line(data = global_univar_bio12$data[[1]], aes(x = x, y = y, color = "global")) +
+  # Rn (native) model data
+  geom_line(data = regional_native_univar_bio12$data[[1]], aes(x = x, y = y, color = "Rn (native)")) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica")) +
+  # Ri.Asia model data
+  geom_line(data = regional_invaded_asian_univar_bio12$data[[1]], aes(x = x, y = y, color = "Ri.Asia")) +
+  # plot peak trendline and labels
+  # global
+  geom_vline(aes(xintercept = bio12_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
+  # Rn (native)
+  geom_vline(aes(xintercept = bio12_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
+  # invaded_n_american
+  geom_vline(aes(xintercept = bio12_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
+  # Ri.Asia
+  geom_vline(aes(xintercept = bio12_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
+  # plot rug plots
+  # Rn (native)
+  geom_rug(aes(x = regional_native_univar_bio12$data[[2]]$x, color = "Rn (native)"), sides = "t") +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio12$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # Ri.Asia
+  geom_rug(aes(x = regional_invaded_asian_univar_bio12$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
+  # default style
+  univar_plots_style +
+  # labels
+  labs(
+    subtitle = "Bio 12 (Annual Precipitation)",
+    x = "Bio 12: annual precipitation (mm)"
+    ) +
+  # aesthetics
+  xlim(0, 4250) 
+```
+
+
+``` r
+bio15_univar_combined_uns <- ggplot() +
+  # global
+  geom_line(data = global_univar_bio15$data[[1]], aes(x = x, y = y, color = "global")) +
+  # native model data
+  geom_line(data = regional_native_univar_bio15$data[[1]], aes(x = x, y = y, color = "Rn (native)")) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica")) +
+  # Ri.Asia model data
+  geom_line(data = regional_invaded_asian_univar_bio15$data[[1]], aes(x = x, y = y, color = "Ri.Asia")) +
+  # plot peak trendline and labels
+  # global
+  geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
+  # Rn (native)
+  geom_vline(aes(xintercept = bio15_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
+  # invaded_n_american
+  geom_vline(aes(xintercept = bio15_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
+  # Ri.Asia
+  geom_vline(aes(xintercept = bio15_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
+  # plot rug plots
+  # Rn (native)
+  geom_rug(aes(x = regional_native_univar_bio15$data[[2]]$x, color = "Rn (native)"), sides = "t") +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio15$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # Ri.Asia
+  geom_rug(aes(x = regional_invaded_asian_univar_bio15$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
+  # default style
+  univar_plots_style +
+  # labels
+  labs(
+    subtitle = "Bio 15 (Precipitation Seasonality, CV)",
+    x = "Bio 15: precipitation seasonality (%)"
+    ) +
+  # aesthetics
+  xlim(0, 120) 
+```
+
+
+``` r
+bio2_univar_combined_uns <- ggplot() +
+  # global
+  geom_line(data = global_univar_bio2$data[[1]], aes(x = x, y = y, color = "global")) +
+  # Rn (native) model data
+  geom_line(data = regional_native_univar_bio2$data[[1]], aes(x = x, y = y, color = "Rn (native)")) +
+  # invaded_n_american model data
+  geom_line(data = regional_invaded_n_american_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.NAmerica")) +
+  # Ri.Asia model data
+  geom_line(data = regional_invaded_asian_univar_bio2$data[[1]], aes(x = x, y = y, color = "Ri.Asia")) +
+  # plot peak trendline and labels
+  # global
+  geom_vline(aes(xintercept = bio15_univar_max_activity_global, color = "global"), linetype = "dashed", linewidth = 0.5) +
+  # Rn (native)
+  geom_vline(aes(xintercept = bio2_univar_max_activity_values[[1]], color = "Rn (native)"), linetype = "dashed", linewidth = 0.5) +
+  # invaded_n_american
+  geom_vline(aes(xintercept = bio2_univar_max_activity_values[[2]], color = "Ri.NAmerica"), linetype = "dashed", linewidth = 0.5) +
+  # Ri.Asia
+  geom_vline(aes(xintercept = bio2_univar_max_activity_values[[3]], color = "Ri.Asia"), linetype = "dashed", linewidth = 0.5) +
+  # plot rug plots
+  # Rn (native)
+  geom_rug(aes(x = regional_native_univar_bio2$data[[2]]$x, color = "Rn (native)"), sides = "t") +
+  # invaded_n_american
+  geom_rug(aes(x = regional_invaded_n_american_univar_bio2$data[[2]]$x, color = "Ri.NAmerica"), sides = "t", alpha = 0.8) +
+  # Ri.Asia
+  geom_rug(aes(x = regional_invaded_asian_univar_bio2$data[[2]]$x, color = "Ri.Asia"), sides = "t", alpha = 0.6) +
+  # default style
+  univar_plots_style +
+  # labels
+  labs(
+    subtitle = "Bio 2 (Mean Diurnal Range)",
+    x = "Bio 2: mean diurnal range (C)"
+    ) +
+  # aesthetics
+  xlim(0, 15) 
 ```
 
 # Patchwork together plots
@@ -1930,46 +2084,74 @@ ggsave(
   )
 ```
 
+## univariate resp curves unsmoothed
+
 
 ``` r
-bio11_univar_combined <- bio11_univar_combined + 
+bio2_univar_combined_uns  <- bio2_univar_combined_uns +
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
     plot.caption = element_blank(),
     plot.tag.location = "panel",
     plot.tag.position = c(0.05, 0.9),
-    plot.tag = element_text(face = "bold", size = 20)
+    plot.tag = element_text(face = "bold", size = 25)
     ) +
   labs(tag = "A") 
 
 
 
-bio15_univar_combined  <- bio15_univar_combined +
+bio11_univar_combined_uns <- bio11_univar_combined_uns + 
   theme(
     plot.title = element_blank(),
     plot.subtitle = element_blank(),
     plot.caption = element_blank(),
     plot.tag.location = "panel",
     plot.tag.position = c(0.05, 0.9),
-    plot.tag = element_text(face = "bold", size = 20)
+    plot.tag = element_text(face = "bold", size = 25)
     ) +
-  labs(tag = "B")  
+  labs(tag = "B") 
+
+
+
+bio12_univar_combined_uns <- bio12_univar_combined_uns + 
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    plot.tag.location = "panel",
+    plot.tag.position = c(0.05, 0.9),
+    plot.tag = element_text(face = "bold", size = 25)
+    ) +
+  labs(tag = "C") 
+
+
+  
+bio15_univar_combined_uns <- bio15_univar_combined_uns + 
+  theme(
+    plot.title = element_blank(),
+    plot.subtitle = element_blank(),
+    plot.caption = element_blank(),
+    plot.tag.location = "panel",
+    plot.tag.position = c(0.05, 0.9),
+    plot.tag = element_text(face = "bold", size = 25)
+    ) +
+  labs(tag = "D") 
 
 
 
 
-univar_combined_patchwork_main <- (bio11_univar_combined / bio15_univar_combined) +
+univar_combined_uns_patchwork <- (bio2_univar_combined_uns + bio11_univar_combined_uns + bio12_univar_combined_uns + bio15_univar_combined_uns) +
   plot_annotation(title = "Univariate response of 'regional_ensemble' and 'global' models") +
   plot_layout(axes = "collect_y", axis_titles = "collect_y", guides = "collect") & # collect y axis and legends
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") 
 ```
 
 
 ``` r
 ggsave(
-  univar_combined_patchwork_main, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_ensemble_global_combined_univar_resp_curve_cloglog_main.jpg"),
+  univar_combined_uns_patchwork, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_ensemble_global_combined_univar_resp_curve_cloglog_unsmoothed.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -1979,44 +2161,33 @@ ggsave(
 
 
 ``` r
-bio12_univar_combined <- bio12_univar_combined + 
-  theme(
-    plot.title = element_blank(),
-    plot.subtitle = element_blank(),
-    plot.caption = element_blank(),
-    plot.tag.location = "panel",
-    plot.tag.position = c(0.05, 0.9),
-    plot.tag = element_text(face = "bold", size = 20)
-    ) +
-  labs(tag = "A") 
+univar_combined_uns_patchwork_pt1 <- (bio2_univar_combined_uns + bio11_univar_combined_uns) +
+  plot_annotation(title = "Univariate response of 'regional_ensemble' and 'global' models- Raw outputs") +
+  plot_layout(axes = "collect_y", axis_titles = "collect_y", guides = "collect", nrow = 2) & # collect y axis and legends
+  theme(legend.position = "bottom") 
 
-
-
-bio2_univar_combined  <- bio2_univar_combined +
-  theme(
-    plot.title = element_blank(),
-    plot.subtitle = element_blank(),
-    plot.caption = element_blank(),
-    plot.tag.location = "panel",
-    plot.tag.position = c(0.05, 0.9),
-    plot.tag = element_text(face = "bold", size = 20)
-    ) +
-  labs(tag = "B") 
-
-
-
-
-univar_combined_patchwork_supp <- (bio12_univar_combined / bio2_univar_combined) +
-  plot_annotation(title = "Univariate response of 'regional_ensemble' and 'global' models") +
-  plot_layout(axes = "collect_y", axis_titles = "collect_y", guides = "collect") & # collect y axis and legends
-  theme(legend.position = "bottom")
+# save
+ggsave(
+  univar_combined_uns_patchwork_pt1, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_ensemble_global_combined_univar_resp_curve_cloglog_half1_unsmoothed.jpg"),
+  height = 8, 
+  width = 10,
+  device = jpeg,
+  dpi = "retina"
+  )
 ```
 
 
 ``` r
+univar_combined_uns_patchwork_pt2 <- (bio12_univar_combined_uns + bio15_univar_combined_uns) +
+  plot_annotation(title = "Univariate response of 'regional_ensemble' and 'global' models- Raw outputs") +
+  plot_layout(axes = "collect_y", axis_titles = "collect_y", guides = "collect", nrow = 2) & # collect y axis and legends
+  theme(legend.position = "bottom") 
+
+# save
 ggsave(
-  univar_combined_patchwork_supp, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_ensemble_global_combined_univar_resp_curve_cloglog_supp.jpg"),
+  univar_combined_uns_patchwork_pt2, 
+  filename = file.path(here::here(), "vignette-outputs", "figures", "regional_ensemble_global_combined_univar_resp_curve_cloglog_half2_unsmoothed.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -2140,7 +2311,7 @@ modelling range-shifting species. Methods in Ecology and Evolution,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

@@ -650,7 +650,7 @@ bio11_df <- terra::rast(x = file.path(mypath, "historical_climate_rasters", "che
 # plot main layer as example
 (ggplot() +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   # change scale of plots to be standard across figures
   geom_raster(data = bio11_df, 
             aes(x = x, y = y, fill = `CHELSA_bio11_1981-2010_V.2.1`)) +
@@ -879,7 +879,7 @@ bio11_invaded_asian <- terra::as.data.frame(bio11_invaded_asian, xy = TRUE)
 # plot main layer as example
 (ggplot() +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   # change scale of plots to be standard across figures
   geom_raster(data = bio11_invaded_asian, aes(x = x, y = y, fill = `CHELSA_bio11_1981-2010_V.2.1`)) +
   xlab("UTM Easting") +
@@ -1167,7 +1167,7 @@ bio11_native <- terra::as.data.frame(bio11_native, xy = TRUE)
 # plot main layer as example
 ggplot() +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   # change scale of plots to be standard across figures
   geom_raster(data = bio11_native, aes(x = x, y = y, fill = `CHELSA_bio11_1981-2010_V.2.1`)) +
   xlab("UTM Easting") +
@@ -1368,7 +1368,7 @@ regional_invaded_asian_points <- read.csv(file = file.path(here::here(), "vignet
 regional_invaded_asian_points_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_bio11_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = regional_invaded_asian_points, aes(x = x, y = y), color = "firebrick2", size = 0.5) +
@@ -1455,7 +1455,7 @@ regional_native_points <- read_csv(file = file.path(here::here(), "vignette-outp
 regional_native_points_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_native_bio2_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = regional_native_points, aes(x = x, y = y), color = "firebrick2", size = 0.25) +
@@ -1556,7 +1556,7 @@ slf_points_invaded_n_american <- read_csv(file = file.path(here::here(), "vignet
 regional_invaded_n_american_slf_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_n_american, aes(x = x, y = y), color = "darkorange", size = 0.5) +
@@ -1633,7 +1633,7 @@ slf_points_invaded_asian <- read_csv(file = file.path(here::here(), "vignette-ou
 regional_invaded_asian_slf_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_asian, aes(x = x, y = y), color = "darkorange", size = 1) +
@@ -1708,7 +1708,7 @@ slf_points_native <- read_csv(file = file.path(here::here(), "vignette-outputs",
 regional_native_slf_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_native_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_native, aes(x = x, y = y), color = "darkorange", size = 1) +
@@ -1877,7 +1877,7 @@ invaded_asian_df <- terra::rast(x = file.path(mypath, "bio2_1981-2010_regional_i
 regional_invaded_n_american_test_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = invaded_asian_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_n_american_test, aes(x = x, y = y), color = "darkorange", size = 1) +
@@ -2019,7 +2019,7 @@ regional_invaded_n_american <- terra::rast(
 regional_invaded_asian_test_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_invaded_asian_test, aes(x = x, y = y), color = "darkorange", size = 1) +
@@ -2165,7 +2165,7 @@ regional_invaded_n_american <- terra::rast(
 regional_native_test_plot <- ggplot() +
   map_style +
   # empty world map to force same aspect ratio
-  geom_sf(data = countries_sf, aes(geometry = geometry), fill = NA, color = NA) +
+  geom_sf(data = countries_sf, fill = NA, color = NA) +
   geom_raster(data = global_bio11_df, aes(x = x, y = y), fill = "azure4") +
   geom_raster(data = regional_invaded_n_american_df, aes(x = x, y = y), fill = "azure1") +
   geom_point(data = slf_points_native_test, aes(x = x, y = y), color = "darkorange", size = 1) +

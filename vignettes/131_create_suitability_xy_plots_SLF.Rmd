@@ -951,6 +951,10 @@ slf_populations_joined <- dplyr::left_join(slf_populations, xy_joined_rescaled, 
   # remove join cols
   dplyr::select(-c(join_col_x, join_col_y, Species)) 
   
+```
+
+```{r calculate risk quadrant}
+
 # calculate risk quadrants
 slf_populations_risk <- slf_populations_joined %>%
   dplyr::mutate(
@@ -971,7 +975,7 @@ slf_populations_risk <- slf_populations_joined %>%
 
 ```
 
-```{r factor ordering of risk, eval = TRUE}
+```{r factor ordering of risk}
 
 # factor levels for risk categories
 risk_levels <- c("extreme", "high", "moderate", "low")
@@ -981,7 +985,7 @@ n_records <- nrow(slf_populations_risk)
 
 ```
 
-```{r risk categories table, eval = TRUE}
+```{r risk categories table}
 
 slf_risk_table <- slf_populations_risk %>%
   # ensure columns are character
@@ -1033,6 +1037,15 @@ write_csv(
   )
 
 ```
+
+```{r display table, eval = TRUE}
+
+slf_risk_table <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "slf_risk_table.csv"))
+
+head(slf_risk_table)
+
+```
+
 
 # 5. global risk shift vs regional risk shift
 

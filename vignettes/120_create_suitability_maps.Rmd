@@ -299,7 +299,7 @@ map_cloglog_output <- function(raster.df, raster.value.name, thresh.fixed_1, thr
 
 I also made a duplicate function of the above function called `map_cloglog_output_low_thresh()`, which does not have the label for the `fixed_1` threshold on the colorscale, because these labels would often overlap (code not shown).
 
-```{r mapping helper function, eval = TRUE, include = FALSE}
+```{r mapping helper function- low thresh, eval = TRUE, include = FALSE}
 
 map_cloglog_output_low_thresh <- function(raster.df, raster.value.name, thresh.fixed_1, thresh.MTSS) {
   

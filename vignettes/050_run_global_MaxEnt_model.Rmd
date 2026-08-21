@@ -435,12 +435,16 @@ global_model <- global_model_tuned_auc@models[[11]] # reg multiplier = 1.5, qpht
 
 I will apply my function `compute_MaxEnt_summary_statistics_CV()` to produce all summary statistics for this model. This list includes marginal and univariate response curves, jackknife tests, variable importance, thresholds and confusion matrices, among other statistics. For the complete and annotated workflow used to create this function, see `vignettes/051_maxent_workflow`.
 
-```{r compute summary statistics using custom function}
+```{r pathing 1, eval = TRUE}
 
 # output directory
 mypath <- file.path(here::here() %>% 
                        dirname(),
                      "maxent/models/slf_global_v5")
+
+```
+
+```{r compute summary statistics using custom function}
 
 scari::compute_MaxEnt_summary_statistics_CV(
   model.obj = global_model, 

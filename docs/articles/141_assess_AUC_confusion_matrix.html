@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Assess model goodness of fit via AUC, TSS and confusion matrices">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scari</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-08-05</h4>
+            <h4 data-toc-skip class="date">2026-08-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/141_assess_AUC_confusion_matrix.Rmd" class="external-link"><code>vignettes/141_assess_AUC_confusion_matrix.Rmd</code></a></small>
       <div class="d-none name"><code>141_assess_AUC_confusion_matrix.Rmd</code></div>
@@ -109,11 +109,11 @@ for each model.</p>
 <span><span class="co"># SDMtune and dependencies</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://consbiol-unibern.github.io/SDMtune/" class="external-link">SDMtune</a></span><span class="op">)</span> <span class="co"># main package used to run SDMs</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster/sdm/" class="external-link">dismo</a></span><span class="op">)</span> <span class="co"># package underneath SDMtune</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span> <span class="co"># for running MaxEnt</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span> <span class="co"># for running MaxEnt</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span> <span class="co"># plots ROCs</span></span>
 <span></span>
 <span><span class="co"># html tools</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wch.github.io/webshot/" class="external-link">webshot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/webshot2/" class="external-link">webshot2</a></span><span class="op">)</span></span></code></pre></div>
 <p>These plots depict the activity of the variables put into the MaxEnt
@@ -130,11 +130,11 @@ regional_ensemble</p>
 <span>  <span class="st">"Ri.Asia"</span> <span class="op">=</span> <span class="st">"#377eb8"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">regional_native_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v4"</span>, <span class="st">"regional_native_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">regional_native_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v5"</span>, <span class="st">"regional_native_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_v8"</span>, <span class="st">"regional_invaded_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">regional_invaded_n_american_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_n_american_v9"</span>, <span class="st">"regional_invaded_n_american_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_asian_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v3"</span>, <span class="st">"regional_invaded_asian_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">regional_invaded_asian_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v4"</span>, <span class="st">"regional_invaded_asian_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="tss-score">TSS Score<a class="anchor" aria-label="anchor" href="#tss-score"></a>
@@ -147,47 +147,47 @@ It is a threshold-dependent measure of accuracy, and we have already
 calculated the TSS score for each model based on the testing data. I
 will load those in and display them.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">regional_native_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v4"</span>, <span class="st">"regional_native_auc_tss.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">regional_native_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v5"</span>, <span class="st">"regional_native_model_eval_metrics.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># select test TSS</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TSS</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_v8"</span>, <span class="st">"regional_invaded_auc_tss.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">regional_invaded_n_american_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_n_american_v9"</span>, <span class="st">"regional_invaded_n_american_model_eval_metrics.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TSS</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_asian_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v3"</span>, <span class="st">"regional_invaded_asian_auc_tss.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">regional_invaded_asian_tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v4"</span>, <span class="st">"regional_invaded_asian_model_eval_metrics.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">TSS</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_tail</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tss_scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regional native"</span>, <span class="st">"regional invaded NAmerica"</span>, <span class="st">"regional invaded Asia"</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"regional native"</span>, <span class="st">"regional invaded North American"</span>, <span class="st">"regional invaded Asian"</span><span class="op">)</span>,</span>
 <span>  TSS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="va">regional_native_tss</span><span class="op">$</span><span class="va">TSS</span>,</span>
-<span>    <span class="va">regional_invaded_tss</span><span class="op">$</span><span class="va">TSS</span>,</span>
+<span>    <span class="va">regional_invaded_n_american_tss</span><span class="op">$</span><span class="va">TSS</span>,</span>
 <span>    <span class="va">regional_invaded_asian_tss</span><span class="op">$</span><span class="va">TSS</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tss_scores</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 3 × 2</span></span></span>
-<span><span class="co">##   model                       TSS</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> regional native           0.992</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> regional invaded NAmerica 0.289</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> regional invaded Asia     0.824</span></span></code></pre>
+<span><span class="co">##   model                             TSS</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> regional native                 0.999</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> regional invaded North American 0.318</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> regional invaded Asian          0.581</span></span></code></pre>
 <p>We can see that the native and invaded Asian models have excellent
-discriminating power, with TSS scores of 0.99 and 0.82, respectively.
-The invaded North American model has a TSS score of 0.29, indicating
+discriminating power, with TSS scores of 0.99 and 0.58, respectively.
+The invaded North American model has a TSS score of 0.32, indicating
 that it’s discriminating power is poor.</p>
 <p>Despite the poor performance of some of our regional-scale models, we
-can have confidence in their performance. During the ensemble process
-(vignette 110), we took a weighted mean of each of the regional-scale
-models, which allowed us give higher weight to models that performed
+can have confidence in our ensembled mean model, which is composed of
+the three models put together using a weighted mean of each of the
+regional-scale models. This gave higher weight to models that performed
 better according to the AUC metric, and lower weight to the lower
-performers. Indeed, the native model contributed 44% of the final model
-output, the invaded Asian model contributed 34% of the final output, and
-the invaded North American model only contributed 21% of the final
+performers. Indeed, the native model contributed 46% of the final model
+output, the invaded Asian model contributed 31% of the final output, and
+the invaded North American model only contributed 24% of the final
 weight. This correlates with our TSS scores.</p>
 </div>
 <div class="section level2">
@@ -199,18 +199,18 @@ weight. This correlates with our TSS scores.</p>
 <p>First, I will build the SWD objects required by
 <code><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotROC.html" class="external-link">SDMtune::plotROC</a></code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">regional_native_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_native_test_slf_presences_v4.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">regional_native_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_native_test_slf_presences_v5.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_test_slf_presences_v8.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">regional_invaded_n_american_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_n_american_test_slf_presences_v9.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_asian_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_asian_test_slf_presences_v3.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">regional_invaded_asian_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_asian_test_slf_presences_v4.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># background points</span></span>
-<span><span class="va">a_regional_invaded_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_background_points_v8.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">a_regional_invaded_n_american_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_n_american_background_points_v9.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">a_regional_native_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_native_background_points_v4.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">a_regional_native_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_native_background_points_v5.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">a_regional_invaded_asian_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_asian_background_points_v3.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">a_regional_invaded_asian_background_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"regional_invaded_asian_background_points_v4.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># path to directory</span></span>
 <span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -267,8 +267,8 @@ tables downstream).</p>
 <span>  a <span class="op">=</span> <span class="va">a_regional_invaded_asian_background_points</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># print helpful messages</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.1s]</span></span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[3.4s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.4s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[3.9s]</span></span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># regional native</span></span>
 <span><span class="va">regional_native_test_SWD</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/prepareSWD.html" class="external-link">prepareSWD</a></span><span class="op">(</span></span>
@@ -278,19 +278,19 @@ tables downstream).</p>
 <span>  a <span class="op">=</span> <span class="va">a_regional_native_background_points</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># print helpful messages</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.2s]</span></span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[6.9s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.5s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[9.1s]</span></span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># regional invaded</span></span>
-<span><span class="va">regional_invaded_test_SWD</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/prepareSWD.html" class="external-link">prepareSWD</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># regional invaded_n_american</span></span>
+<span><span class="va">regional_invaded_n_american_test_SWD</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/prepareSWD.html" class="external-link">prepareSWD</a></span><span class="op">(</span></span>
 <span>  species <span class="op">=</span> <span class="st">"Lycorma delicatula"</span>,</span>
 <span>  env <span class="op">=</span> <span class="va">x_global_hist_env_covariates</span>, </span>
-<span>  p <span class="op">=</span> <span class="va">regional_invaded_test</span>, </span>
-<span>  a <span class="op">=</span> <span class="va">a_regional_invaded_background_points</span>,</span>
+<span>  p <span class="op">=</span> <span class="va">regional_invaded_n_american_test</span>, </span>
+<span>  a <span class="op">=</span> <span class="va">a_regional_invaded_n_american_background_points</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># print helpful messages</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.3s]</span></span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[5.1s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[2.6s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[6s]</span></span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="plot">Plot<a class="anchor" aria-label="anchor" href="#plot"></a>
@@ -303,9 +303,9 @@ tables downstream).</p>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">regional_invaded_ROC</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotROC.html" class="external-link">plotROC</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="va">regional_invaded_model</span>,</span>
-<span>  test <span class="op">=</span> <span class="va">regional_invaded_test_SWD</span></span>
+<span><span class="va">regional_invaded_n_american_ROC</span> <span class="op">&lt;-</span> <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/plotROC.html" class="external-link">plotROC</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="va">regional_invaded_n_american_model</span>,</span>
+<span>  test <span class="op">=</span> <span class="va">regional_invaded_n_american_test_SWD</span></span>
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot_build</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -318,8 +318,8 @@ tables downstream).</p>
 <code class="sourceCode R"><span><span class="va">ROC_ensemble</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># invaded_asian model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># midpoint line</span></span>
@@ -347,12 +347,12 @@ tables downstream).</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ROC_ensemble</span></span></code></pre></div>
-<p><img src="141_assess_AUC_confusion_matrix_files/figure-html/ROC%20plot-%20regional%20ensemble-1.png" width="700"></p>
+<p><img src="141_assess_AUC_confusion_matrix_files/figure-html/ROC%20plot-%20regional%20ensemble-1.png" class="r-plt" alt="" width="700"></p>
 <p>We see that the regional-scale model has the highest testing AUC
-(0.99), followed by the invaded Asian model (0.90) and finally the
-invaded North American model (0.51). The invaded North American model is
-only slightly better than random (0.5), which is consistent with its low
-TSS score (0.29). Thankfully, however, we have significantly
+(0.99), followed by the invaded Asian model (0.775) and finally the
+invaded North American model (0.543). The invaded North American model
+is only slightly better than random (0.5), which is consistent with its
+low TSS score (0.32). Thankfully, however, we have significantly
 downweighted this model in our ensemble, so it should not have a large
 impact on our final risk map.</p>
 </div>
@@ -374,11 +374,11 @@ global model. This will allow for a direct comparison of the AUC
 <span>                     <span class="st">"maxent/models"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># model</span></span>
-<span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v5"</span>, <span class="st">"global_model.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># background csv</span></span>
-<span><span class="va">global_background</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v4.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">global_background</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v5.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># all </span></span>
-<span><span class="va">slf_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2025-07-07.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">slf_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2026-07-30.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">species</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="va">ensemble_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -395,8 +395,8 @@ global model. This will allow for a direct comparison of the AUC
 <span>  a <span class="op">=</span> <span class="va">global_background</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># print helpful messages</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[3.5s]</span></span></span>
-<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[13.3s]</span></span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">presence</span> locations <span style="color: #B2B2B2;">[4.4s]</span></span></span>
+<span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations<span style="color: #00BB00;">✔</span> Extracting predictor information for <span style="color: #00BB00;">absence/background</span> locations <span style="color: #B2B2B2;">[17s]</span></span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># split into train and test sets</span></span>
 <span><span class="va">global_trainTest</span> <span class="op">&lt;-</span>  <span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/trainValTest.html" class="external-link">trainValTest</a></span><span class="op">(</span></span>
@@ -420,8 +420,8 @@ global model. This will allow for a direct comparison of the AUC
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">global_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"global"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># native model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_native_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Rn (native)"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="co"># invaded model data</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co"># invaded_n_american model data</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_n_american_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.NAmerica"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># invaded_asian model data</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">regional_invaded_asian_ROC</span><span class="op">$</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, color <span class="op">=</span> <span class="st">"Ri.Asia"</span>, group <span class="op">=</span> <span class="va">group</span>, linetype <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># midpoint line</span></span>
@@ -449,7 +449,7 @@ global model. This will allow for a direct comparison of the AUC
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ROC_ensemble_global</span></span></code></pre></div>
-<p><img src="141_assess_AUC_confusion_matrix_files/figure-html/ROC%20plot-%20global%20added-1.png" width="700"></p>
+<p><img src="141_assess_AUC_confusion_matrix_files/figure-html/ROC%20plot-%20global%20added-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -467,34 +467,34 @@ threshold per model.</p>
 model</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># global</span></span>
-<span><span class="va">global_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v4"</span>, <span class="st">"global_thresh_confusion_matrix_all_iterations.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">global_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_global_v5"</span>, <span class="st">"global_thresh_confusion_matrix_all_iterations.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># only MTSS threshold</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># regional models</span></span>
 <span><span class="co"># native</span></span>
-<span><span class="va">regional_native_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v4"</span>, <span class="st">"regional_native_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">regional_native_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_native_v5"</span>, <span class="st">"regional_native_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="co"># invaded_asia</span></span>
-<span><span class="va">regional_invaded_asian_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v3"</span>, <span class="st">"regional_invaded_asian_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">regional_invaded_asian_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_asian_v4"</span>, <span class="st">"regional_invaded_asian_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
-<span><span class="co"># invaded_NAmerica</span></span>
-<span><span class="va">regional_invaded_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_v8"</span>, <span class="st">"regional_invaded_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="co"># invaded_n_american_NAmerica</span></span>
+<span><span class="va">regional_invaded_n_american_conf_matr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"slf_regional_invaded_n_american_v9"</span>, <span class="st">"regional_invaded_n_american_thresh_confusion_matrix.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_conf_matr</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
 <span><span class="co">##   threshold_type                 threshold_value tp_mean fp_mean fn_mean tn_mean</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> Maximum.training.sensitivity.…          0.016<span style="text-decoration: underline;">9</span>    240.    <span style="text-decoration: underline;">1</span>307    15.7   <span style="text-decoration: underline;">18</span>693</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> Maximum.training.sensitivity.…          0.012<span style="text-decoration: underline;">3</span>    374.   <span style="text-decoration: underline;">1</span>601.    18.8  <span style="text-decoration: underline;">18</span>399.</span></span></code></pre>
 <p>I will create some input datasets which contain the number of test
 positives per model.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_test_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">global_test_SWD</span><span class="op">@</span><span class="va">pa</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co"># regional</span></span>
 <span><span class="va">regional_native_test_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">regional_native_test</span><span class="op">)</span></span>
-<span><span class="va">regional_invaded_test_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">regional_invaded_test</span><span class="op">)</span></span>
+<span><span class="va">regional_invaded_n_american_test_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_test</span><span class="op">)</span></span>
 <span><span class="va">regional_invaded_asian_test_pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">regional_invaded_asian_test</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_sens_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -503,22 +503,22 @@ positives per model.</p>
 <span>    model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"global"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"regional native"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"regional invaded NAmerica"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"regional invaded Asia"</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"regional invaded North American"</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"regional invaded Asian"</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="co"># cloglog MTSS threshold</span></span>
 <span>  thresh <span class="op">=</span> <span class="st">"MTSS.cloglog"</span>,</span>
 <span>  thresh_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">global_conf_matr</span><span class="op">$</span><span class="va">threshold_value</span>, <span class="fl">4</span><span class="op">)</span>, </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_native_conf_matr</span><span class="op">$</span><span class="va">threshold_value</span>, <span class="fl">4</span><span class="op">)</span>, </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_conf_matr</span><span class="op">$</span><span class="va">threshold_value</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_conf_matr</span><span class="op">$</span><span class="va">threshold_value</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_asian_conf_matr</span><span class="op">$</span><span class="va">threshold_value</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>  <span class="co"># the number of test positives</span></span>
 <span>  test_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">global_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, <span class="co"># global, this counts the number of positives in the model (the 1s in the training data)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_native_test_pos</span>, <span class="fl">4</span><span class="op">)</span>,  <span class="co"># native</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, <span class="co"># invaded_NAmerica</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, <span class="co"># invaded_NAmerica</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">regional_invaded_asian_test_pos</span>, <span class="fl">4</span><span class="op">)</span> <span class="co"># invaded_Asia</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="co"># the number of background points</span></span>
@@ -538,10 +538,10 @@ positives per model.</p>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="va">regional_native_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>, </span>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">regional_native_conf_matr</span><span class="op">$</span><span class="va">fn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="co"># invaded_NAmerica</span></span>
-<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_conf_matr</span><span class="op">$</span><span class="va">tp</span> <span class="op">/</span> <span class="va">regional_invaded_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, </span>
-<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span>, <span class="fl">4</span><span class="op">)</span>, </span>
-<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="va">regional_invaded_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>, </span>
-<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">regional_invaded_conf_matr</span><span class="op">$</span><span class="va">fn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_conf_matr</span><span class="op">$</span><span class="va">tp</span> <span class="op">/</span> <span class="va">regional_invaded_n_american_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, </span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_n_american_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span>, <span class="fl">4</span><span class="op">)</span>, </span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="op">(</span><span class="va">regional_invaded_n_american_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>, </span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">regional_invaded_n_american_conf_matr</span><span class="op">$</span><span class="va">fn</span> <span class="op">/</span> <span class="fl">10000</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>,</span>
 <span>    <span class="co"># invaded_asia</span></span>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_asian_conf_matr</span><span class="op">$</span><span class="va">tp</span> <span class="op">/</span> <span class="va">regional_invaded_asian_test_pos</span>, <span class="fl">4</span><span class="op">)</span>, </span>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">regional_invaded_asian_conf_matr</span><span class="op">$</span><span class="va">tn</span> <span class="op">/</span> <span class="fl">10000</span>, <span class="fl">4</span><span class="op">)</span>, </span>
@@ -601,16 +601,16 @@ global
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.01693
+0.01229
 </td>
 <td style="text-align:right;">
-256
+393
 </td>
 <td style="text-align:left;">
 20,000
 </td>
 <td style="text-align:right;">
-0.9388
+0.9522
 </td>
 </tr>
 <tr>
@@ -627,16 +627,16 @@ global
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.01693
+0.01229
 </td>
 <td style="text-align:right;">
-256
+393
 </td>
 <td style="text-align:left;">
 20,000
 </td>
 <td style="text-align:right;">
-0.9346
+0.9199
 </td>
 </tr>
 <tr>
@@ -653,16 +653,16 @@ global
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.01693
+0.01229
 </td>
 <td style="text-align:right;">
-256
+393
 </td>
 <td style="text-align:left;">
 20,000
 </td>
 <td style="text-align:right;">
-0.0654
+0.0801
 </td>
 </tr>
 <tr>
@@ -679,16 +679,16 @@ global
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.01693
+0.01229
 </td>
 <td style="text-align:right;">
-256
+393
 </td>
 <td style="text-align:left;">
 20,000
 </td>
 <td style="text-align:right;">
-0.0008
+0.0009
 </td>
 </tr>
 <tr>
@@ -705,10 +705,10 @@ regional native
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.28320
+0.36890
 </td>
 <td style="text-align:right;">
-64
+87
 </td>
 <td style="text-align:left;">
 10,000
@@ -731,16 +731,16 @@ regional native
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.28320
+0.36890
 </td>
 <td style="text-align:right;">
-64
+87
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.7745
+0.7904
 </td>
 </tr>
 <tr>
@@ -757,16 +757,16 @@ regional native
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.28320
+0.36890
 </td>
 <td style="text-align:right;">
-64
+87
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.2255
+0.2096
 </td>
 </tr>
 <tr>
@@ -783,10 +783,10 @@ regional native
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.28320
+0.36890
 </td>
 <td style="text-align:right;">
-64
+87
 </td>
 <td style="text-align:left;">
 10,000
@@ -803,16 +803,16 @@ sensitivity
 true_positive rate
 </td>
 <td style="text-align:left;">
-regional invaded NAmerica
+regional invaded North American
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.07810
+0.11980
 </td>
 <td style="text-align:right;">
-150
+238
 </td>
 <td style="text-align:left;">
 10,000
@@ -829,22 +829,22 @@ specificity
 true_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded NAmerica
+regional invaded North American
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.07810
+0.11980
 </td>
 <td style="text-align:right;">
-150
+238
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.9319
+0.9084
 </td>
 </tr>
 <tr>
@@ -855,22 +855,22 @@ commission error
 1 - true_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded NAmerica
+regional invaded North American
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.07810
+0.11980
 </td>
 <td style="text-align:right;">
-150
+238
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.0681
+0.0916
 </td>
 </tr>
 <tr>
@@ -881,22 +881,22 @@ omission error
 false_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded NAmerica
+regional invaded North American
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.07810
+0.11980
 </td>
 <td style="text-align:right;">
-150
+238
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.0150
+0.0238
 </td>
 </tr>
 <tr>
@@ -907,22 +907,22 @@ sensitivity
 true_positive rate
 </td>
 <td style="text-align:left;">
-regional invaded Asia
+regional invaded Asian
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.10970
+0.14450
 </td>
 <td style="text-align:right;">
-43
+48
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.9302
+0.2500
 </td>
 </tr>
 <tr>
@@ -933,22 +933,22 @@ specificity
 true_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded Asia
+regional invaded Asian
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.10970
+0.14450
 </td>
 <td style="text-align:right;">
-43
+48
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.8712
+0.8627
 </td>
 </tr>
 <tr>
@@ -959,22 +959,22 @@ commission error
 1 - true_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded Asia
+regional invaded Asian
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.10970
+0.14450
 </td>
 <td style="text-align:right;">
-43
+48
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.1288
+0.1373
 </td>
 </tr>
 <tr>
@@ -985,22 +985,22 @@ omission error
 false_negative rate
 </td>
 <td style="text-align:left;">
-regional invaded Asia
+regional invaded Asian
 </td>
 <td style="text-align:left;">
 MTSS.cloglog
 </td>
 <td style="text-align:right;">
-0.10970
+0.14450
 </td>
 <td style="text-align:right;">
-43
+48
 </td>
 <td style="text-align:left;">
 10,000
 </td>
 <td style="text-align:right;">
-0.0003
+0.0036
 </td>
 </tr>
 </tbody>
@@ -1051,7 +1051,7 @@ Tests and Predictive Models. Circulation, 115(5), 654–657. <a href="https://do
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

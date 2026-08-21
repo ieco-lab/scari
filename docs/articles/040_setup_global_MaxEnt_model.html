@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Setup for global-scale MaxEnt model">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scari</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-07-07</h4>
+            <h4 data-toc-skip class="date">2026-07-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/040_setup_global_MaxEnt_model.Rmd" class="external-link"><code>vignettes/040_setup_global_MaxEnt_model.Rmd</code></a></small>
       <div class="d-none name"><code>040_setup_global_MaxEnt_model.Rmd</code></div>
@@ -93,12 +93,13 @@ it for climate change. I will need to format the data in this vignette,
 will be trained and tested on all available climate data that is split
 into 10 random folds. In the next vignette I will run this model, and in
 the following vignette I will set up for the three regional models.</p>
+<p><em>CURRENT MODEL VERSION:</em> * Global mean model: v5</p>
 <table class="table table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="4">
 <div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Global-scale model
+Global-scale model (version 5)
 </div>
 </th>
 </tr>
@@ -122,10 +123,10 @@ background_points
 10-fold random cross validation, 80% train / 20% test
 </td>
 <td style="text-align:left;">
-1026
+1,513
 </td>
 <td style="text-align:left;">
-256
+378
 </td>
 <td style="text-align:left;">
 20,000
@@ -156,7 +157,7 @@ will continue to use.</p>
 <span><span class="co"># aesthetics</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wch.github.io/webshot/" class="external-link">webshot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/webshot2/" class="external-link">webshot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://haozhu233.github.io/kableExtra/" class="external-link">kableExtra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span></code></pre></div>
 <p><strong>Note:</strong> I will be setting the global options of this
 document so that only certain code chunks are rendered in the final
@@ -197,7 +198,7 @@ created for each of the global and regional models.</p>
 does not occur in those grid cells.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dismo requires the base function (not tidyverse)</span></span>
-<span><span class="va">slf_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2025-07-07.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">slf_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2026-07-30.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">species</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -242,9 +243,9 @@ appropriate spacing. These datasets will be stored in
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># save as csv</span></span>
-<span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">global_points</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v4.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link">write_csv</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">global_points</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v5.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># save as rds file</span></span>
-<span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">global_points</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_background_points_v4.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">global_points</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_background_points_v5.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Now, I will plot these points for visualization purposes.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -255,14 +256,14 @@ appropriate spacing. These datasets will be stored in
 <span><span class="va">global_bio2_df</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"bio2_1981-2010_global.asc"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">.</span>, xy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># points</span></span>
-<span><span class="va">global_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v4.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">global_points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_v5.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Raster pixels are placed at uneven horizontal intervals and will be shifted</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span></code></pre>
-<p><img src="040_setup_global_MaxEnt_model_files/figure-html/plot%20points-1.png" width="700"></p>
+<p><img src="040_setup_global_MaxEnt_model_files/figure-html/plot%20points-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
 <span>  <span class="va">global_background_plot</span>, </span>
-<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"figures"</span>, <span class="st">"global_model_background_points_v4.jpg"</span><span class="op">)</span>,</span>
+<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"figures"</span>, <span class="st">"global_model_background_points_v5.jpg"</span><span class="op">)</span>,</span>
 <span>  height <span class="op">=</span> <span class="fl">8</span>, </span>
 <span>  width <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  device <span class="op">=</span> <span class="va">jpeg</span>,</span>
@@ -276,11 +277,11 @@ appropriate spacing. These datasets will be stored in
 These points will represent the known presences in the model.</p>
 <pre><code><span><span class="co">## Warning: Raster pixels are placed at uneven horizontal intervals and will be shifted</span></span>
 <span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Consider using `geom_tile()` instead.</span></span></code></pre>
-<p><img src="040_setup_global_MaxEnt_model_files/figure-html/plot%20model%20presences-1.png" width="700"></p>
+<p><img src="040_setup_global_MaxEnt_model_files/figure-html/plot%20model%20presences-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
 <span>  <span class="va">global_slf_plot</span>, </span>
-<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"figures"</span>, <span class="st">"global_model_presence_points_v4.jpg"</span><span class="op">)</span>,</span>
+<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"figures"</span>, <span class="st">"global_model_presence_points_v5.jpg"</span><span class="op">)</span>,</span>
 <span>  height <span class="op">=</span> <span class="fl">8</span>, </span>
 <span>  width <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  device <span class="op">=</span> <span class="va">jpeg</span>,</span>
@@ -361,7 +362,7 @@ global_patchwork <- (global_slf_plot / global_background_plot) +
 ``` r
 ggsave(
   global_patchwork, 
-  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_v4_summary.jpg"),
+  filename = file.path(here::here(), "vignette-outputs", "figures", "global_model_v5_summary.jpg"),
   height = 8, 
   width = 10,
   device = jpeg,
@@ -383,7 +384,7 @@ ggsave(
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

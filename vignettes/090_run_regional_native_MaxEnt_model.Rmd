@@ -434,7 +434,7 @@ knitr::include_graphics(
 
 Lastly, I will use the `SDMtune::predict()` function to predict the suitability for the range of interest. I will threshold the map by the `fixed_1`, `MTSS` and `10_percentile` thresholds. The workflow for this function is wrapped into the function `create_MaxEnt_suitability_maps()`.
 
-```{r set wd 1, eval = TRUE}
+```{r set wd 2, eval = TRUE}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),
@@ -664,7 +664,7 @@ scari::predict_xy_suitability(
 
 I will perform the same action as above, but for the locations of important wineries around the world.
 
-```{r set wd 2}
+```{r set wd 3}
 
 mypath <- file.path(here::here() %>% 
                        dirname(),

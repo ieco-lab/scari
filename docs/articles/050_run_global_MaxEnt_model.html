@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Run global-scale MaxEnt model">
 </head>
@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scari</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
 Owens<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Temple University, &lt;a href="mailto:sam.owens@temple.edu" class="email"&gt;sam.owens@temple.edu&lt;/a&gt;, &lt;a href="https://orcid.org/0009-0001-2338-7928" class="external-link"&gt;ORCID&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-07-07</h4>
+            <h4 data-toc-skip class="date">2026-07-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ieco-lab/scari/blob/HEAD/vignettes/050_run_global_MaxEnt_model.Rmd" class="external-link"><code>vignettes/050_run_global_MaxEnt_model.Rmd</code></a></small>
       <div class="d-none name"><code>050_run_global_MaxEnt_model.Rmd</code></div>
@@ -114,18 +114,19 @@ models.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p><em>CURRENT MODEL VERSION: v4</em></p>
+<p><em>CURRENT MODEL VERSION:</em> * Global mean model: v5</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># general tools</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>  <span class="co">#data manipulation</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/" class="external-link">here</a></span><span class="op">)</span> <span class="co">#making directory pathways easier on different instances</span></span>
 <span><span class="co"># here::here() starts at the root folder of this package.</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SDMtune and dependencies</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://consbiol-unibern.github.io/SDMtune/" class="external-link">SDMtune</a></span><span class="op">)</span> <span class="co"># main package used to run SDMs</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster/sdm/" class="external-link">dismo</a></span><span class="op">)</span> <span class="co"># package underneath SDMtune</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span> <span class="co"># for running MaxEnt</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.rforge.net/rJava/" class="external-link">rJava</a></span><span class="op">)</span> <span class="co"># for running MaxEnt</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/plotROC/" class="external-link">plotROC</a></span><span class="op">)</span> <span class="co"># plots ROCs</span></span>
 <span></span>
 <span><span class="co"># spatial data handling</span></span>
@@ -150,16 +151,19 @@ has the proper version of java installed (x32 or x64) for your operating
 system.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/checkMaxentInstallation.html" class="external-link">checkMaxentInstallation</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #00BB00;">Java</span> is not installed.</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #00BB00;">Java</span> is installed.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> The packege <span style="color: #0000BB;">rJava</span> is installed.</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> The file <span style="color: #0000BB;">maxent.jar</span> is present in the correct folder.</span></span></code></pre>
-<pre><code><span><span class="co">## [1] FALSE</span></span></code></pre>
+<pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>This chunk sets the java memory allocation (<code>Xmx</code>). I will
-increase the memory allocation from 512m (the default) to 2GB of
-memory.</p>
+increase the memory allocation from 512m (the default) to 8GB (8000mb)
+of memory. This should be edited according to your system, because you
+should still leave about 20% of your system memory available for other
+processes. If you have a 32-bit system, you cannot set the max above
+4000mb.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># xmx sets java memory allocation</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>java.parameters <span class="op">=</span> <span class="st">"-Xmx2048m"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>java.parameters <span class="op">=</span> <span class="st">"-Xmx8000m"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># xss sets java stack size</span></span>
 <span><span class="co"># options(java.parameters = c("-Xss2560k", "-Xmx2048m"))</span></span></code></pre></div>
@@ -179,11 +183,11 @@ points datasets.</p>
 020 and the background points dataset created in vignette 040.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># slf presences</span></span>
-<span><span class="va">p_slf_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2025-07-07.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">p_slf_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"slf_all_coords_final_2026-07-30.rds"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">species</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># entire eastern USA background point set</span></span>
-<span><span class="va">a_global_background_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_background_points_v4.rds"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<span><span class="va">a_global_background_points</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_background_points_v5.rds"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <p>Next, I will load in and stack the covariates needed for the model,
 which were trimmed in vignette 030.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -317,8 +321,8 @@ discarded. In this case, we only lost 2 presence records, so this is
 acceptable. I will also save the output to be used later.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SDMtune</span><span class="fu">::</span><span class="fu"><a href="https://consbiol-unibern.github.io/SDMtune/reference/swd2csv.html" class="external-link">swd2csv</a></span><span class="op">(</span>swd <span class="op">=</span> <span class="va">global_SWD</span>, file_name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_slf_presences_with_data_v4.csv"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_with_data_v4.csv"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_slf_presences_with_data_v5.csv"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_with_data_v5.csv"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="create-training-test-split">Create training / test split<a class="anchor" aria-label="anchor" href="#create-training-test-split"></a>
@@ -465,14 +469,9 @@ object.</p>
 <span>  <span class="va">best.model.auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">global_model_tuned_auc</span><span class="op">@</span><span class="va">results</span><span class="op">$</span><span class="va">test_AUC</span><span class="op">)</span></span>
 <span>  </span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Based on the test AUC metric, the highest value was attributed to two
-models: model 11 with regularization multiplier of 1.5 and qpht
-features, and model 7 with a reg multiplier of 1 and only hinge
-features. Model 11 was chosen more frequently across previous model
-versions, so I will choose this model for the next step of tuning. I
-will also use this model as the base model for all future models
-performed for SLF at the regional scale. Lets also check the TSS to be
-sure.</p>
+<p>Based on the test AUC metric, the highest value was attributed to
+model 7, with a regularization multiplier of 1 and only hinge (h)
+features. Lets also check the TSS to be sure.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
@@ -495,15 +494,30 @@ sure.</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>We get slightly different results based on the test TSS metric. We
 see that the highest value was attributed to the model with a
-regularization multiplier of 0.25 and qpht features (model 2).</p>
-<p>We will need to choose either model 11 or model 2. Since the
-difference in test and training TSS are incredibly small between both
-models (0.001), I will choose model 11 because this model has been
-consistently more fit across model versions. These tuned parameters will
-also be applied to all future models performed for SLF at the regional
-scale.</p>
+regularization multiplier of 2.0 and qpht features (model 14). The two
+best fit models give us a choice between a regularization multiplier of
+1.0 or 2.0 and all or “qpht” features.</p>
+<p>For previous iterations of the model, I chose model models with a reg
+multiplier of 2.0, and these models had an artificially inflated
+suitable area (there were no areas on the planet considered
+“unsuitable”). All areas were over the <code>fixed_1</code> threshold,
+which is the most conservative threshold with respect to invasive
+species (see 3.1 below for more detail). This means that the model was
+underfit (too general). When the regularization multiplier is too high,
+the result is an over generalized model, which fits with an overly broad
+predicted area of suitability. I will choose from the models using a reg
+multiplier of 1.5.</p>
+<p>The most fit model of those with a 1.5 reg multiplier according to
+the test AUC is model 10 (h features), while the highest of those
+according to the test TSS is a tie between models 11 and 12 (qpht or all
+features). The difference between the test TSS between models is greater
+than between the test AUC, so I will use the TSS. All features has been
+shown to be redundant (Elith et al, 2011), so I will choose use model
+11, with a reg multiplier of 1.5 and qpht features.</p>
+<p>I will also use these model settings for the three models performed
+for SLF at the regional scale.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="va">global_model_tuned_auc</span><span class="op">@</span><span class="va">models</span><span class="op">[[</span><span class="fl">11</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="va">global_model_tuned_auc</span><span class="op">@</span><span class="va">models</span><span class="op">[[</span><span class="fl">11</span><span class="op">]</span><span class="op">]</span> <span class="co"># reg multiplier = 1.5, qpht features</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="summary-statistics">2.2 Summary Statistics<a class="anchor" aria-label="anchor" href="#summary-statistics"></a>
@@ -519,26 +533,26 @@ complete and annotated workflow used to create this function, see
 <code class="sourceCode R"><span><span class="co"># output directory</span></span>
 <span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                     <span class="st">"maxent/models/slf_global_v4"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/compute_MaxEnt_summary_statistics_CV.html">compute_MaxEnt_summary_statistics_CV</a></span><span class="op">(</span></span>
+<span>                     <span class="st">"maxent/models/slf_global_v5"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/compute_MaxEnt_summary_statistics_CV.html">compute_MaxEnt_summary_statistics_CV</a></span><span class="op">(</span></span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>, </span>
 <span>  model.name <span class="op">=</span> <span class="st">"global"</span>, </span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>, </span>
-<span>  create.dir <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># create subdirectory</span></span>
+<span>  create.dir <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># create subdirectory</span></span>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_hist_env_covariates</span>, <span class="co"># env covariates raster stacked</span></span>
 <span>  train.obj <span class="op">=</span> <span class="va">global_train</span>, <span class="co"># training data used to create model</span></span>
 <span>  trainFolds.obj <span class="op">=</span> <span class="va">global_trainFolds</span>,  <span class="co"># k-folds of training data</span></span>
 <span>  test.obj <span class="op">=</span> <span class="va">global_test</span>, <span class="co"># data you wish to use to test the model</span></span>
 <span>  jk.test.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"train"</span>, <span class="st">"test"</span><span class="op">)</span>, <span class="co"># types of jackknife curves to be created</span></span>
-<span>  plot.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span> <span class="co"># types of univariate and marginal response curves to be created</span></span>
+<span>  plot.type <span class="op">=</span> <span class="st">"cloglog"</span> <span class="co"># types of univariate and marginal response curves to be created</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p>I will now save the results from the model tuning that I performed a
 few chunks ago, because I have created the directory for these model
 results. I will also save the gridded tuning result figures manually
 from the Viewer pane to the model directory folder that was created
 using <code><a href="../reference/compute_MaxEnt_summary_statistics_CV.html">compute_MaxEnt_summary_statistics_CV()</a></code>.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save gridsearch interactive tables from Viewer pane</span></span>
 <span></span>
 <span><span class="co"># save df results of model tuning</span></span>
@@ -548,24 +562,62 @@ using <code><a href="../reference/compute_MaxEnt_summary_statistics_CV.html">com
 <span><span class="co"># save tuned models</span></span>
 <span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">global_model_tuned_auc</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_model_tuned_auc.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">global_model_tuned_tss</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_model_tuned_tss.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Looking at the summary statistics, the most explanatory variable
+(according to the jackknife test for the training data, which was 80%
+withheld on a randomized basis) is the minimum winter temperature (Bio
+11). By itself, it can produce nearly the same AUC as the full model;
+when left out, it has the most negative impact on the overall model. So,
+this is the most impactful variable in the training data and is most
+explanatory of SLF distributions. The randomly withheld 20% of the
+testing data gave the same results, both results align closely with the
+literature (Lee et al, 2011). The permutation importance plot validates
+these points.</p>
+<p>Here are the jackknife plots:
+<img src="../../maxent/models/slf_global_v5/plots/global_jackknife_all_iterations_training.jpg" class="r-plt" alt="" width="1600"><img src="../../maxent/models/slf_global_v5/plots/global_jackknife_iteration1_testing.jpg" class="r-plt" alt="" width="1600"></p>
+<p>The variables behaved differently in the response curves. Looking at
+the univariate response curves (the result of creating a model with only
+that variable) for the variables based on temperature (Bio 2, mean
+monthly temperature seasonality and Bio 11, minimum winter temperature)
+both resemble a bell-shaped curve, with a peak around 8.5°C variability
+for Bio 2 and around -2°C minimum temp for Bio 11. Meanwhile, for the
+precipitation-based variables (Bio 12, annual precipitation amounts and
+Bio 15, precipitation seasonality), both curves suggest a threshold that
+trails off from its max near the beginning of the range. For Bio 12, max
+activity begins low and creates a skewed curve at ~1200mm precipitation,
+which trails off slowly, nearing 0 at about 5000mm precipitation (based
+on the rug plot). For Bio 15, activity below 25% precipitation
+seasonality is very high, with activity dropping and then rising again
+between 75-115%. There are no presences beyond ~115%.</p>
+<p>Here are the response curves:
+<img src="../../maxent/models/slf_global_v5/plots/global_bio2_univar_resp_curve_cloglog.jpg" class="r-plt" alt="" width="1600"><img src="../../maxent/models/slf_global_v5/plots/global_bio11_univar_resp_curve_cloglog.jpg" class="r-plt" alt="" width="1600"><img src="../../maxent/models/slf_global_v5/plots/global_bio12_univar_resp_curve_cloglog.jpg" class="r-plt" alt="" width="1600"><img src="../../maxent/models/slf_global_v5/plots/global_bio15_univar_resp_curve_cloglog.jpg" class="r-plt" alt="" width="1600"></p>
+<p>The model itself performed well. It had a training and test AUC 0.986
+and 0.977, respectively, and a training</p>
+<p>Here is the ROC curve:
+<img src="../../maxent/models/slf_global_v5/plots/global_iteration1_ROC.jpg" class="r-plt" alt="" width="1600"></p>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 2 × 3</span></span></span>
+<span><span class="co">##   ...1       AUC   TSS</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> Training 0.986 0.887</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> Test     0.977 0.879</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
 <h2 id="create-outputs-for-analysis">3. Create Outputs for Analysis<a class="anchor" aria-label="anchor" href="#create-outputs-for-analysis"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                     <span class="st">"maxent/models/slf_global_v4"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<span>                     <span class="st">"maxent/models/slf_global_v5"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_model.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="create-suitability-maps--mean-and-thresholded">3.1 Create suitability maps- mean and thresholded<a class="anchor" aria-label="anchor" href="#create-suitability-maps--mean-and-thresholded"></a>
 </h3>
 <p>I will use the <code>SDMtune::predict()</code> function to predict
 the suitability for the range of interest. I will threshold the map by
-the <code>MTP</code>, <code>MTSS</code> and <code>10_percentile</code>
-thresholds. The workflow for this application will use my function
+the <code>fixed_1</code>, <code>MTSS</code> and
+<code>10_percentile</code> thresholds. The workflow for this application
+will use my function
 <code><a href="../reference/create_MaxEnt_suitability_maps_CV.html">create_MaxEnt_suitability_maps_CV()</a></code>.</p>
 <p>I will take the above map and reclassify it so that areas that aren’t
 suitable are more obvious. I will use the <code>MTSS</code> (maximum
@@ -573,30 +625,82 @@ training sensitivity plus specificity threshold), as this threshold is
 one of the most rigorous available. It maximizes the TSS, a threshold
 dependent goodness of fit metric and has been shown to perform well and
 produce consistent predictions for presence-only methods (Liu et al,
-2013; Liu et al, 2016). I will also use the <code>MTP</code> (minimum
-training presence) and <code>10_percentile</code> (10 percentile
-training threshold) thresholds. These thresholds represent a continuum
-of training data exclusion. The <code>MTP</code> threshold does not
-exclude any data and assumes confidence in the validity of the training
-data, making the most conservative predictions (the largest suitable
-range for invasive species) The <code>10_percentile</code> threshold
-excludes the top 10% of suitable training samples, which would be more
-appropriate if I have less confidence in my training data. Finally, the
+2013; Liu et al, 2016). I will also use the <code>fixed_1</code> (Fixed
+cumulative value 1%) and <code>10_percentile</code> (10 percentile
+training threshold) thresholds to bookend the MTSS; these thresholds
+represent a continuum of training data exclusion. The
+<code>fixed_1</code> threshold excludes the bottom 1% of the training
+data and assumes more confidence in the validity of the training data,
+making the most conservative predictions (the largest suitable range for
+invasive species). The <code>10_percentile</code> threshold excludes the
+top 10% of suitable training samples, which would be more appropriate if
+I have less confidence in my training data. Finally, the
 <code>MTSS</code> threshold maximizes the sensitivity (the likelihood of
-detecting a true positive) (Maryam Bordkhani (n.d.)).</p>
-<p>I will retrieve the specific value for the MTSS threshold for this
-model and use it to define a what is considered unsuitable in this
-raster. Then, I will reclassify the mean raster so that anything below
-this threshold is now “unsuitable”. I will use the mean cloglog
-threshold for all iterations. I will create a binary version of the mean
-raster, with unsuitable regions (below the MTSS training threshold) as
-0, and those above the threshold as 1. Then, I can reclassify averaged
-raster of MaxEnt predictions. I will load in the averaged prediction for
-this model and reclassify the raster using a temporary raster layer that
-I will create. This raster will only have values where the model
-predicts the climate to be unsuitable, so that it can be plotted overtop
-the averaged raster to mask unsuitable areas.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+detecting a true positive). (Damus, M. (2014, May 23). Threshold rule
+[Online post]. Google Groups: Maxent.) It should be noted that the MTP
+threshold excludes none of the training data, but we chose not to use
+this threshold because it causes artifacts in the prediction maps, such
+as a 0 value threshold which caused the entire study area to be
+considered suitable (Phillips et al, 2006).</p>
+<p>Here is an explanation of all available threshold options for our
+function:</p>
+<ul>
+<li>
+<code>BTO</code> = Balance training omission predicted area and
+threshold value. This threshold is the value which best balances the
+predicted area and the training omission rate. It is a compromise
+between sensitivity and specificity (MaxEnt summary output)</li>
+<li>
+<code>EE</code> = Equate entropy of thresholded and original
+distributions. This threshold is the value which best equates the
+entropy between the original and thresholded value. Entropy is a measure
+of the “uniformness” of a distribution and is the situation that
+constrains the internal features the least (Phillips et al, 2006).</li>
+<li>
+<code>ETSS</code> = Equal training sensitivity and specificity.
+Equalizes the chances of missing areas of suitable distribution and
+assigning unsuitable distribution (Damus, 2014).</li>
+<li>
+<code>fixed_1</code> = Fixed cumulative value 1. Omits a fixed value
+of the bottom 1% of suitability from the training data points (MaxEnt
+Summary output).</li>
+<li>
+<code>fixed_5</code> = Fixed cumulative value 5. Omits a fixed value
+of the bottom 5% of suitability from the training data points (MaxEnt
+Summary output).</li>
+<li>
+<code>fixed_10</code> = Fixed cumulative value 10. Omits a fixed
+value of the bottom 10% of suitability from the training data points
+(MaxEnt Summary output).</li>
+<li>
+<code>MTP</code> or <code>LPT</code> = Minimum Training Presence.
+This threshold is the lowest predicted suitability value in the training
+presence point set (Radosavljevic, A., &amp; Anderson, R. P. 2014).</li>
+<li>
+<code>MTSS</code> = Maximum training sensitivity plus specificity.
+This threshold maximizes the sum of sensitivity and specificity for the
+training data. We use this threshold for our main analyses (Liu et al,
+2016).</li>
+<li>
+<code>ten_percentile</code> or <code>10_percentile</code> = Ten
+percentile training presence. This excludes the lowest 10% of predicted
+suitability values in the training presence point set (Radosavljevic,
+A., &amp; Anderson, R. P. 2014).</li>
+</ul>
+<p>In future vignettes, I will retrieve the specific value for the MTSS
+threshold for this model and use it to define a what is considered
+unsuitable in this raster. Then, I will reclassify the mean raster so
+that anything below this threshold is now “unsuitable”, and anything
+above is considered suitable. I will use the mean cloglog threshold for
+all iterations. I will create a binary version of the mean raster, with
+unsuitable regions (below the MTSS training threshold) as 0, and those
+above the threshold as 1. Then, I can reclassify averaged raster of
+MaxEnt predictions. I will load in the averaged prediction for this
+model and reclassify the raster using a temporary raster layer that I
+will create. This raster will only have values where the model predicts
+the climate to be unsuitable, so that it can be plotted overtop the
+averaged raster to mask unsuitable areas.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_MaxEnt_suitability_maps_CV.html">create_MaxEnt_suitability_maps_CV</a></span><span class="op">(</span></span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  model.name <span class="op">=</span> <span class="st">"global"</span>, </span>
@@ -605,14 +709,14 @@ the averaged raster to mask unsuitable areas.</p>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_hist_env_covariates</span>, </span>
 <span>  describe.proj <span class="op">=</span> <span class="st">"globe_1981-2010"</span>, <span class="co"># name of area or time period projected to</span></span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MTP"</span>, <span class="st">"MTSS"</span><span class="op">)</span>,</span>
+<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed_1"</span>, <span class="st">"MTSS"</span>, <span class="st">"10_percentile"</span><span class="op">)</span>,</span>
 <span>  map.thresh <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># whether thresholded versions of these maps should be created</span></span>
-<span>  map.thresh.extra <span class="op">=</span> <span class="st">"MTP"</span>, <span class="co"># whether an added underlayer threshold should be plotted (MTP plotted under MTSS)</span></span>
+<span>  map.thresh.extra <span class="op">=</span> <span class="st">"fixed_1"</span>, <span class="co"># whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)</span></span>
 <span>  summary.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_summary_all_iterations.csv"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>I will also create suitability maps for each of the projected
 2041-2070 climate change scenarios.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_MaxEnt_suitability_maps_CV.html">create_MaxEnt_suitability_maps_CV</a></span><span class="op">(</span></span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  model.name <span class="op">=</span> <span class="st">"global"</span>, </span>
@@ -621,12 +725,12 @@ the averaged raster to mask unsuitable areas.</p>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_126_env_covariates</span>, </span>
 <span>  describe.proj <span class="op">=</span> <span class="st">"globe_2041-2070_GFDL_ssp126"</span>, <span class="co"># name of area or time period projected to</span></span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MTP"</span>, <span class="st">"MTSS"</span><span class="op">)</span>,</span>
+<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed_1"</span>, <span class="st">"MTSS"</span>, <span class="st">"10_percentile"</span><span class="op">)</span>,</span>
 <span>  map.thresh <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># whether thresholded versions of these maps should be created</span></span>
-<span>  map.thresh.extra <span class="op">=</span> <span class="st">"MTP"</span>,</span>
+<span>  map.thresh.extra <span class="op">=</span> <span class="st">"fixed_1"</span>, <span class="co"># whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)</span></span>
 <span>  summary.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_summary_all_iterations.csv"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_MaxEnt_suitability_maps_CV.html">create_MaxEnt_suitability_maps_CV</a></span><span class="op">(</span></span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  model.name <span class="op">=</span> <span class="st">"global"</span>, </span>
@@ -635,12 +739,12 @@ the averaged raster to mask unsuitable areas.</p>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_370_env_covariates</span>, </span>
 <span>  describe.proj <span class="op">=</span> <span class="st">"globe_2041-2070_GFDL_ssp370"</span>, <span class="co"># name of area or time period projected to</span></span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MTP"</span>, <span class="st">"MTSS"</span><span class="op">)</span>,</span>
+<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed_1"</span>, <span class="st">"MTSS"</span>, <span class="st">"10_percentile"</span><span class="op">)</span>,</span>
 <span>  map.thresh <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># whether thresholded versions of these maps should be created</span></span>
-<span>  map.thresh.extra <span class="op">=</span> <span class="st">"MTP"</span>,</span>
+<span>  map.thresh.extra <span class="op">=</span> <span class="st">"fixed_1"</span>, <span class="co"># whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)</span></span>
 <span>  summary.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_summary_all_iterations.csv"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/create_MaxEnt_suitability_maps_CV.html">create_MaxEnt_suitability_maps_CV</a></span><span class="op">(</span></span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  model.name <span class="op">=</span> <span class="st">"global"</span>, </span>
@@ -649,11 +753,49 @@ the averaged raster to mask unsuitable areas.</p>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_585_env_covariates</span>, </span>
 <span>  describe.proj <span class="op">=</span> <span class="st">"globe_2041-2070_GFDL_ssp585"</span>, <span class="co"># name of area or time period projected to</span></span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MTP"</span>, <span class="st">"MTSS"</span><span class="op">)</span>,</span>
+<span>  thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fixed_1"</span>, <span class="st">"MTSS"</span>, <span class="st">"10_percentile"</span><span class="op">)</span>,</span>
 <span>  map.thresh <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># whether thresholded versions of these maps should be created</span></span>
-<span>  map.thresh.extra <span class="op">=</span> <span class="st">"MTP"</span>,</span>
+<span>  map.thresh.extra <span class="op">=</span> <span class="st">"fixed_1"</span>, <span class="co"># whether an added underlayer threshold should be plotted (fixed 1 plotted under MTSS)</span></span>
 <span>  summary.file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_summary_all_iterations.csv"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Upon inspecting the suitability maps, the most prominent suitable
+areas above the MTSS (the colored areas) were predicted in both areas
+where SLF has and has not already invaded. All presently known areas of
+SLF establishment were predicted as suitable, including eastern North
+America, China, Japan, and South Korea. Notable areas of predicted
+suitable where SLF is not yet established include most of Europe and the
+northwestern USA in the northern hemisphere, and southern Argentina,
+parts of the central Andes, New Zealand and southern Australia in the
+southern hemisphere. It should be noted that SLF is not presently known
+in the southern hemisphere. Notably, as the ssp scenario for future
+predictions becomes more severe (ssp126 -&gt; ssp585), the predicted
+suitable area slowly shifts toward higher latitudes. Suitable areas
+typically grow in the northern hemisphere, and shrink in the southern
+hemisphere.</p>
+<p>Initially, this model (11) initially predicted that 100% of global
+area was considered suitable above the MTP threshold (what we had
+previously considered “minimally suitable”). This was highly unrealistic
+because we know that SLF has biological limitations, so I lowered the
+regularization to 1.5, which produced a more reasonable result, but
+still predicted that nearly all areas of the northern hemisphere
+(generally, nearly all of N America, Europe and Asia) were suitable. For
+this reason, we made the switch to the “Fixed 1% cumulative threshold”
+for predicting minimal suitability. This threshold is not given to the
+same artifacts that the MTP is (ie, that the entire study area can be
+predicted as suitable if the lowest training point is considered 0
+suitability), so it is a better fit (Phillips et al, 2006). This switch
+fixed the issue.</p>
+<p>The historical data (1981-2010):
+<img src="../../maxent/models/slf_global_v5/plots/global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_1981-2010.jpg" class="r-plt" alt="" width="1920"></p>
+<p>The predicted future data (2041-2070) under the ssp126 climate change
+scenario:
+<img src="../../maxent/models/slf_global_v5/plots/global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp126.jpg" class="r-plt" alt="" width="1920"></p>
+<p>The predicted future data (2041-2070) under the ssp370 climate change
+scenario:
+<img src="../../maxent/models/slf_global_v5/plots/global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp370.jpg" class="r-plt" alt="" width="1920"></p>
+<p>The predicted future data (2041-2070) under the ssp585 climate change
+scenario:
+<img src="../../maxent/models/slf_global_v5/plots/global_pred_suit_clamped_cloglog_MEAN_thresholded_MTSS_fixed_1_globe_2041-2070_GFDL_ssp585.jpg" class="r-plt" alt="" width="1920"></p>
 </div>
 <div class="section level3">
 <h3 id="predict-suitability-for-known-slf-presences">3.2 Predict suitability for known SLF presences<a class="anchor" aria-label="anchor" href="#predict-suitability-for-known-slf-presences"></a>
@@ -670,17 +812,18 @@ predicting the suitability: simple and buffered. I will use simple (the
 suitability at that exact point) for the location of SLF
 populations.</p>
 <p>Later in my analysis, I will use these point-wise suitability
-predictions to create a scatter plot in the global vs regional
-models.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+predictions to create a scatter plot as an index of suitability between
+the two scales of models (the global and an ensemble of the upcoming
+regional-scale models).</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                     <span class="st">"maxent/models/slf_global_v4"</span><span class="op">)</span></span>
+<span>                     <span class="st">"maxent/models/slf_global_v5"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># slf presence data</span></span>
-<span><span class="va">slf_presences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"slf_all_coords_final_2025-07-07.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">slf_presences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"slf_all_coords_final_2026-07-30.csv"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">species</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
 <span>  xy.obj <span class="op">=</span> <span class="va">slf_presences</span>,</span>
 <span>  xy.type <span class="op">=</span> <span class="st">"Lycorma delicatula"</span>,</span>
@@ -689,11 +832,11 @@ models.</p>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># clamp predictions</span></span>
 <span>  buffer.pred <span class="op">=</span> <span class="cn">FALSE</span>, <span class="co"># will not buffer for SLF occurrence data because this is more accurate than viticultural region data</span></span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_slf_all_coords_1981-2010"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>I will repeat the same process for the CMIP6 data.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
 <span>  xy.obj <span class="op">=</span> <span class="va">slf_presences</span>,</span>
 <span>  xy.type <span class="op">=</span> <span class="st">"Lycorma delicatula"</span>,</span>
@@ -701,10 +844,10 @@ models.</p>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_slf_all_coords_2041-2070_GFDL_ssp126"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
 <span>  xy.obj <span class="op">=</span> <span class="va">slf_presences</span>,</span>
 <span>  xy.type <span class="op">=</span> <span class="st">"Lycorma delicatula"</span>,</span>
@@ -712,10 +855,10 @@ models.</p>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_slf_all_coords_2041-2070_GFDL_ssp370"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
 <span>  xy.obj <span class="op">=</span> <span class="va">slf_presences</span>,</span>
 <span>  xy.type <span class="op">=</span> <span class="st">"Lycorma delicatula"</span>,</span>
@@ -723,12 +866,12 @@ models.</p>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_slf_all_coords_2041-2070_GFDL_ssp585"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="predict-suibability-for-ivr-regions">3.3 Predict suibability for IVR regions<a class="anchor" aria-label="anchor" href="#predict-suibability-for-ivr-regions"></a>
+<h3 id="predict-suitability-for-ivr-locations">3.3 Predict suitability for IVR locations<a class="anchor" aria-label="anchor" href="#predict-suitability-for-ivr-locations"></a>
 </h3>
 <p>I will perform the same action as above, but for the locations of
 over 1,000 important wineries around the world. I will use the buffered
@@ -743,63 +886,65 @@ value from this buffer, but the mean, minimum and others can be used as
 well. I will use a buffer radial distance of 20,000m (the default, 20km)
 because the resolution of the predictions is at 10km, so this distance
 considers the two surrounding cells on any side.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mypath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>                       <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>                     <span class="st">"maxent/models/slf_global_v4"</span><span class="op">)</span></span>
+<span>                     <span class="st">"maxent/models/slf_global_v5"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># load in all IVR points</span></span>
-<span><span class="va">IVR_regions</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_esri54017.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"wineries_esri54017.rds"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">IVR_regions</span> <span class="op">&lt;-</span> <span class="va">IVR_regions</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span><span class="va">IVR_locations</span> <span class="op">&lt;-</span> <span class="va">IVR_locations</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
-<span>  xy.obj <span class="op">=</span> <span class="va">IVR_regions</span>,</span>
-<span>  xy.type <span class="op">=</span> <span class="st">"IVR regions"</span>,</span>
+<span>  xy.obj <span class="op">=</span> <span class="va">IVR_locations</span>,</span>
+<span>  xy.type <span class="op">=</span> <span class="st">"IVR locations"</span>,</span>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_hist_env_covariates</span>,</span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  buffer.pred <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># 20km buffer around points</span></span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_wineries_1981-2010"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>I will repeat the same process for the CMIP6 data.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<p>This run dropped three records, likely due to inconsistencies between
+the rasters which I harmonized. I will repeat the same process for the
+CMIP6 data.</p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
-<span>  xy.obj <span class="op">=</span> <span class="va">IVR_regions</span>,</span>
-<span>  xy.type <span class="op">=</span> <span class="st">"IVR regions"</span>,</span>
+<span>  xy.obj <span class="op">=</span> <span class="va">IVR_locations</span>,</span>
+<span>  xy.type <span class="op">=</span> <span class="st">"IVR locations"</span>,</span>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_126_env_covariates</span>,</span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  buffer.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_wineries_2041-2070_GFDL_ssp126"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
-<span>  xy.obj <span class="op">=</span> <span class="va">IVR_regions</span>,</span>
-<span>  xy.type <span class="op">=</span> <span class="st">"IVR regions"</span>,</span>
+<span>  xy.obj <span class="op">=</span> <span class="va">IVR_locations</span>,</span>
+<span>  xy.type <span class="op">=</span> <span class="st">"IVR locations"</span>,</span>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_370_env_covariates</span>,</span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  buffer.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_wineries_2041-2070_GFDL_ssp370"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">scari</span><span class="fu">::</span><span class="fu"><a href="../reference/predict_xy_suitability_CV.html">predict_xy_suitability_CV</a></span><span class="op">(</span></span>
-<span>  xy.obj <span class="op">=</span> <span class="va">IVR_regions</span>,</span>
-<span>  xy.type <span class="op">=</span> <span class="st">"IVR regions"</span>,</span>
+<span>  xy.obj <span class="op">=</span> <span class="va">IVR_locations</span>,</span>
+<span>  xy.type <span class="op">=</span> <span class="st">"IVR locations"</span>,</span>
 <span>  env.covar.obj <span class="op">=</span> <span class="va">x_global_585_env_covariates</span>,</span>
 <span>  model.obj <span class="op">=</span> <span class="va">global_model</span>,</span>
 <span>  mypath <span class="op">=</span> <span class="va">mypath</span>,</span>
 <span>  clamp.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  buffer.pred <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  predict.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cloglog"</span>, <span class="st">"logistic"</span><span class="op">)</span>,</span>
+<span>  predict.type <span class="op">=</span> <span class="st">"cloglog"</span>,</span>
 <span>  output.name <span class="op">=</span> <span class="st">"global_wineries_2041-2070_GFDL_ssp585"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now I have all of the outputs I need from the global model! These
@@ -809,10 +954,10 @@ spatial scales. These will be used to make inferences about the impacts
 of climate change on suitability for SLF.</p>
 <p>In the next vignette, I will set up for training each of the 3
 regional models.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary_global</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_summary_all_iterations.csv"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">summary_global</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_summary_all_iterations_v4.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">write_rds</a></span><span class="op">(</span><span class="va">summary_global</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"data"</span>, <span class="st">"global_summary_all_iterations_v5.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -821,7 +966,7 @@ regional models.</p>
 <p>I will load the three ssp scenario rasters I just created back into R
 and will take a mean of those rasters for my predictions step later
 downstream.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ssp 126</span></span>
 <span><span class="va">pred_global_2055_126</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp126_mean.asc"</span><span class="op">)</span></span>
@@ -834,9 +979,9 @@ downstream.</p>
 <span><span class="va">pred_global_2055_585</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">mypath</span>, <span class="st">"global_pred_suit_clamped_cloglog_globe_2041-2070_GFDL_ssp585_mean.asc"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pred_global_2055_stack</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">pred_global_2055_126</span>, <span class="va">pred_global_2055_370</span>, <span class="va">pred_global_2055_585</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># apply mean between layers</span></span>
 <span><span class="va">pred_global_2055_mean</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/app.html" class="external-link">app</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">pred_global_2055_stack</span>,</span>
@@ -850,6 +995,8 @@ downstream.</p>
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ol style="list-style-type: decimal">
+<li><p>Damus, M. (2014, May 23). Threshold rule [Online post]. Google
+Groups: Maxent. <a href="https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1" class="external-link uri">https://groups.google.com/g/maxent/c/MUMu4KP7kSs?pli=1</a></p></li>
 <li><p>Elith, J., Phillips, S. J., Hastie, T., Dudík, M., Chee, Y. E.,
 &amp; Yates, C. J. (2011). A statistical explanation of MaxEnt for
 ecologists: Statistical explanation of MaxEnt. Diversity and
@@ -866,7 +1013,8 @@ Ecology and Evolution, 6(1), 337–348. <a href="https://doi.org/10.1002/ece3.18
 <li><p>Liu, C., White, M., &amp; Newell, G. (2013). Selecting thresholds
 for the prediction of species occurrence with presence-only data.
 Journal of Biogeography, 40(4), 778–789. <a href="https://doi.org/10.1111/jbi.12058" class="external-link uri">https://doi.org/10.1111/jbi.12058</a></p></li>
-<li><p>Maryam Bordkhani. (n.d.). Threshold rule [Online post].</p></li>
+<li><p>Maxent model Summary Output. (2007, April 11). Maxent Model for
+Swainson’s Hawk (SWHA). <a href="https://geo.pointblue.org/lipmap/maxent_hu_ecoregion/SWHA.html" class="external-link uri">https://geo.pointblue.org/lipmap/maxent_hu_ecoregion/SWHA.html</a></p></li>
 <li><p>Radosavljevic, A., &amp; Anderson, R. P. (2014). Making better
 Maxent models of species distributions: Complexity, overfitting and
 evaluation. Journal of Biogeography, 41(4), 629–643. <a href="https://doi.org/10.1111/jbi.12227" class="external-link uri">https://doi.org/10.1111/jbi.12227</a></p></li>
@@ -914,17 +1062,17 @@ between the training points. The narrow spread of presence points in
 comparison means that not every blocked CV group (out of 10) received
 test presences and some had no test points. I also tried this with 5
 groups, but point distributions were still not ideal.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#presences</span></span>
 <span><span class="va">global_presences_with_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_slf_presences_with_data_v4.csv"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_slf_presences_with_data_v5.csv"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># add presence/absence column</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pa <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># background points</span></span>
 <span><span class="va">global_background_with_data</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_with_data_v4.csv"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu">here</span><span class="fu">::</span><span class="fu"><a href="https://here.r-lib.org/reference/here.html" class="external-link">here</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"vignette-outputs"</span>, <span class="st">"data-tables"</span>, <span class="st">"global_background_points_with_data_v5.csv"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>pa <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
@@ -934,7 +1082,7 @@ groups, but point distributions were still not ideal.</p>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></code></pre></div>
 <p>First, check spatial autocorrelation level. This determines the
 appropriate block size to prevent spatial autocorrelation.</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set seed for consistency of random sampling</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span></span>
@@ -963,14 +1111,14 @@ appropriate block size to prevent spatial autocorrelation.</p>
 <p>The range of spatial autocorrelation is estimated at 2,263,953 meters
 for the presence/absence data I am using to build the model. I will also
 use an interactive tool to visualize block size based on pa data.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">blockCV</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/blockCV/man/cv_block_size.html" class="external-link">cv_block_size</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">global_all_points_with_data</span>,</span>
 <span>  column <span class="op">=</span> <span class="st">"pa"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>I will go ahead and use the 2.25 million meter distance for the
 spatial blocks.</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_folds</span> <span class="op">&lt;-</span> <span class="fu">blockCV</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/blockCV/man/cv_spatial.html" class="external-link">cv_spatial</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">global_all_points_with_data</span>,</span>
 <span>  column <span class="op">=</span> <span class="st">"pa"</span>,</span>
@@ -984,7 +1132,7 @@ spatial blocks.</p>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>  report <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">global_folds</span><span class="op">$</span><span class="va">folds_list</span><span class="op">)</span></span>
 <span><span class="co"># this fold list contains each block </span></span>
@@ -998,7 +1146,7 @@ spatial blocks.</p>
 received 0 test points. The spread of the presences seems too narrow for
 each fold to receive adequate training and test presences. I will also
 try a spatial clustering algorithm.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">global_folds</span> <span class="op">&lt;-</span> <span class="fu">blockCV</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/blockCV/man/cv_cluster.html" class="external-link">cv_cluster</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">global_all_points_with_data</span>,</span>
 <span>  column <span class="op">=</span> <span class="st">"pa"</span>,</span>
@@ -1025,7 +1173,7 @@ revert to k-fold random CV.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

@@ -83,7 +83,7 @@ The first section of the code performs these operations for the regional-scale m
 
 We will focus on the univariate curves, so you will not see the code for the marginal response plots in the rendered version.
 
-# <!--
+<!--
 
 # create marginal response plots 
 
@@ -1010,7 +1010,7 @@ global_model <- read_rds(file = file.path(mypath, "slf_global_v5", "global_model
 
 ```
 
-# <!--
+<!--
 
 ## Create marginal plots 
 
@@ -1457,7 +1457,7 @@ ggsave(
 
 ```
 
-# <!--
+<!--
 
 # Combine ensemble and global models
 

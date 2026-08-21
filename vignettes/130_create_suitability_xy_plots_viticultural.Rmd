@@ -1032,6 +1032,9 @@ IVR_locations_joined <- left_join(IVR_locations, xy_joined_rescaled, by = c("ID"
   # remove join cols
   dplyr::select(-c(join_col_x, join_col_y)) 
   
+```
+
+```{r calculate risk quadrants}
 # calculate risk quadrants
 IVR_locations_risk <- IVR_locations_joined %>%
   dplyr::mutate(
@@ -1052,7 +1055,7 @@ IVR_locations_risk <- IVR_locations_joined %>%
 
 ```
 
-```{r factor ordering of risk, eval = TRUE}
+```{r factor ordering of risk}
 
 # factor levels
 risk_levels <- c("extreme", "high", "moderate", "low")
@@ -1062,7 +1065,7 @@ n_records <- nrow(IVR_locations_risk)
 
 ```
 
-```{r risk categories table, eval = TRUE}
+```{r risk categories table}
 
 IVR_risk_table <- IVR_locations_risk %>%
   # ensure columns are character
@@ -1110,6 +1113,14 @@ IVR_risk_table <- IVR_risk_table %>%
 ```{r export table}
 
 write_csv(IVR_risk_table, file = file.path(here::here(), "vignette-outputs", "data-tables", "IVR_risk_table.csv"))
+
+```
+
+```{r display table, eval = TRUE}
+
+IVR_risk_table <- read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "IVR_risk_table.csv"))
+
+head(IVR_risk_table)
 
 ```
 
@@ -1232,7 +1243,7 @@ kableExtra::save_kable(
 
 I will now join the risk levels dataset I have created with the original `wineries_tidied` dataset and save this. I will also add a count of the risk levels so they can be compared quantitatively. I will code extreme risk = 4, high = 3, moderate = 2, and low = 1. Then, I will subtract the risk level in 1995 from the risk level in 2055 to quantify the change in risk level over time and calculate summary stats.
 
-```{r create dataset, eval = TRUE}
+```{r create dataset}
 
 # add risk level counts
 wineries_tidied_suit <- IVR_locations_risk %>%
@@ -1287,6 +1298,15 @@ readr::write_rds(
   )
 
 ```
+
+```{r display table 2, eval = TRUE}
+
+wineries_tidied_suit <- readr::read_csv(file = file.path(here::here(), "vignette-outputs", "data-tables", "wineries_tidied_with_suit_risk.csv"))
+
+head(wineries_tidied_suit)
+
+```
+
 
 We now have risk quadrant plots and tables that we can use to assess the level of SLF establishment risk to viticulture.
 
