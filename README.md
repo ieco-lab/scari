@@ -1,6 +1,8 @@
 # Shifting Climate Assessments for Risk of Invasions (SCARI)
 ## `scari` R Package Overview <a href="https://ieco-lab.github.io/scari/"><img src="man/figures/logo.png" align="right" height="120" alt="scari website" /></a>
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 `scari` is an R package and research compendium that documents a multiscale species distribution modeling (SDM) workflow to forecast establishment and impact risk of a species invasion as it shifts with climate change.
 
 We developed this workflow to quantify the shifting risk for the establishment of invasive species under climate change. We specifically look at *Lycorma delicatula* (spotted lanternfly or SLF) as a focal species for our study, and quantify the potential risk for its establishment within globally important viticulture regions. The `R` function [create_risk_report](R/create_risk_report.R) produces risk maps, range shift estimates, risk plots and other outputs at the scale of countries or smaller geopolitical units. For example usage of this function in different contexts, see the [Create Reports](docs/articles/reports_index.html) tab.
@@ -9,8 +11,12 @@ We developed this workflow to quantify the shifting risk for the establishment o
 
 The package `scari` is a research compendium for:
 
-Owens, S. M. (2024). Multi-scale Modeling of the Spotted Lanternfly *Lycorma delicatula* (Hemiptera: Fulgoridae) Reveals Displaced Risk to Viticulture and Regional Range Expansion Due to Climate Change [M.S., Temple University]. In ProQuest Dissertations and Theses (3099643448). https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527
+Owens, S. M. (2024). Multi-scale Modeling of the Spotted Lanternfly *Lycorma delicatula* (Hemiptera: Fulgoridae) Reveals Displaced Risk to Viticulture and Regional Range Expansion Due to Climate Change [M.S., Temple University]. In ProQuest Dissertations and Theses (30996434448). https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/30996434448/se-2?accountid=130527
 ![image](https://github.com/user-attachments/assets/c840b94d-0c42-40bb-9134-cae1c31bb7e3)
+
+### License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [`LICENSE.md`](LICENSE.md) for the full text.
 
 ### Installation
 
@@ -28,7 +34,7 @@ The **dependency** packages should then be installed for the package to run prop
 Here are the main packages that `scari` depends on:
 
 ```
-install.packages(c('cli', 'common', 'CoordinateCleaner', 'devtools', 'dismo', 'ENMTools', 'formattable', 'gginnards', 'ggspatial', 'gitcreds', 'grid', 'here', 'httr', 'kableExtra', 'kgc', 'patchwork', 'pkgdown', 'plotROC', 'pROC', 'raster', 'rasterVis', 'remotes', 'renv', 'rgbif', 'rJava', 'rmarkdown', 'rnaturalearth', 'scales', 'SDMtune', 'sf', 'sp', 'stats', 'stringr', 'terra', 'tidyverse', 'usethis', 'utils', 'viridis', 'webshot', 'webshot2'))
+install.packages(c('cli', 'common', 'CoordinateCleaner', 'devtools', 'dismo', 'ENMTools', 'formattable', 'gginnards', 'ggspatial', 'gitcreds', 'grid', 'here', 'httr', 'kableExtra', 'kgc', 'patchwork', 'pkgdown', 'plotROC', 'pROC', 'raster', 'rasterVis', 'remotes', 'renv', 'rgbif', 'rJava', 'rlang', 'rmarkdown', 'rnaturalearth', 'scales', 'SDMtune', 'sf', 'sp', 'stats', 'stringr', 'terra', 'tidyverse', 'usethis', 'utils', 'viridis', 'webshot', 'webshot2'))
 
 # Install package which cannot be obtained from the CRAN
 library(devtools)
@@ -65,7 +71,7 @@ For a guide to using our full modeling pipeline, please see this sitemap and the
 
 Before diving into this project and our modeling workflow, an end user should:
 
-1. Read the [companion paper](https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/3099643448/se-2?accountid=130527), which outlines the conceptual underpinnings for this project.
+1. Read the [companion paper](https://www.proquest.com/dissertations-theses/multi-scale-modeling-spotted-lanternfly-em/docview/30996434448/se-2?accountid=130527), which outlines the conceptual underpinnings for this project.
 2. Download, build and install this package locally.
 3. Install the package `renv`, and run `renv::restore()` inside the R project, which ensures that your R package versions are consistent for running this package. (NOTE: this creates a project-specific R package library, so it should not affect your main library).
 4. Run the first vignette, [010_initialize_renv](vignettes/010_initialize_pkg.Rmd), which initializes `renv`, lists our package's dependencies, and introduces some important information.
@@ -92,4 +98,3 @@ Gallien, L., Douzet, R., Pratte, S., Zimmermann, N. E., & Thuiller, W. (2012). I
 Huron, N. A., Behm, J. E., & Helmus, M. R. (2022). Paninvasion severity assessment of a U.S. grape pest to disrupt the global wine market. Communications Biology, 5(1), 655. https://doi.org/10.1038/s42003-022-03580-w
 
 Phillips, S. J., Anderson, R. P., & Schapire, R. E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling, 190(3), 231–259. https://doi.org/10.1016/j.ecolmodel.2005.03.026
-
