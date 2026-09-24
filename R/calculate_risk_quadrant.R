@@ -79,10 +79,10 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
   }
   if (is.data.frame(suit.x)) {
     # if one column, use it; otherwise flatten all columns
-    if (ncol(suit.x) == 1) suit_x <- suit.x[[1]] else suit_x <- unlist(suit.x, use.names = FALSE)
+    suit_x <- if (ncol(suit.x) == 1) suit.x[[1]] else unlist(suit.x, use.names = FALSE)
   }
 
-  as.numeric(suit_x)
+  suit_x <- as.vector(suit_x)
 
 
   # suit.y
@@ -91,10 +91,10 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
   }
   if (is.data.frame(suit.y)) {
     # if one column, use it; otherwise flatten all columns
-    if (ncol(suit.y) == 1) suit_y <- suit.y[[1]] else suit_y <- unlist(suit.y, use.names = FALSE)
+    suit_y <- if (ncol(suit.y) == 1) suit.y[[1]] else unlist(suit.y, use.names = FALSE)
   }
 
-  as.numeric(suit_y)
+  suit_y <- as.vector(suit_y)
 
 
 
