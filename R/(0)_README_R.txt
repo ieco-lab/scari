@@ -22,6 +22,7 @@ First used in vignette 130
 ## Changelog
 
 v0- initial version
+v1- 2026-09-24- normalize suitability inputs to numeric vectors before assigning risk quadrants
 
 
 
@@ -250,4 +251,3 @@ Compiles different pesthub data frames into a single data frame, writted for CDF
 ## changelog
 
 v0- now in sandbox/slfLocate
-

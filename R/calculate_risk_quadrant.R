@@ -76,25 +76,29 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
   # suit.x
   if (is.character(suit.x) && length(suit.x) == 1 && file.exists(suit.x)) {
     suit_x <- read.csv(suit.x, stringsAsFactors = FALSE)
+  } else {
+    suit_x <- suit.x
   }
-  if (is.data.frame(suit.x)) {
+  if (is.data.frame(suit_x)) {
     # if one column, use it; otherwise flatten all columns
-    suit_x <- if (ncol(suit.x) == 1) suit.x[[1]] else unlist(suit.x, use.names = FALSE)
+    if (ncol(suit_x) == 1) suit_x <- suit_x[[1]] else suit_x <- unlist(suit_x, use.names = FALSE)
   }
 
-  suit_x <- as.vector(suit_x)
+  suit_x <- as.numeric(suit_x)
 
 
   # suit.y
   if (is.character(suit.y) && length(suit.y) == 1 && file.exists(suit.y)) {
     suit_y <- read.csv(suit.y, stringsAsFactors = FALSE)
+  } else {
+    suit_y <- suit.y
   }
-  if (is.data.frame(suit.y)) {
+  if (is.data.frame(suit_y)) {
     # if one column, use it; otherwise flatten all columns
-    suit_y <- if (ncol(suit.y) == 1) suit.y[[1]] else unlist(suit.y, use.names = FALSE)
+    if (ncol(suit_y) == 1) suit_y <- suit_y[[1]] else suit_y <- unlist(suit_y, use.names = FALSE)
   }
 
-  suit_y <- as.vector(suit_y)
+  suit_y <- as.numeric(suit_y)
 
 
 
