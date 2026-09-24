@@ -73,60 +73,38 @@ calculate_risk_quadrant <- function(suit.x, suit.y, thresh.x, thresh.y) {
 
   ## import settings------------------------------------------------------------
 
-  # suit.x
-  if (is.character(suit.x) && length(suit.x) == 1 && file.exists(suit.x)) {
-    suit_x <- read.csv(suit.x, stringsAsFactors = FALSE)
-  } else {
-    suit_x <- suit.x
+  # coerces a suitability input (file path, vector, matrix, data frame/tibble,
+  # or list) into a plain numeric vector. This is required so that the
+  # comparisons below (ex: `suit_x >= thresh.x`) always return a logical
+  # vector rather than a logical matrix/data frame, which `dplyr::case_when()`
+  # cannot accept.
+  coerce_suit_to_vector <- function(suit) {
+
+    # read in from file, if applicable
+    if (is.character(suit) && length(suit) == 1 && file.exists(suit)) {
+      suit <- read.csv(suit, stringsAsFactors = FALSE)
+    }
+
+    # for matrices and data frames/tibbles, isolate the suitability values:
+    # a single column is used as-is, while multiple columns (ex: the "ID" +
+    # value columns returned alongside each other by `terra::extract()`) are
+    # assumed to end with the suitability values in the last column
+    if (is.matrix(suit) || is.data.frame(suit)) {
+      suit <- if (ncol(suit) == 1) suit[, 1] else suit[, ncol(suit)]
+    }
+
+    # flatten anything remaining (ex: lists) and force to a numeric vector
+    as.numeric(unlist(suit, use.names = FALSE))
   }
-  if (is.data.frame(suit_x)) {
-    # if one column, use it; otherwise flatten all columns
-    if (ncol(suit_x) == 1) suit_x <- suit_x[[1]] else suit_x <- unlist(suit_x, use.names = FALSE)
-  }
-
-  suit_x <- as.numeric(suit_x)
-
-
-  # suit.y
-  if (is.character(suit.y) && length(suit.y) == 1 && file.exists(suit.y)) {
-    suit_y <- read.csv(suit.y, stringsAsFactors = FALSE)
-  } else {
-    suit_y <- suit.y
-  }
-  if (is.data.frame(suit_y)) {
-    # if one column, use it; otherwise flatten all columns
-    if (ncol(suit_y) == 1) suit_y <- suit_y[[1]] else suit_y <- unlist(suit_y, use.names = FALSE)
-  }
-
-  suit_y <- as.numeric(suit_y)
-
-
-
 
   # suit.x
-  #if (is.character(suit.x)) {
-  #  suit_x <- read.csv(suit.x) %>% # read as csv
-   #   as.vector()
-#
- # } else {
- #   suit_x <- as.vector(suit.x) # make data frame
- # }
+  suit_x <- coerce_suit_to_vector(suit.x)
 
   # suit.y
-#  if (is.character(suit.y)) {
- #   suit_y <- read.csv(suit.y) %>% # read as csv
- #     as.vector()
-
-#  } else {
-#    suit_y <- as.vector(suit.y) # make data frame
-#  }
+  suit_y <- coerce_suit_to_vector(suit.y)
 
 
   ## function-------------------------------------------------------------------
-
-  # unlist first for input into case_when
-  #suit_x <- unlist(suit_x, use.names = FALSE)
-  #suit_y <- unlist(suit_y, use.names = FALSE)
 
   # apply case_when
   risk_output <- dplyr::case_when(
