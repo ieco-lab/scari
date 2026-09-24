@@ -242,7 +242,6 @@ Creates a leaflet map of SLF presence points
 v0- now in sandbox/slfLocate
 
 
-
 ----------pesthub_compile.R----------
 
 ## About
