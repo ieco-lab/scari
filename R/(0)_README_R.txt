@@ -23,6 +23,12 @@ First used in vignette 130
 
 v0- initial version
 v1- 2026-09-24- normalize suitability inputs to numeric vectors before assigning risk quadrants
+v2- 2026-09-24- fix `suit.x`/`suit.y` coercion so that matrices/data frames with more than
+one column (ex: `terra::extract()` output, which pairs an "ID" column with the value) select
+the suitability value column instead of being flattened together with `unlist()`, which
+silently corrupted results; this also applies the same matrix/data frame handling that was
+previously only applied to data frames, since the function's own docs specify a matrix input
+is supported
 
 
 
