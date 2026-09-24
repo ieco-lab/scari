@@ -515,7 +515,8 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
     dplyr::mutate(
       name_en = tolower(name_en), # names of states
       adm0_a3 = toupper(adm0_a3), # admin iso-3 codes
-      iso_3166_2 = toupper(iso_3166_2), # iso3116-2 codes for states
+      region_cod = toupper(region_cod), # iso3166-2 codes for states
+      iso_3166_2 = toupper(iso_3166_2),
       # replacements
       name_en = stringr::str_replace_all(name_en, pattern = " |-", replacement = "_"),
       # removals
@@ -523,6 +524,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
       name_en = stringr::str_remove_all(name_en, words_to_remove_match), # all words
       name_en = stringr::str_remove_all(name_en, pattern = "^_+|_$"), # hanging underscores at beginning or end
       adm0_a3 = stringr::str_remove_all(adm0_a3, pattern = " "),
+      region_cod = stringr::str_remove_all(region_cod, pattern = " "),
       iso_3166_2 = stringr::str_remove_all(iso_3166_2, pattern = " "),
       # final removal needs to be last
       name_en = stringr::str_replace_all(name_en, "_+", "_"), # replace sequences of underscores with just one
@@ -581,7 +583,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
 
     # keep only rows containing target locality name
     state.name.check <- states_provinces_sf %>%
-      dplyr::filter(stringr::str_detect(string = iso_3166_2, pattern = locality_iso_2_internal))
+      dplyr::filter(if_any(c(region_cod, iso_3166_2), ~ stringr::str_detect(string = .x, pattern = locality_iso_2_internal), na.rm = TRUE))
 
     # if at least 1 record, success
     if(nrow(state.name.check) > 0) {
@@ -618,7 +620,7 @@ create_risk_report <- function(locality.iso, locality.iso.2 = NA, locality.name 
   } else if(locality.type == "state_province") {
 
     locality_sf <- states_provinces_sf %>%
-      dplyr::filter(stringr::str_detect(string = iso_3166_2, pattern = locality_iso_2_internal), na.rm = TRUE)
+      dplyr::filter(if_any(c(region_cod, iso_3166_2), ~ stringr::str_detect(string = .x, pattern = locality_iso_2_internal), na.rm = TRUE))
 
   }
 
